@@ -1,26 +1,152 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Sidebar } from "@/components/Sidebar";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
+function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="mx-auto max-w-7xl px-4 py-6">
+      {/* Hero */}
+      <section className="relative rounded-lg overflow-hidden bg-gradient-to-r from-brand to-brand-dark text-white p-10 mb-6">
+        <h2 className="text-2xl md:text-3xl font-bold">Welcome to Shree Saptashrungi Ayurved Mahavidyalaya & Hospital</h2>
+        <p className="mt-2 max-w-3xl text-white/90">
+          Educating the next generation of Ayurveda professionals since 1999 — 25 years of academic excellence,
+          patient care and research in Nashik, Maharashtra.
+        </p>
+      </section>
+
+      <div className="grid md:grid-cols-[260px_1fr] gap-6">
+        <Sidebar />
+
+        <div className="space-y-6">
+          <section className="border border-border rounded-md bg-card">
+            <header className="bg-secondary px-4 py-2 border-b border-border">
+              <h2 className="text-sm font-medium text-muted-foreground">Welcome To</h2>
+            </header>
+            <div className="p-6">
+              <h3 className="text-xl font-semibold mb-3 text-brand">
+                Shree Saptashrungi Ayurved Mahavidyalaya and Hospital
+              </h3>
+              <p className="text-sm text-foreground leading-relaxed text-justify">
+                Saptashrungi Ayurved Mahavidyalaya and Hospital was established in 1999 and successfully completed the
+                milestone of 25 years. With huge college campus covering state-of-the-art college building, high-tech
+                infrastructure, hospital with 220 beds capacity and 3 operation theaters, nursery of ayurvedic medicinal
+                plants, first digital library, Teaching Pharmacy with Advance Research Laboratory etc. are the key features
+                of the Institute. The hospital is also equipped with ICU unit, Sonography, X-Ray unit. Intake capacity of
+                UG BAMS is 100. Post Graduation in Ayurveda for 9 programs (Samhita Siddhant, Kriya Sharir, Dravyaguna,
+                Rasashastra & Bhaishajya Kalpana, Prasuti & Streerog, Kaumarbhritya, Kayachikitsa, Shalya tantra,
+                Panchkarma) is also operational since recent times with intake capacity of 54 seats for PG.
+              </p>
+            </div>
+          </section>
+
+          <div className="grid md:grid-cols-3 gap-4">
+            <PersonCard name="Dr. Balasaheb Aher" role="Founder Chairman" slug="founder-chairman" />
+            <NewsCard />
+            <PersonCard name="Smt. Himgauri Aher" role="Chairman" slug="chairman" />
+          </div>
+
+          <section className="rounded-md overflow-hidden border border-border">
+            <header className="bg-vision text-white px-5 py-3">
+              <h3 className="font-semibold text-lg">Vision</h3>
+            </header>
+            <div className="bg-vision/90 text-white p-5">
+              <p className="text-sm">
+                To be a pioneer Institute providing the health services to the community and also to be one of the best
+                academic Institutes in the field of Health Sciences.
+              </p>
+            </div>
+          </section>
+
+          <section className="rounded-md overflow-hidden border border-border">
+            <header className="bg-mission text-white px-5 py-3">
+              <h3 className="font-semibold text-lg">Mission</h3>
+            </header>
+            <div className="bg-mission/90 text-white p-5">
+              <ol className="text-sm space-y-1 list-decimal list-inside">
+                <li>To provide State of the art infrastructure in the Institute.</li>
+                <li>To produce Highly Reputed Ayurveda Professionals contributing for Global Health Developments.</li>
+                <li>To strengthen the Research and Innovation in the field of Ayurveda.</li>
+                <li>To provide Health facilities across the rural and urban areas.</li>
+              </ol>
+            </div>
+          </section>
+
+          <section className="space-y-3">
+            <Link
+              to="/$slug"
+              params={{ slug: "covid-19" }}
+              className="inline-block bg-destructive text-white px-4 py-2 rounded font-bold tracking-wider"
+            >
+              COVID-19
+            </Link>
+            <Link
+              to="/$slug"
+              params={{ slug: "covid-19" }}
+              className="block text-saffron font-semibold hover:underline"
+            >
+              Important Announcements and Information Related with Covid-19
+            </Link>
+            <Link
+              to="/$slug"
+              params={{ slug: "affiliated-university" }}
+              className="block text-saffron font-semibold hover:underline"
+            >
+              Details of Affiliated University : MUHS
+            </Link>
+          </section>
+        </div>
+      </div>
     </div>
   );
 }
 
-function Index() {
-  return <PlaceholderIndex />;
+function PersonCard({ name, role, slug }: { name: string; role: string; slug: string }) {
+  return (
+    <Link
+      to="/$slug"
+      params={{ slug }}
+      className="block border border-border rounded-md bg-card p-4 text-center hover:shadow-md transition-shadow"
+    >
+      <p className="text-sm text-muted-foreground mb-2">{role}</p>
+      <div className="h-32 w-32 mx-auto rounded-full bg-secondary flex items-center justify-center mb-2">
+        <span className="text-3xl font-bold text-brand">
+          {name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+        </span>
+      </div>
+      <p className="font-semibold text-brand">{name}</p>
+    </Link>
+  );
+}
+
+function NewsCard() {
+  const items = [
+    { title: "Student's Summer Vacation 2026", slug: "muhs-mandate-circulars" },
+    { title: "Hospital Data Monitoring & Administrative Committee", slug: "iqac" },
+    { title: "Fresher's Party 2nd May", slug: "activities-cultural" },
+  ];
+  return (
+    <div className="border border-border rounded-md bg-card p-4">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="font-semibold">News & Events</h3>
+        <span className="text-xs text-destructive font-semibold">Show More</span>
+      </div>
+      <ul className="space-y-2">
+        {items.map((i) => (
+          <li key={i.slug} className="flex items-center justify-between gap-2 text-sm bg-secondary/40 p-2 rounded">
+            <span className="line-clamp-2">{i.title}</span>
+            <Link
+              to="/$slug"
+              params={{ slug: i.slug }}
+              className="bg-destructive text-white text-xs px-2 py-1 rounded shrink-0"
+            >
+              View Details
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
