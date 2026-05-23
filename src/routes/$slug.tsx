@@ -54,7 +54,12 @@ function SlugPage() {
             <p className="text-xs text-white/80 mt-1">{page.category}</p>
           </header>
           <div className="p-6 space-y-4">
-            {page.body ? (
+            {COUNCIL_CONTENT[page.slug] ? (
+              (() => {
+                const C = COUNCIL_CONTENT[page.slug];
+                return <C />;
+              })()
+            ) : page.body ? (
               <p className="text-foreground leading-relaxed">{page.body}</p>
             ) : (
               <p className="text-muted-foreground leading-relaxed">
