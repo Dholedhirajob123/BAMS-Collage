@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Sidebar } from "@/components/Sidebar";
+import { HeroSlider } from "@/components/HeroSlider";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -8,14 +9,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
-      {/* Hero */}
-      <section className="relative rounded-lg overflow-hidden bg-gradient-to-r from-brand to-brand-dark text-white p-10 mb-6">
-        <h2 className="text-2xl md:text-3xl font-bold">Welcome to Shree Saptashrungi Ayurved Mahavidyalaya & Hospital</h2>
-        <p className="mt-2 max-w-3xl text-white/90">
-          Educating the next generation of Ayurveda professionals since 1999 — 25 years of academic excellence,
-          patient care and research in Nashik, Maharashtra.
-        </p>
-      </section>
+      <HeroSlider />
 
       <div className="grid md:grid-cols-[260px_1fr] gap-6">
         <Sidebar />
