@@ -160,7 +160,121 @@ function AboutUs() {
   );
 }
 
+type StaffMember = {
+  name: string;
+  designation: string;
+  education: string;
+  year: string;
+  photo: string;
+};
+
+const STAFF_PHOTOS = [g1, g2, g3, g4, g5, g6, g7, g8];
+
+const HOSPITAL_STAFF: StaffMember[] = [
+  { name: "Dr. Sandip Patil", designation: "Medical Superintendent", education: "M.D. (Kayachikitsa)", year: "Since 2010", photo: STAFF_PHOTOS[0] },
+  { name: "Dr. Aparna Raut", designation: "Resident Medical Officer", education: "M.D. (Panchakarma)", year: "Since 2014", photo: STAFF_PHOTOS[1] },
+  { name: "Dr. Pritam Pawale", designation: "Casualty Medical Officer", education: "M.D. (Shalya Tantra)", year: "Since 2016", photo: STAFF_PHOTOS[2] },
+  { name: "Dr. Gayatri Patil", designation: "Gynecologist", education: "M.S. (Prasuti Tantra)", year: "Since 2015", photo: STAFF_PHOTOS[3] },
+];
+
+const COLLEGE_STAFF: StaffMember[] = [
+  { name: "Dr. Milind Aware", designation: "Principal", education: "M.D. Ph.D. (Ayurveda)", year: "Since 2008", photo: STAFF_PHOTOS[4] },
+  { name: "Dr. Parshuram Pawar", designation: "Vice Principal", education: "M.D. (Samhita Siddhanta)", year: "Since 2012", photo: STAFF_PHOTOS[5] },
+  { name: "Dr. Sandip Patil", designation: "HOD - Kayachikitsa", education: "M.D. (Kayachikitsa)", year: "Since 2010", photo: STAFF_PHOTOS[6] },
+  { name: "Dr. Aparna Raut", designation: "Associate Professor", education: "M.D. (Panchakarma)", year: "Since 2014", photo: STAFF_PHOTOS[7] },
+];
+
+const NON_TEACHING_STAFF: StaffMember[] = [
+  { name: "Shri Anil Deshmukh", designation: "Administrative Officer", education: "M.Com, MBA", year: "Since 2005", photo: STAFF_PHOTOS[0] },
+  { name: "Smt. Sunita Joshi", designation: "Accountant", education: "M.Com", year: "Since 2009", photo: STAFF_PHOTOS[1] },
+  { name: "Shri Ramesh Kale", designation: "Librarian", education: "M.Lib.Sc.", year: "Since 2011", photo: STAFF_PHOTOS[2] },
+  { name: "Shri Vijay Shinde", designation: "Office Assistant", education: "B.A.", year: "Since 2013", photo: STAFF_PHOTOS[3] },
+];
+
+function StaffSection({ title, members }: { title: string; members: StaffMember[] }) {
+  const [active, setActive] = useState<number | null>(null);
+  return (
+    <div className="space-y-4">
+      <h2 className="text-lg font-semibold text-brand">{title} — Academic Year 2025-26</h2>
+      <div className="overflow-x-auto border border-border rounded-md">
+        <table className="w-full text-sm">
+          <thead className="bg-secondary">
+            <tr>
+              <th className="px-3 py-2 text-left">Sr.</th>
+              <th className="px-3 py-2 text-left">Photo</th>
+              <th className="px-3 py-2 text-left">Name</th>
+              <th className="px-3 py-2 text-left">Designation</th>
+              <th className="px-3 py-2 text-left">Education</th>
+              <th className="px-3 py-2 text-left">Year</th>
+            </tr>
+          </thead>
+          <tbody>
+            {members.map((m, i) => (
+              <tr key={i} className="border-t border-border hover:bg-secondary/40">
+                <td className="px-3 py-2">{i + 1}</td>
+                <td className="px-3 py-2">
+                  <button onClick={() => setActive(i)} className="block">
+                    <img
+                      src={m.photo}
+                      alt={m.name}
+                      loading="lazy"
+                      className="h-14 w-14 rounded-full object-cover border-2 border-brand hover:scale-110 transition-transform"
+                    />
+                  </button>
+                </td>
+                <td className="px-3 py-2 font-medium">{m.name}</td>
+                <td className="px-3 py-2">{m.designation}</td>
+                <td className="px-3 py-2 text-muted-foreground">{m.education}</td>
+                <td className="px-3 py-2 text-muted-foreground">{m.year}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {active !== null && (
+        <div
+          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 animate-fade-in"
+          onClick={() => setActive(null)}
+        >
+          <div className="max-w-lg w-full" onClick={(e) => e.stopPropagation()}>
+            <img src={members[active].photo} alt={members[active].name} className="w-full rounded-md" />
+            <div className="flex items-center justify-between text-white mt-3">
+              <button
+                onClick={() => setActive((active - 1 + members.length) % members.length)}
+                className="px-3 py-1 bg-white/10 rounded hover:bg-white/20"
+              >
+                ‹ Prev
+              </button>
+              <div className="text-center">
+                <p className="font-semibold">{members[active].name}</p>
+                <p className="text-xs opacity-80">{members[active].designation}</p>
+              </div>
+              <button
+                onClick={() => setActive((active + 1) % members.length)}
+                className="px-3 py-1 bg-white/10 rounded hover:bg-white/20"
+              >
+                Next ›
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const HospitalStaff = () => <StaffSection title="Hospital Staff" members={HOSPITAL_STAFF} />;
+const CollegeStaff = () => <StaffSection title="College Staff" members={COLLEGE_STAFF} />;
+const NonTeachingStaff = () => <StaffSection title="Non-Teaching Staff" members={NON_TEACHING_STAFF} />;
+const TeachingStaff = () => <StaffSection title="Teaching Staff" members={COLLEGE_STAFF} />;
+
 export const PAGE_CONTENT: Record<string, React.FC> = {
   "photo-gallery": PhotoGallery,
   "about-us": AboutUs,
+  "staff-hospital": HospitalStaff,
+  "staff-college": CollegeStaff,
+  "staff-non-teaching": NonTeachingStaff,
+  "faculty-teaching-staff": TeachingStaff,
 };
+
