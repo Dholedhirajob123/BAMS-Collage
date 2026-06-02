@@ -2,6 +2,7 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { Sidebar } from "@/components/Sidebar";
 import { PAGE_MAP } from "@/lib/pages";
 import { COUNCIL_CONTENT } from "@/components/CouncilTables";
+import { PAGE_CONTENT } from "@/components/PageContent";
 
 export const Route = createFileRoute("/$slug")({
   loader: ({ params }) => {
@@ -57,6 +58,11 @@ function SlugPage() {
             {COUNCIL_CONTENT[page.slug] ? (
               (() => {
                 const C = COUNCIL_CONTENT[page.slug];
+                return <C />;
+              })()
+            ) : PAGE_CONTENT[page.slug] ? (
+              (() => {
+                const C = PAGE_CONTENT[page.slug];
                 return <C />;
               })()
             ) : page.body ? (
