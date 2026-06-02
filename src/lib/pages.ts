@@ -161,20 +161,30 @@ export const TOP_NAV: NavItem[] = [
   {
     label: "Facilities",
     children: [
-      { label: "Overview", slug: "facilities" },
+      { label: "Infrastructure", slug: "facility-infrastructure" },
+      { label: "Herbal Garden", slug: "facility-herbal-garden" },
       { label: "Library", slug: "facility-library" },
-      { label: "Hostel", slug: "facility-hostel" },
-      { label: "Canteen", slug: "facility-canteen" },
-      { label: "Transport", slug: "facility-transport" },
-      { label: "Sports", slug: "facility-sports" },
-      { label: "Laboratory", slug: "facility-laboratory" },
+      { label: "LAB", slug: "facility-laboratory" },
+    ],
+  },
+  {
+    label: "Staff",
+    children: [
+      { label: "Hospital Staff", slug: "staff-hospital" },
+      { label: "College Staff", slug: "staff-college" },
+      { label: "Non-Teaching", slug: "staff-non-teaching" },
+    ],
+  },
+  {
+    label: "Faculty",
+    children: [
+      { label: "Teaching Staff", slug: "faculty-teaching-staff" },
     ],
   },
   { label: "Download", slug: "download" },
   { label: "Important Links", slug: "important-links" },
   { label: "Photo Gallery", slug: "photo-gallery" },
   { label: "Contact", slug: "contact" },
-  { label: "Pay Online", slug: "pay-online" },
   {
     label: "NAAC",
     children: [
