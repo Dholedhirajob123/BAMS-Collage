@@ -1,6 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Sidebar } from "@/components/Sidebar";
 import { HeroSlider } from "@/components/HeroSlider";
+import gPreview1 from "@/assets/gallery-1.jpg";
+import gPreview2 from "@/assets/gallery-2.jpg";
+import gPreview5 from "@/assets/gallery-5.jpg";
+import gPreview8 from "@/assets/gallery-8.jpg";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -84,10 +88,10 @@ function Index() {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
-                { src: "/src/assets/gallery-1.jpg", label: "Library" },
-                { src: "/src/assets/gallery-2.jpg", label: "Herbal Garden" },
-                { src: "/src/assets/gallery-5.jpg", label: "Cultural" },
-                { src: "/src/assets/gallery-8.jpg", label: "Convocation" },
+                { src: gPreview1, label: "Library" },
+                { src: gPreview2, label: "Herbal Garden" },
+                { src: gPreview5, label: "Cultural" },
+                { src: gPreview8, label: "Convocation" },
               ].map((p, i) => (
                 <Link
                   key={i}
