@@ -14,43 +14,39 @@ export function Header() {
   return (
     <header className="bg-white border-b border-border">
       {/* Top info bar */}
-      <div className="border-b border-border bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-3 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-          <div className="flex items-center gap-3">
-            <div className="h-16 w-16 rounded-full border-2 border-saffron flex items-center justify-center bg-saffron-soft shrink-0">
-              <span className="text-saffron font-bold text-xs text-center leading-tight">
-                SSAM<br />Nashik
-              </span>
-            </div>
-            <div>
-              <h1 className="text-brand font-bold text-lg leading-tight">
-                Shree Saptashrungi Ayurved Mahavidyalaya & Hospital
-              </h1>
-              <p className="text-brand font-semibold text-sm">
-                श्री सप्तश्रृंगी आयुर्वेद महाविद्यालय व हॉस्पिटल
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Kamal Nagar, Hirawadi, Panchavati, Nashik - 422003
-              </p>
-            </div>
+      <div className="border-b border-border bg-saffron-soft/40">
+        <div className="mx-auto max-w-7xl px-4 py-4 grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-4 items-center">
+          <div className="h-20 w-20 rounded-full border-4 border-saffron flex items-center justify-center bg-white shrink-0 shadow mx-auto md:mx-0">
+            <span className="text-saffron font-bold text-[10px] text-center leading-tight">
+              RAJASHRI<br />AYURVEDIC<br />MEHKAR
+            </span>
           </div>
 
-          <div className="flex justify-center">
-            <div className="h-20 w-20 rounded-full bg-naac flex flex-col items-center justify-center text-white shadow">
-              <span className="text-[8px] font-semibold">ACCREDITED</span>
-              <span className="text-xl font-bold leading-none">B++</span>
-              <span className="text-[8px] font-semibold">NAAC</span>
-            </div>
+          <div className="text-center">
+            <p className="text-brand font-semibold text-sm">
+              Dharmveer Diliprao Rahate Shikshan & Bahu-Uddeshiya Sanstha's
+            </p>
+            <h1 className="text-brand font-bold text-xl md:text-2xl leading-tight tracking-wide">
+              RAJASHRI AYURVEDIC MEDICAL COLLEGE & HOSPITAL,
+              <br />MEHKAR, DIST. BULDHANA
+            </h1>
+            <p className="text-xs text-muted-foreground mt-1">
+              Affiliated to MUHS Nashik · Recognized by NCISM, New Delhi
+            </p>
           </div>
 
-          <ul className="text-xs text-foreground space-y-1">
-            <li><strong>Institution Code :</strong> NCISM- AYU 0181</li>
-            <li><strong>College Code :</strong> MUHS - 123302</li>
-            <li><strong>Admission Process :</strong> MH CET CELL College Code : 3126</li>
-            <li><strong>Email :</strong> ssamnsk@gmail.com</li>
-            <li><strong>Landline :</strong> +91 253 2621565</li>
-            <li><strong>No. Of Visitor(s) :</strong> 672405</li>
-          </ul>
+          <div className="flex md:flex-col items-center gap-3">
+            <div className="h-16 w-16 rounded-full bg-naac flex flex-col items-center justify-center text-white shadow shrink-0">
+              <span className="text-[7px] font-semibold">ACCREDITED</span>
+              <span className="text-lg font-bold leading-none">B++</span>
+              <span className="text-[7px] font-semibold">NAAC</span>
+            </div>
+            <ul className="text-[11px] text-foreground space-y-0.5 md:text-right">
+              <li><strong>Email:</strong> rajashriayurved@gmail.com</li>
+              <li><strong>Phone:</strong> +91 7264 222333</li>
+              <li><strong>College Code:</strong> MUHS-123302</li>
+            </ul>
+          </div>
         </div>
       </div>
 
