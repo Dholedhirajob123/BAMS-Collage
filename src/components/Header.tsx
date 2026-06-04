@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { TOP_NAV, type NavItem } from "@/lib/pages";
+import logoAsset from "@/assets/college-logo.png.asset.json";
 
 function linkFor(item: NavItem) {
   if (item.to) return item.to;
