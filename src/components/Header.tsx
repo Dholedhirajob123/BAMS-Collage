@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { TOP_NAV, type NavItem } from "@/lib/pages";
+import logoAsset from "@/assets/college-logo.png.asset.json";
 
 function linkFor(item: NavItem) {
   if (item.to) return item.to;
@@ -16,10 +17,8 @@ export function Header() {
       {/* Top info bar */}
       <div className="border-b border-border bg-saffron-soft/40">
         <div className="mx-auto max-w-7xl px-4 py-4 grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-4 items-center">
-          <div className="h-20 w-20 rounded-full border-4 border-saffron flex items-center justify-center bg-white shrink-0 shadow mx-auto md:mx-0">
-            <span className="text-saffron font-bold text-[10px] text-center leading-tight">
-              RAJASHRI<br />AYURVEDIC<br />MEHKAR
-            </span>
+          <div className="h-24 w-24 flex items-center justify-center shrink-0 mx-auto md:mx-0">
+            <img src={logoAsset.url} alt="Rajashri Ayurvedic Medical College & Hospital, Mehkar" className="h-full w-full object-contain" />
           </div>
 
           <div className="text-center">
