@@ -12,6 +12,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { addPhoto, getAllForAdmin, removePhoto, restorePhoto } from "@/lib/galleryStore";
+
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin Panel" }] }),
@@ -183,6 +185,78 @@ function Editor({ onLogout }: { onLogout: () => void }) {
           </Button>
         </div>
       </div>
+
+      <GalleryManager />
     </div>
   );
 }
+
+function GalleryManager() {
+  const [items, setItems] = useState(() => getAllForAdmin());
+  const [caption, setCaption] = useState("");
+  const refresh = () => setItems(getAllForAdmin());
+
+  const onFile = (file: File) => {
+    if (!file.type.startsWith("image/")) return alert("Please choose an image file.");
+    if (file.size > 3 * 1024 * 1024) return alert("Image must be under 3MB.");
+    const reader = new FileReader();
+    reader.onload = () => {
+      addPhoto(reader.result as string, caption || file.name.replace(/\.[^.]+$/, ""));
+      setCaption("");
+      refresh();
+    };
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <div className="mt-8 border border-border rounded-md p-5 bg-card">
+      <h2 className="font-semibold text-lg mb-1">Photo Gallery</h2>
+      <p className="text-xs text-muted-foreground mb-4">Add or remove photos shown on the Photo Gallery page.</p>
+
+      <div className="flex flex-col md:flex-row gap-2 mb-5">
+        <Input
+          placeholder="Caption (optional)"
+          value={caption}
+          onChange={(e) => setCaption(e.target.value)}
+          className="md:max-w-xs"
+        />
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) onFile(f);
+            e.target.value = "";
+          }}
+        />
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {items.map(({ photo, isDefault, hidden }) => (
+          <div
+            key={photo.id}
+            className={`relative border border-border rounded-md overflow-hidden bg-card ${hidden ? "opacity-40" : ""}`}
+          >
+            <img src={photo.src} alt={photo.caption} className="aspect-square object-cover w-full" />
+            <div className="p-2">
+              <p className="text-xs truncate" title={photo.caption}>{photo.caption}</p>
+              <p className="text-[10px] text-muted-foreground">{isDefault ? "Default" : "Uploaded"}{hidden ? " · Hidden" : ""}</p>
+              <div className="mt-2 flex gap-1">
+                {hidden ? (
+                  <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => { restorePhoto(photo.id); refresh(); }}>
+                    Restore
+                  </Button>
+                ) : (
+                  <Button size="sm" variant="destructive" className="text-xs h-7" onClick={() => { removePhoto(photo.id); refresh(); }}>
+                    Remove
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+

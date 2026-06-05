@@ -12,33 +12,25 @@ import campus1 from "@/assets/campus-1.jpg";
 import campus2 from "@/assets/campus-2.jpg";
 import campus3 from "@/assets/campus-3.jpg";
 import campus4 from "@/assets/campus-4.jpg";
+import { useGallery } from "@/lib/galleryStore";
 
-const GALLERY = [
-  { src: g1, caption: "Digital Library" },
-  { src: g2, caption: "Medicinal Herbal Garden" },
-  { src: g3, caption: "Panchakarma Therapy Room" },
-  { src: g4, caption: "Research Laboratory" },
-  { src: g5, caption: "Cultural Festival" },
-  { src: g6, caption: "Annual Sports Day" },
-  { src: g7, caption: "220-Bed Hospital Ward" },
-  { src: g8, caption: "Convocation Ceremony" },
-  { src: campus1, caption: "College Building" },
-  { src: campus2, caption: "Hospital Block" },
-  { src: campus3, caption: "Teaching Pharmacy" },
-  { src: campus4, caption: "Graduating Batch" },
-];
+
 
 function PhotoGallery() {
+  const GALLERY = useGallery();
   const [active, setActive] = useState<number | null>(null);
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Glimpses of campus life, academics, hospital, sports and cultural events at SSAM Nashik.
+        Glimpses of campus life, academics, hospital, sports and cultural events.
       </p>
+      {GALLERY.length === 0 ? (
+        <p className="text-sm text-muted-foreground italic">No photos yet.</p>
+      ) : (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {GALLERY.map((g, i) => (
           <button
-            key={i}
+            key={g.id}
             onClick={() => setActive(i)}
             className="group relative overflow-hidden rounded-md border border-border bg-card animate-fade-in"
             style={{ animationDelay: `${i * 60}ms` }}
@@ -47,8 +39,6 @@ function PhotoGallery() {
               src={g.src}
               alt={g.caption}
               loading="lazy"
-              width={1024}
-              height={1024}
               className="aspect-square object-cover w-full transition-transform duration-500 group-hover:scale-110"
             />
             <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent text-white text-xs p-2 text-left translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all">
@@ -57,8 +47,9 @@ function PhotoGallery() {
           </button>
         ))}
       </div>
+      )}
 
-      {active !== null && (
+      {active !== null && GALLERY[active] && (
         <div
           className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 animate-fade-in"
           onClick={() => setActive(null)}
@@ -90,6 +81,7 @@ function PhotoGallery() {
     </div>
   );
 }
+
 
 function AboutUs() {
   return (
