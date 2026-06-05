@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { addPhoto, getAllForAdmin, removePhoto, restorePhoto } from "@/lib/galleryStore";
+import { getStaff, setStaff, resetStaff, newId, STAFF_GROUPS, type StaffGroupKey, type StaffMember } from "@/lib/staffStore";
+
 
 
 export const Route = createFileRoute("/admin")({
@@ -187,9 +189,119 @@ function Editor({ onLogout }: { onLogout: () => void }) {
       </div>
 
       <GalleryManager />
+      <StaffManager />
     </div>
   );
 }
+
+function StaffManager() {
+  const [group, setGroup] = useState<StaffGroupKey>("hospital");
+  const [members, setMembers] = useState<StaffMember[]>(() => getStaff("hospital"));
+
+  const reload = (g: StaffGroupKey) => {
+    setGroup(g);
+    setMembers(getStaff(g));
+  };
+
+  const commit = (next: StaffMember[]) => {
+    setMembers(next);
+    setStaff(group, next);
+  };
+
+  const updateRow = (id: string, patch: Partial<StaffMember>) =>
+    commit(members.map((m) => (m.id === id ? { ...m, ...patch } : m)));
+
+  const removeRow = (id: string) => {
+    if (!confirm("Remove this staff member?")) return;
+    commit(members.filter((m) => m.id !== id));
+  };
+
+  const addRow = () =>
+    commit([...members, { id: newId(), name: "", designation: "", education: "", year: "", photo: "" }]);
+
+  const onPhoto = (id: string, file: File) => {
+    if (!file.type.startsWith("image/")) return alert("Please choose an image file.");
+    if (file.size > 2 * 1024 * 1024) return alert("Image must be under 2MB.");
+    const reader = new FileReader();
+    reader.onload = () => updateRow(id, { photo: reader.result as string });
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <div className="mt-8 border border-border rounded-md p-5 bg-card">
+      <h2 className="font-semibold text-lg mb-1">Staff Management</h2>
+      <p className="text-xs text-muted-foreground mb-4">Add, edit, or remove rows in the staff tables.</p>
+
+      <div className="flex flex-wrap gap-2 mb-4">
+        {STAFF_GROUPS.map((g) => (
+          <Button
+            key={g.key}
+            size="sm"
+            variant={group === g.key ? "default" : "outline"}
+            onClick={() => reload(g.key)}
+          >
+            {g.label}
+          </Button>
+        ))}
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => {
+            if (!confirm("Reset this group to defaults?")) return;
+            resetStaff(group);
+            setMembers(getStaff(group));
+          }}
+        >
+          Reset Group
+        </Button>
+      </div>
+
+      <div className="overflow-x-auto border border-border rounded-md">
+        <table className="w-full text-xs">
+          <thead className="bg-secondary">
+            <tr>
+              <th className="p-2 text-left">Photo</th>
+              <th className="p-2 text-left">Name</th>
+              <th className="p-2 text-left">Designation</th>
+              <th className="p-2 text-left">Education</th>
+              <th className="p-2 text-left">Year</th>
+              <th className="p-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {members.map((m) => (
+              <tr key={m.id} className="border-t border-border align-top">
+                <td className="p-2 w-24">
+                  {m.photo && <img src={m.photo} alt="" className="h-12 w-12 rounded-full object-cover mb-1" />}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="text-[10px] w-24"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) onPhoto(m.id, f);
+                      e.target.value = "";
+                    }}
+                  />
+                </td>
+                <td className="p-2"><Input value={m.name} onChange={(e) => updateRow(m.id, { name: e.target.value })} /></td>
+                <td className="p-2"><Input value={m.designation} onChange={(e) => updateRow(m.id, { designation: e.target.value })} /></td>
+                <td className="p-2"><Input value={m.education} onChange={(e) => updateRow(m.id, { education: e.target.value })} /></td>
+                <td className="p-2"><Input value={m.year} onChange={(e) => updateRow(m.id, { year: e.target.value })} /></td>
+                <td className="p-2">
+                  <Button size="sm" variant="destructive" className="h-7 text-xs" onClick={() => removeRow(m.id)}>×</Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <Button className="mt-3" size="sm" onClick={addRow}>+ Add Staff Member</Button>
+    </div>
+  );
+}
+
 
 function GalleryManager() {
   const [items, setItems] = useState(() => getAllForAdmin());
