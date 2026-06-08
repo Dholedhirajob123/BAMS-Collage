@@ -66,7 +66,6 @@ function AdminPage() {
 function Editor({ onLogout }: { onLogout: () => void }) {
   const [overrides, setOverrides] = useState<OverridesMap>(() => loadOverrides());
   const [savedMsg, setSavedMsg] = useState("");
-  const [newPass, setNewPass] = useState("");
 
   const flatItems = useMemo(() => {
     const rows: { group: string | null; slug: string; defaultLabel: string; defaultUrl?: string }[] = [];
