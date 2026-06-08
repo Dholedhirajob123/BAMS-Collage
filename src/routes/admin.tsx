@@ -168,30 +168,93 @@ function Editor({ onLogout }: { onLogout: () => void }) {
         </table>
       </div>
 
-      <div className="border border-border rounded-md p-5 bg-card max-w-md">
-        <h2 className="font-semibold mb-2">Change Admin Password</h2>
-        <div className="flex gap-2">
-          <Input
-            type="text"
-            value={newPass}
-            onChange={(e) => setNewPass(e.target.value)}
-            placeholder="New password"
-          />
-          <Button
-            onClick={() => {
-              if (newPass.length < 4) return alert("Min 4 characters");
-              setAdminPassword(newPass);
-              setNewPass("");
-              alert("Password updated.");
-            }}
-          >
-            Update
-          </Button>
-        </div>
-      </div>
-
+      <AdminManager />
       <GalleryManager />
       <StaffManager />
+    </div>
+  );
+}
+
+function AdminManager() {
+  const [list, setList] = useState<Admin[]>(() => loadAdmins());
+  const [draft, setDraft] = useState({ name: "", phone: "", password: "" });
+  const [msg, setMsg] = useState("");
+
+  useEffect(() => {
+    const sync = () => setList(loadAdmins());
+    window.addEventListener("admins-changed", sync);
+    return () => window.removeEventListener("admins-changed", sync);
+  }, []);
+
+  const flash = (text: string) => {
+    setMsg(text);
+    setTimeout(() => setMsg(""), 2500);
+  };
+
+  const handleAdd = () => {
+    const res = addAdmin(draft);
+    if (!res.ok) return alert(res.error);
+    setDraft({ name: "", phone: "", password: "" });
+    flash("✓ Admin added.");
+  };
+
+  const handleUpdate = (id: string, patch: Partial<Omit<Admin, "id">>) => {
+    const res = updateAdmin(id, patch);
+    if (!res.ok) return alert(res.error);
+  };
+
+  const handleRemove = (id: string) => {
+    if (!confirm("Delete this admin?")) return;
+    const res = removeAdmin(id);
+    if (!res.ok) return alert(res.error);
+    flash("✓ Admin removed.");
+  };
+
+  return (
+    <div className="mt-8 border border-border rounded-md p-5 bg-card">
+      <h2 className="font-semibold text-lg mb-1">Admin Accounts</h2>
+      <p className="text-xs text-muted-foreground mb-4">
+        Manage admin logins (phone + password). Max {MAX_ADMINS} admins. Currently {list.length}/{MAX_ADMINS}.
+      </p>
+
+      {msg && <div className="mb-3 p-2 bg-green-100 text-green-800 rounded text-sm">{msg}</div>}
+
+      <div className="overflow-x-auto border border-border rounded-md mb-4">
+        <table className="w-full text-xs">
+          <thead className="bg-secondary">
+            <tr>
+              <th className="p-2 text-left">Name</th>
+              <th className="p-2 text-left">Phone</th>
+              <th className="p-2 text-left">Password</th>
+              <th className="p-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {list.map((a) => (
+              <tr key={a.id} className="border-t border-border">
+                <td className="p-2"><Input defaultValue={a.name ?? ""} onBlur={(e) => handleUpdate(a.id, { name: e.target.value })} /></td>
+                <td className="p-2"><Input defaultValue={a.phone} onBlur={(e) => handleUpdate(a.id, { phone: e.target.value })} /></td>
+                <td className="p-2"><Input defaultValue={a.password} onBlur={(e) => handleUpdate(a.id, { password: e.target.value })} /></td>
+                <td className="p-2">
+                  <Button size="sm" variant="destructive" className="h-7 text-xs" onClick={() => handleRemove(a.id)}>Delete</Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {list.length < MAX_ADMINS && (
+        <div className="border border-border rounded-md p-3 bg-secondary/30">
+          <p className="text-xs font-medium mb-2">Add new admin</p>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+            <Input placeholder="Name (optional)" value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
+            <Input placeholder="Phone (digits only)" inputMode="numeric" value={draft.phone} onChange={(e) => setDraft({ ...draft, phone: e.target.value })} />
+            <Input placeholder="Password (min 4)" value={draft.password} onChange={(e) => setDraft({ ...draft, password: e.target.value })} />
+            <Button onClick={handleAdd}>+ Add Admin</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
