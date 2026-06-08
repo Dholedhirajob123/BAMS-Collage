@@ -438,6 +438,8 @@ const NonTeachingStaff = () => <StaffSection title="Non-Teaching Staff" group="n
 const TeachingStaff = () => <StaffSection title="Teaching Staff" group="teaching" />;
 
 
+import { DEPT_PAGE_CONTENT } from "./DepartmentContent";
+
 export const PAGE_CONTENT: Record<string, React.FC> = {
   "photo-gallery": PhotoGallery,
   "about-us": AboutUs,
@@ -455,5 +457,6 @@ export const PAGE_CONTENT: Record<string, React.FC> = {
   "staff-college": CollegeStaff,
   "staff-non-teaching": NonTeachingStaff,
   "faculty-teaching-staff": TeachingStaff,
+  ...DEPT_PAGE_CONTENT,
 };
 
