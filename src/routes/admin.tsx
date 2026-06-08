@@ -1,9 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SIDE_NAV } from "@/lib/pages";
 import {
-  getAdminPassword,
-  setAdminPassword,
   loadOverrides,
   saveOverrides,
   keyFor,
@@ -14,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { addPhoto, getAllForAdmin, removePhoto, restorePhoto } from "@/lib/galleryStore";
 import { getStaff, setStaff, resetStaff, newId, STAFF_GROUPS, type StaffGroupKey, type StaffMember } from "@/lib/staffStore";
+import { loadAdmins, addAdmin, updateAdmin, removeAdmin, verifyLogin, MAX_ADMINS, type Admin } from "@/lib/adminStore";
 
 
 
