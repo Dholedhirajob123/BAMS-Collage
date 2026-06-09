@@ -74,8 +74,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Shree Saptashrungi Ayurved Mahavidyalaya & Hospital, Nashik" },
-      { name: "description", content: "Shree Saptashrungi Ayurved Mahavidyalaya & Hospital — NAAC B++ accredited Ayurveda college and 220-bed hospital in Nashik, Maharashtra." },
+      { title: "RAJASHRI AYURVEDIC MEDICAL COLLEGE & HOSPITAL, Mehkar" },
+      { name: "description", content: "RAJASHRI AYURVEDIC MEDICAL COLLEGE & HOSPITAL — NAAC B++ accredited Ayurveda college and hospital in Mehkar, Dist. Buldhana, Maharashtra." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
