@@ -169,8 +169,99 @@ function Editor({ onLogout }: { onLogout: () => void }) {
       </div>
 
       <AdminManager />
+      <CouncilManager />
       <GalleryManager />
       <StaffManager />
+    </div>
+  );
+}
+
+function CouncilManager() {
+  const [group, setGroup] = useState<CouncilKey>("iqac");
+  const [members, setMembers] = useState<CouncilMember[]>(() => getCouncil("iqac"));
+
+  const reload = (g: CouncilKey) => {
+    setGroup(g);
+    setMembers(getCouncil(g));
+  };
+
+  const commit = (next: CouncilMember[]) => {
+    setMembers(next);
+    setCouncil(group, next);
+  };
+
+  const updateRow = (id: string, patch: Partial<CouncilMember>) =>
+    commit(members.map((m) => (m.id === id ? { ...m, ...patch } : m)));
+
+  const removeRow = (id: string) => {
+    if (!confirm("Remove this member?")) return;
+    commit(members.filter((m) => m.id !== id));
+  };
+
+  const addRow = () =>
+    commit([...members, { id: newCouncilId(), name: "", designation: "", phone: "", email: "" }]);
+
+  return (
+    <div className="mt-8 border border-border rounded-md p-5 bg-card">
+      <h2 className="font-semibold text-lg mb-1">Council / Committee Members</h2>
+      <p className="text-xs text-muted-foreground mb-4">
+        Edit IQAC, Council & Committee tables. Columns: Name, Designation, Phone, Email.
+      </p>
+
+      <div className="flex flex-wrap gap-2 mb-4">
+        {COUNCIL_GROUPS.map((g) => (
+          <Button
+            key={g.key}
+            size="sm"
+            variant={group === g.key ? "default" : "outline"}
+            onClick={() => reload(g.key)}
+          >
+            {g.label}
+          </Button>
+        ))}
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => {
+            if (!confirm("Reset this group to defaults?")) return;
+            resetCouncil(group);
+            setMembers(getCouncil(group));
+          }}
+        >
+          Reset Group
+        </Button>
+      </div>
+
+      <div className="overflow-x-auto border border-border rounded-md">
+        <table className="w-full text-xs">
+          <thead className="bg-secondary">
+            <tr>
+              <th className="p-2 text-left w-10">#</th>
+              <th className="p-2 text-left">Name</th>
+              <th className="p-2 text-left">Designation</th>
+              <th className="p-2 text-left">Phone</th>
+              <th className="p-2 text-left">Email</th>
+              <th className="p-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {members.map((m, i) => (
+              <tr key={m.id} className="border-t border-border">
+                <td className="p-2 text-muted-foreground">{i + 1}</td>
+                <td className="p-2"><Input value={m.name} onChange={(e) => updateRow(m.id, { name: e.target.value })} /></td>
+                <td className="p-2"><Input value={m.designation} onChange={(e) => updateRow(m.id, { designation: e.target.value })} /></td>
+                <td className="p-2"><Input value={m.phone} inputMode="tel" onChange={(e) => updateRow(m.id, { phone: e.target.value })} /></td>
+                <td className="p-2"><Input value={m.email} type="email" onChange={(e) => updateRow(m.id, { email: e.target.value })} /></td>
+                <td className="p-2">
+                  <Button size="sm" variant="destructive" className="h-7 text-xs" onClick={() => removeRow(m.id)}>×</Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <Button className="mt-3" size="sm" onClick={addRow}>+ Add Member</Button>
     </div>
   );
 }
