@@ -7,8 +7,8 @@ import campus4 from "@/assets/campus-4.jpg";
 const SLIDES = [
   {
     img: campus1,
-    title: "Welcome to Shree Saptashrungi Ayurved Mahavidyalaya",
-    sub: "25+ years of academic excellence in Ayurveda — Nashik, Maharashtra",
+    title: "Welcome to RAJASHRI AYURVEDIC MEDICAL COLLEGE & HOSPITAL",
+    sub: "Academic excellence in Ayurveda — Mehkar, Dist. Buldhana, Maharashtra",
   },
   {
     img: campus2,
@@ -57,7 +57,7 @@ export function HeroSlider() {
             <div className="absolute inset-0 flex items-center">
               <div className="px-6 md:px-12 max-w-3xl">
                 <span className="inline-block bg-saffron text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded mb-3">
-                  SSAM Nashik
+                  Rajashri Ayurvedic Mehkar
                 </span>
                 <h2 className="text-white font-bold text-2xl md:text-4xl lg:text-5xl leading-tight drop-shadow-lg">
                   {s.title}

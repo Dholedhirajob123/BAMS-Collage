@@ -25,10 +25,10 @@ function Index() {
             </header>
             <div className="p-6">
               <h3 className="text-xl font-semibold mb-3 text-brand">
-                Shree Saptashrungi Ayurved Mahavidyalaya and Hospital
+                RAJASHRI AYURVEDIC MEDICAL COLLEGE & HOSPITAL
               </h3>
               <p className="text-sm text-foreground leading-relaxed text-justify">
-                Saptashrungi Ayurved Mahavidyalaya and Hospital was established in 1999 and successfully completed the
+                Rajashri Ayurvedic Medical College & Hospital was established in 2015 and successfully completed the
                 milestone of 25 years. With huge college campus covering state-of-the-art college building, high-tech
                 infrastructure, hospital with 220 beds capacity and 3 operation theaters, nursery of ayurvedic medicinal
                 plants, first digital library, Teaching Pharmacy with Advance Research Laboratory etc. are the key features
@@ -76,7 +76,7 @@ function Index() {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="font-bold text-xl text-brand">Campus Glimpses</h3>
-                <p className="text-xs text-muted-foreground">Life at SSAM Nashik</p>
+                <p className="text-xs text-muted-foreground">Life at Rajashri Ayurvedic Mehkar</p>
               </div>
               <Link
                 to="/$slug"

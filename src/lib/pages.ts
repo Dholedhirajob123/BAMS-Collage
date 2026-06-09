@@ -21,7 +21,7 @@ const p = (slug: string, title: string, category: string, body?: string): PageDe
 
 export const PAGES: PageDef[] = [
   // Top nav
-  p("about-us", "About Us", "About", "Learn about Shree Saptashrungi Ayurved Mahavidyalaya & Hospital, established in 1999."),
+  p("about-us", "About Us", "About", "Learn about RAJASHRI AYURVEDIC MEDICAL COLLEGE & HOSPITAL, established in 2015."),
   p("history", "History", "About"),
   p("vision-mission", "Vision & Mission", "About"),
   p("founder-chairman", "Founder Chairman", "About"),

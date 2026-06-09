@@ -13,12 +13,12 @@ export const Route = createFileRoute("/$slug")({
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.page.title} — SSAM Nashik` },
+          { title: `${loaderData.page.title} — Rajashri Ayurvedic Mehkar` },
           {
             name: "description",
             content:
               loaderData.page.body ??
-              `${loaderData.page.title} at Shree Saptashrungi Ayurved Mahavidyalaya & Hospital, Nashik.`,
+              `${loaderData.page.title} at RAJASHRI AYURVEDIC MEDICAL COLLEGE & HOSPITAL, Mehkar.`,
           },
         ]
       : [],
@@ -70,7 +70,7 @@ function SlugPage() {
             ) : (
               <p className="text-muted-foreground leading-relaxed">
                 Content for <strong className="text-foreground">{page.title}</strong> will be updated soon. This page
-                is part of the <em>{page.category}</em> section of Shree Saptashrungi Ayurved Mahavidyalaya & Hospital.
+                is part of the <em>{page.category}</em> section of RAJASHRI AYURVEDIC MEDICAL COLLEGE & HOSPITAL.
               </p>
             )}
 
