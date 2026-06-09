@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { addPhoto, getAllForAdmin, removePhoto, restorePhoto } from "@/lib/galleryStore";
 import { getStaff, setStaff, resetStaff, newId, STAFF_GROUPS, type StaffGroupKey, type StaffMember } from "@/lib/staffStore";
 import { loadAdmins, addAdmin, updateAdmin, removeAdmin, verifyLogin, MAX_ADMINS, type Admin } from "@/lib/adminStore";
+import { COUNCIL_GROUPS, getCouncil, setCouncil, resetCouncil, newCouncilId, type CouncilKey, type CouncilMember } from "@/lib/councilStore";
 
 
 
