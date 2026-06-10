@@ -439,6 +439,12 @@ const TeachingStaff = () => <StaffSection title="Teaching Staff" group="teaching
 
 
 import { DEPT_PAGE_CONTENT } from "./DepartmentContent";
+import { DocSection } from "./DocSection";
+import { DOC_SECTIONS } from "@/lib/docsStore";
+
+const DOC_PAGES: Record<string, React.FC> = Object.fromEntries(
+  DOC_SECTIONS.map((s) => [s.key, () => <DocSection slug={s.key} />]),
+);
 
 export const PAGE_CONTENT: Record<string, React.FC> = {
   "photo-gallery": PhotoGallery,
@@ -458,5 +464,7 @@ export const PAGE_CONTENT: Record<string, React.FC> = {
   "staff-non-teaching": NonTeachingStaff,
   "faculty-teaching-staff": TeachingStaff,
   ...DEPT_PAGE_CONTENT,
+  ...DOC_PAGES,
 };
+
 
