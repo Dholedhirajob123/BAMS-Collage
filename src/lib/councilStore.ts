@@ -28,8 +28,8 @@ export const COUNCIL_GROUPS: { key: CouncilKey; label: string }[] = [
   { key: "student-council", label: "Student Council" },
 ];
 
-const mk = (name: string, designation: string): Omit<CouncilMember, "id"> => ({
-  name, designation, phone: "", email: "",
+const mk = (name: string, designation: string, position = "Member", phone = "", email = ""): Omit<CouncilMember, "id"> => ({
+  name, designation, position, phone, email,
 });
 
 const DEFAULTS: Record<CouncilKey, CouncilMember[]> = {
