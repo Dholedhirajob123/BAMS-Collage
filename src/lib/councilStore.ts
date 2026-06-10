@@ -4,6 +4,7 @@ export type CouncilMember = {
   id: string;
   name: string;
   designation: string;
+  position: string;
   phone: string;
   email: string;
 };
