@@ -199,7 +199,7 @@ function CouncilManager() {
   };
 
   const addRow = () =>
-    commit([...members, { id: newCouncilId(), name: "", designation: "", phone: "", email: "" }]);
+    commit([...members, { id: newCouncilId(), name: "", designation: "", position: "", phone: "", email: "" }]);
 
   return (
     <div className="mt-8 border border-border rounded-md p-5 bg-card">
