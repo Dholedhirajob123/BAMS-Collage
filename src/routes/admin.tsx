@@ -14,6 +14,8 @@ import { addPhoto, getAllForAdmin, removePhoto, restorePhoto } from "@/lib/galle
 import { getStaff, setStaff, resetStaff, newId, STAFF_GROUPS, type StaffGroupKey, type StaffMember } from "@/lib/staffStore";
 import { loadAdmins, addAdmin, updateAdmin, removeAdmin, verifyLogin, MAX_ADMINS, type Admin } from "@/lib/adminStore";
 import { COUNCIL_GROUPS, getCouncil, setCouncil, resetCouncil, newCouncilId, type CouncilKey, type CouncilMember } from "@/lib/councilStore";
+import { DOC_SECTIONS, getSection, setSection, resetSection, newDocId, type DocSection as DocSectionT } from "@/lib/docsStore";
+
 
 
 
@@ -169,12 +171,140 @@ function Editor({ onLogout }: { onLogout: () => void }) {
       </div>
 
       <AdminManager />
+      <DocsManager />
       <CouncilManager />
       <GalleryManager />
       <StaffManager />
     </div>
   );
 }
+
+function DocsManager() {
+  const [key, setKey] = useState<string>(DOC_SECTIONS[0].key);
+  const [section, setSectionState] = useState<DocSectionT>(() => getSection(DOC_SECTIONS[0].key));
+  const [msg, setMsg] = useState("");
+
+  const reload = (k: string) => {
+    setKey(k);
+    setSectionState(getSection(k));
+  };
+
+  const commit = (next: DocSectionT) => {
+    setSectionState(next);
+    setSection(key, next);
+  };
+
+  const flash = (t: string) => {
+    setMsg(t);
+    setTimeout(() => setMsg(""), 2000);
+  };
+
+  const onPdf = (file: File) => {
+    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf"))
+      return alert("Please upload a PDF file.");
+    if (file.size > 4 * 1024 * 1024) return alert("PDF must be under 4MB.");
+    const reader = new FileReader();
+    reader.onload = () => {
+      commit({
+        ...section,
+        files: [
+          ...section.files,
+          { id: newDocId(), name: file.name, dataUrl: reader.result as string, size: file.size, addedAt: Date.now() },
+        ],
+      });
+      flash("✓ PDF uploaded.");
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeFile = (id: string) => {
+    if (!confirm("Remove this PDF?")) return;
+    commit({ ...section, files: section.files.filter((f) => f.id !== id) });
+  };
+
+  return (
+    <div className="mt-8 border border-border rounded-md p-5 bg-card">
+      <h2 className="font-semibold text-lg mb-1">Page Information & PDF Documents</h2>
+      <p className="text-xs text-muted-foreground mb-4">
+        Edit the information shown on each page and upload PDFs that visitors can download. Max 4MB per PDF.
+      </p>
+
+      {msg && <div className="mb-3 p-2 bg-green-100 text-green-800 rounded text-sm">{msg}</div>}
+
+      <div className="mb-4">
+        <Label className="text-xs">Select Section</Label>
+        <select
+          className="w-full mt-1 border border-border rounded-md p-2 bg-background text-sm"
+          value={key}
+          onChange={(e) => reload(e.target.value)}
+        >
+          {DOC_SECTIONS.map((s) => (
+            <option key={s.key} value={s.key}>{s.label}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="mb-4">
+        <Label className="text-xs">Information / Description</Label>
+        <textarea
+          className="w-full mt-1 border border-border rounded-md p-2 bg-background text-sm min-h-[100px]"
+          value={section.info}
+          onChange={(e) => commit({ ...section, info: e.target.value })}
+          placeholder="Enter information text shown above the PDF list..."
+        />
+      </div>
+
+      <div className="mb-4">
+        <Label className="text-xs">Upload New PDF</Label>
+        <Input
+          type="file"
+          accept="application/pdf"
+          className="mt-1"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) onPdf(f);
+            e.target.value = "";
+          }}
+        />
+      </div>
+
+      <div className="border border-border rounded-md">
+        {section.files.length === 0 ? (
+          <p className="p-3 text-xs text-muted-foreground italic">No PDFs uploaded.</p>
+        ) : (
+          <ul className="divide-y divide-border">
+            {section.files.map((f) => (
+              <li key={f.id} className="flex items-center justify-between p-2 text-xs">
+                <div className="min-w-0">
+                  <p className="font-medium truncate">{f.name}</p>
+                  <p className="text-[10px] text-muted-foreground">{(f.size / 1024).toFixed(0)} KB</p>
+                </div>
+                <div className="flex gap-1 ml-2">
+                  <a href={f.dataUrl} download={f.name} className="text-brand hover:underline text-xs px-2 py-1">View</a>
+                  <Button size="sm" variant="destructive" className="h-7 text-xs" onClick={() => removeFile(f.id)}>×</Button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <Button
+        size="sm"
+        variant="ghost"
+        className="mt-3"
+        onClick={() => {
+          if (!confirm("Reset this section to defaults?")) return;
+          resetSection(key);
+          setSectionState(getSection(key));
+        }}
+      >
+        Reset Section
+      </Button>
+    </div>
+  );
+}
+
 
 function CouncilManager() {
   const [group, setGroup] = useState<CouncilKey>("iqac");
