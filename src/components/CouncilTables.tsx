@@ -26,11 +26,12 @@ function CouncilTable({ slug, title, year }: { slug: CouncilKey; title: string; 
         <Table>
           <TableHeader>
             <TableRow className="bg-secondary">
-              <TableHead className="w-16">Sr. No</TableHead>
-              <TableHead>Name of Member</TableHead>
+              <TableHead className="w-16">Sr.No</TableHead>
+              <TableHead>Name</TableHead>
               <TableHead>Designation</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>Email</TableHead>
+              <TableHead>Position</TableHead>
+              <TableHead>Mobile No.</TableHead>
+              <TableHead>Email ID</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -39,6 +40,7 @@ function CouncilTable({ slug, title, year }: { slug: CouncilKey; title: string; 
                 <TableCell>{i + 1}</TableCell>
                 <TableCell className="font-medium">{r.name}</TableCell>
                 <TableCell>{r.designation}</TableCell>
+                <TableCell>{r.position || <span className="text-muted-foreground">—</span>}</TableCell>
                 <TableCell>
                   {r.phone ? (
                     <a href={`tel:${r.phone}`} className="text-brand hover:underline">{r.phone}</a>
@@ -57,7 +59,7 @@ function CouncilTable({ slug, title, year }: { slug: CouncilKey; title: string; 
             ))}
             {rows.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground py-6">
+                <TableCell colSpan={6} className="text-center text-muted-foreground py-6">
                   No members yet.
                 </TableCell>
               </TableRow>
