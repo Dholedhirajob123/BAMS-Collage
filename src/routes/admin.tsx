@@ -236,11 +236,12 @@ function CouncilManager() {
         <table className="w-full text-xs">
           <thead className="bg-secondary">
             <tr>
-              <th className="p-2 text-left w-10">#</th>
+              <th className="p-2 text-left w-10">Sr.No</th>
               <th className="p-2 text-left">Name</th>
               <th className="p-2 text-left">Designation</th>
-              <th className="p-2 text-left">Phone</th>
-              <th className="p-2 text-left">Email</th>
+              <th className="p-2 text-left">Position</th>
+              <th className="p-2 text-left">Mobile No.</th>
+              <th className="p-2 text-left">Email ID</th>
               <th className="p-2"></th>
             </tr>
           </thead>
@@ -250,6 +251,7 @@ function CouncilManager() {
                 <td className="p-2 text-muted-foreground">{i + 1}</td>
                 <td className="p-2"><Input value={m.name} onChange={(e) => updateRow(m.id, { name: e.target.value })} /></td>
                 <td className="p-2"><Input value={m.designation} onChange={(e) => updateRow(m.id, { designation: e.target.value })} /></td>
+                <td className="p-2"><Input value={m.position ?? ""} onChange={(e) => updateRow(m.id, { position: e.target.value })} /></td>
                 <td className="p-2"><Input value={m.phone} inputMode="tel" onChange={(e) => updateRow(m.id, { phone: e.target.value })} /></td>
                 <td className="p-2"><Input value={m.email} type="email" onChange={(e) => updateRow(m.id, { email: e.target.value })} /></td>
                 <td className="p-2">
