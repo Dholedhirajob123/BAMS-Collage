@@ -93,7 +93,7 @@ const DEFAULTS: Record<CouncilKey, CouncilMember[]> = {
   ],
 };
 
-const KEY = "ssam-council-v1";
+const KEY = "ssam-council-v2";
 type Store = Partial<Record<CouncilKey, CouncilMember[]>>;
 
 function load(): Store {
