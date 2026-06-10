@@ -205,7 +205,7 @@ function CouncilManager() {
     <div className="mt-8 border border-border rounded-md p-5 bg-card">
       <h2 className="font-semibold text-lg mb-1">Council / Committee Members</h2>
       <p className="text-xs text-muted-foreground mb-4">
-        Edit IQAC, Council & Committee tables. Columns: Name, Designation, Phone, Email.
+        Edit IQAC, Council & Committee tables. Columns: Name, Designation, Position, Mobile No., Email ID.
       </p>
 
       <div className="flex flex-wrap gap-2 mb-4">
