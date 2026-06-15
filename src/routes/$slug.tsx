@@ -79,15 +79,37 @@ function SlugPage() {
               </p>
             )}
 
-            <div className="border-t border-border pt-4">
-              <h2 className="text-sm font-semibold mb-2">For more information</h2>
-              <p className="text-sm text-muted-foreground">
-                Contact the office at <strong>+91 - 8087203870 | 8087303870</strong> or email{" "}
-                <a className="text-brand hover:underline" href="mailto:rajshreeayurvedic@gmail.com">
-                  rajshreeayurvedic@gmail.com
-                </a>
-                .
-              </p>
+                 {/* Contact Information Card */}
+            <div className="mt-8 p-6 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-100 dark:border-amber-800">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h2 className="text-lg font-bold text-amber-700 dark:text-amber-400">For more information</h2>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="flex items-center gap-3 p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+                  <span className="text-xl">📞</span>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Phone Numbers</p>
+                    <p className="font-semibold text-foreground">+91 - 8087203870 | 8087303870</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+                  <span className="text-xl">✉️</span>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Email Address</p>
+                    <a 
+                      className="font-semibold text-brand hover:underline break-all" 
+                      href="mailto:rajshreeayurvedic@gmail.com"
+                    >
+                      rajshreeayurvedic@gmail.com
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </article>

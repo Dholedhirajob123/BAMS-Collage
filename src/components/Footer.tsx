@@ -1,24 +1,66 @@
+import logoAsset from "@/assets/main logo.png";
+
 export function Footer() {
   return (
-    <footer className="bg-brand text-white mt-12">
-      <div className="mx-auto max-w-7xl px-4 py-8 grid md:grid-cols-3 gap-6 text-sm">
-        <div>
-          <h3 className="font-semibold mb-2">RAJASHRI AYURVEDIC MEDICAL COLLEGE & HOSPITAL</h3>
-          <p>Mehkar, Dist. Buldhana, Maharashtra</p>
-        </div>
-        <div>
-          <h3 className="font-semibold mb-2">Contact</h3>
-          <p>Email: <a href="mailto:rajshreeayurvedic@gmail.com" className="text-brand hover:underline">rajshreeayurvedic@gmail.com</a></p>
-          <p>Phone: 91 - 8087203870 | 8087303870</p>
-        </div>
-        <div>
-          <h3 className="font-semibold mb-2">Codes</h3>
-          <p>Institution: NCISM-AYU 0181</p>
-          <p>MUHS: 123302 · MH CET: 3126</p>
+    <footer className="bg-gradient-to-r from-brand-dark to-brand text-white mt-12">
+      <div className="mx-auto max-w-7xl px-4 py-8 md:py-12">
+        <div className="grid md:grid-cols-4 gap-8 text-sm">
+         
+          
+          <div>
+            <h3 className="font-semibold text-base mb-3 flex items-center gap-2">
+              <span className="w-6 h-0.5 bg-amber-400"></span>
+              Contact
+            </h3>
+            <div className="space-y-2 text-white/80">
+              <p className="flex items-start gap-2 text-sm">
+                <span>📧</span>
+                <a href="mailto:rajshreeayurvedic@gmail.com" className="hover:text-amber-300 transition-colors break-all">
+                  rajshreeayurvedic@gmail.com
+                </a>
+              </p>
+              <p className="flex items-start gap-2 text-sm">
+                <span>📞</span>
+                <span>+91 - 8087203870 | 8087303870</span>
+              </p>
+            </div>
+          </div>
+          
+          <div>
+            <h3 className="font-semibold text-base mb-3 flex items-center gap-2">
+              <span className="w-6 h-0.5 bg-amber-400"></span>
+              Codes
+            </h3>
+            <div className="space-y-2 text-white/80 text-sm">
+              <p>🏛️ Institution: NCISM-AYU 0181</p>
+              <p>📚 MUHS: 123302 · MH CET: 3126</p>
+            </div>
+          </div>
+          
+          {/* Created By Section */}
+          <div>
+            <h3 className="font-semibold text-base mb-3 flex items-center gap-2">
+              <span className="w-6 h-0.5 bg-amber-400"></span>
+              Developed By
+            </h3>
+            <div className="space-y-2">
+              <p className="text-white/80 text-sm">A & D Company</p>
+              <div className="flex gap-3 pt-2">
+                <a href="#" className="text-white/60 hover:text-amber-300 transition-colors text-xs">
+                  Privacy Policy
+                </a>
+                <span className="text-white/30">|</span>
+          
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="border-t border-white/20 py-3 text-center text-xs">
-        © {new Date().getFullYear()} Rajashri Ayurvedic Mehkar. All rights reserved.
+      
+      <div className="border-t border-white/20 py-4 text-center">
+        <p className="text-white/70 text-xs md:text-sm">
+          © {new Date().getFullYear()} Rajashri Ayurvedic Mehkar. All rights reserved.
+        </p>
       </div>
     </footer>
   );

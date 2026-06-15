@@ -19,62 +19,106 @@ import { useGallery } from "@/lib/galleryStore";
 function PhotoGallery() {
   const GALLERY = useGallery();
   const [active, setActive] = useState<number | null>(null);
+
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
         Glimpses of campus life, academics, hospital, sports and cultural events.
       </p>
+      
       {GALLERY.length === 0 ? (
         <p className="text-sm text-muted-foreground italic">No photos yet.</p>
       ) : (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-        {GALLERY.map((g, i) => (
-          <button
-            key={g.id}
-            onClick={() => setActive(i)}
-            className="group relative overflow-hidden rounded-md border border-border bg-card animate-fade-in"
-            style={{ animationDelay: `${i * 60}ms` }}
-          >
-            <img
-              src={g.src}
-              alt={g.caption}
-              loading="lazy"
-              className="aspect-square object-cover w-full transition-transform duration-500 group-hover:scale-110"
-            />
-            <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent text-white text-xs p-2 text-left translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all">
-              {g.caption}
-            </span>
-          </button>
-        ))}
-      </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          {GALLERY.map((g, i) => (
+            <button
+              key={g.id}
+              onClick={() => setActive(i)}
+              className="group relative overflow-hidden rounded-md border border-border bg-card animate-fade-in"
+              style={{ animationDelay: `${i * 60}ms` }}
+            >
+              <img
+                src={g.src}
+                alt={g.caption}
+                loading="lazy"
+                className="aspect-square object-cover w-full transition-transform duration-500 group-hover:scale-110"
+              />
+              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent text-white text-xs p-2 text-left translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all">
+                {g.caption}
+              </span>
+            </button>
+          ))}
+        </div>
       )}
 
+      {/* Lightbox with Hero + 5 Thumbnails - NO SCROLL */}
       {active !== null && GALLERY[active] && (
         <div
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 animate-fade-in"
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 animate-fade-in"
           onClick={() => setActive(null)}
         >
           <div className="max-w-4xl w-full" onClick={(e) => e.stopPropagation()}>
-            <img
-              src={GALLERY[active].src}
-              alt={GALLERY[active].caption}
-              className="w-full rounded-md"
-            />
-            <div className="flex items-center justify-between text-white mt-3">
+            {/* Hero Image */}
+            <div className="relative">
+              <img
+                src={GALLERY[active].src}
+                alt={GALLERY[active].caption}
+                className="w-full rounded-lg max-h-[55vh] object-contain"
+              />
+              
+              {/* Close button */}
+              <button
+                onClick={() => setActive(null)}
+                className="absolute top-2 right-2 w-8 h-8 bg-black/50 rounded-full text-white text-xl hover:bg-black/70"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Caption and Navigation */}
+            <div className="flex items-center justify-between text-white mt-3 bg-black/50 rounded-lg p-2">
               <button
                 onClick={() => setActive((active - 1 + GALLERY.length) % GALLERY.length)}
-                className="px-3 py-1 bg-white/10 rounded hover:bg-white/20"
+                className="px-3 py-1 bg-white/10 rounded hover:bg-white/20 text-sm"
               >
                 ‹ Prev
               </button>
-              <p className="text-sm">{GALLERY[active].caption}</p>
+              
+              <p className="text-sm font-medium truncate max-w-[200px]">{GALLERY[active].caption}</p>
+              
               <button
                 onClick={() => setActive((active + 1) % GALLERY.length)}
-                className="px-3 py-1 bg-white/10 rounded hover:bg-white/20"
+                className="px-3 py-1 bg-white/10 rounded hover:bg-white/20 text-sm"
               >
                 Next ›
               </button>
             </div>
+
+            {/* Thumbnail Strip - Exactly 5 pictures, no scroll */}
+            <div className="grid grid-cols-5 gap-2 mt-3">
+              {GALLERY.slice(0, 5).map((g, idx) => (
+                <button
+                  key={g.id}
+                  onClick={() => setActive(idx)}
+                  className={`relative rounded-lg overflow-hidden transition-all ${
+                    idx === active 
+                      ? 'ring-2 ring-white ring-offset-2' 
+                      : 'opacity-60 hover:opacity-100'
+                  }`}
+                >
+                  <img
+                    src={g.src}
+                    alt={g.caption}
+                    className="aspect-square w-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+            
+            {/* Photo counter */}
+            <p className="text-white/50 text-xs text-center mt-2">
+              {active + 1} of {GALLERY.length}
+            </p>
           </div>
         </div>
       )}
@@ -86,51 +130,90 @@ function PhotoGallery() {
 function AboutUs() {
   return (
     <div className="space-y-12">
-      {/* Hero Section - Split Layout Design */}
-    
-
-   
-
       {/* About Content - Timeline Style */}
       <div className="space-y-8">
         <div className="flex flex-col md:flex-row gap-8">
+          {/* Left Side - Image with Circle/Overlay Content */}
           <div className="md:w-1/3">
-         <div className="sticky top-24">
-  {/* Image Card */}
-  <div className="relative mb-6 rounded-2xl overflow-hidden shadow-lg group">
-    <img
-      src={aboutHero}
-      alt="Rajashri Ayurvedic Medical College"
-      className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-110"
-    />
-    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-    
-    {/* College Name Overlay on Image */}
-    <div className="absolute bottom-0 left-0 right-0 p-4">
-      <p className="text-white text-xs font-medium opacity-80">⚕️ Ayurvedic Campus</p>
-      <h3 className="text-white text-lg font-bold leading-tight">
-        Rajashri Ayurvedic<br />
-        <span className="text-amber-300">Medical College</span>
-      </h3>
-    </div>
-  </div>
+            <div className="sticky top-24">
+              {/* Image Card with Circle Design */}
+              <div className="relative mb-6 rounded-2xl overflow-hidden shadow-lg group">
+                <div className="relative">
+                  <img
+                    src={aboutHero}
+                    alt="Rajashri Ayurvedic Medical College"
+                    className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  
+                  {/* Dark Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                  
+               
+                  
+                  {/* College Name Overlay on Image */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <p className="text-white text-xs font-medium opacity-80">⚕️ Ayurvedic Campus</p>
+                    <h3 className="text-white text-lg font-bold leading-tight">
+                      Rajashri Ayurvedic<br />
+                      <span className="text-amber-300">Medical College</span>
+                    </h3>
+                  </div>
+                </div>
+              </div>
 
-  {/* Decorative Line */}
-  <div className="w-16 h-1 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full mb-4"></div>
-  
-  {/* Title */}
-  <h2 className="text-2xl font-bold mb-2">Our Journey</h2>
-  
-  {/* College Name Highlight */}
-  <p className="text-muted-foreground text-sm">
-    <span className="text-amber-600 dark:text-amber-400 font-semibold">Rajashri Ayurvedic Medical College</span>
-    <br />
-    <span className="text-xs">Mehkar, Dist. Buldhana, Maharashtra</span>
-  </p>
-</div>
+              {/* Decorative Line */}
+              <div className="w-16 h-1 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full mb-4"></div>
+              
+              {/* Title */}
+              <h2 className="text-2xl font-bold mb-2">Our Journey</h2>
+              
+              {/* College Name Highlight */}
+              <p className="text-muted-foreground text-sm">
+                <span className="text-amber-600 dark:text-amber-400 font-semibold">Rajashri Ayurvedic Medical College</span>
+                <br />
+                <span className="text-xs">Mehkar, Dist. Buldhana, Maharashtra</span>
+              </p>
+            </div>
           </div>
           
+          {/* Right Side Content */}
           <div className="md:w-2/3 space-y-6">
+            {/* About the College - New Section */}
+            <div className="group p-6 rounded-2xl bg-gradient-to-r from-indigo-50/50 to-blue-50/50 dark:from-indigo-950/20 dark:to-blue-950/20 border border-indigo-100 dark:border-indigo-800 hover:shadow-lg transition-all">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                  <span className="text-2xl">📚</span>
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg mb-2">About Rajashri Ayurvedic Medical College</h3>
+                  <p className="text-muted-foreground mb-2">
+                    Established with a vision to promote traditional Indian medicine, <span className="font-semibold">Rajashri Ayurvedic Medical College & Hospital</span> 
+                    is a premier institution offering <span className="font-semibold">Bachelor of Ayurvedic Medicine and Surgery (BAMS)</span> degree.
+                  </p>
+                  <p className="text-muted-foreground">
+                    The college is spread over <span className="font-semibold">10+ acres</span> of lush green campus with state-of-the-art infrastructure, 
+                    providing students with the perfect environment to learn ancient healing sciences. The institution has produced 
+                    over <span className="font-semibold">500+ skilled Vaidyas</span> serving across Maharashtra and India.
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 mt-3">
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="text-indigo-600">✓</span> Established: 2014
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="text-indigo-600">✓</span> Intake Capacity: 60 Students
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="text-indigo-600">✓</span> Course Duration: 5.5 Years
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="text-indigo-600">✓</span> Hospital Beds: 100+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Institute Background */}
             <div className="group p-6 rounded-2xl bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/20 border border-amber-100 dark:border-amber-800 hover:shadow-lg transition-all">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
@@ -145,7 +228,9 @@ function AboutUs() {
                 </div>
               </div>
             </div>
-            
+
+      
+            {/* Affiliations & Recognition */}
             <div className="group p-6 rounded-2xl bg-gradient-to-r from-green-50/50 to-teal-50/50 dark:from-green-950/20 dark:to-teal-950/20 border border-green-100 dark:border-green-800 hover:shadow-lg transition-all">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
@@ -161,6 +246,7 @@ function AboutUs() {
               </div>
             </div>
             
+            {/* Campus Facilities */}
             <div className="group p-6 rounded-2xl bg-gradient-to-r from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-100 dark:border-purple-800 hover:shadow-lg transition-all">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
@@ -214,7 +300,6 @@ function AboutUs() {
         </div>
       </div>
 
-
       {/* CTA Section */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-600 to-orange-600 p-8 text-center">
         <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
@@ -223,9 +308,14 @@ function AboutUs() {
         <div className="relative z-10">
           <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">Join Our Ayurvedic Journey</h3>
           <p className="text-white/90 mb-6">Admissions open for BAMS course 2024-25 batch</p>
-          <button className="px-6 py-3 bg-white text-amber-600 rounded-full font-semibold hover:shadow-lg transition-all hover:scale-105">
-            Apply Now →
-          </button>
+          <div className="flex flex-wrap gap-3 justify-center">
+            <button className="px-6 py-3 bg-white text-amber-600 rounded-full font-semibold hover:shadow-lg transition-all hover:scale-105">
+              Apply Now →
+            </button>
+            <button className="px-6 py-3 bg-transparent border-2 border-white text-white rounded-full font-semibold hover:bg-white/10 transition-all">
+              Download Brochure
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -284,7 +374,6 @@ const History = () => (
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               <div className="absolute bottom-4 left-4 text-white">
-                <span className="text-sm font-semibold bg-amber-500/80 px-3 py-1 rounded-full">2005</span>
               </div>
             </div>
           </div>
@@ -1056,75 +1145,175 @@ import { useStaff, type StaffGroupKey } from "@/lib/staffStore";
 function StaffSection({ title, group, slug }: { title: string; group: StaffGroupKey; slug: string }) {
   const members = useStaff(group);
   const [active, setActive] = useState<number | null>(null);
+
   return (
-    <div className="space-y-4">
-      <h2 className="text-lg font-semibold text-brand">{title} — Academic Year 2025-26</h2>
+    <div className="space-y-6">
+      {/* Section Header */}
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h2 className="text-xl md:text-2xl font-bold text-brand border-l-4 border-amber-500 pl-3">
+            {title}
+          </h2>
+          <p className="text-sm text-muted-foreground mt-1 ml-3">Academic Year 2025-26</p>
+        </div>
+        <div className="bg-amber-100 dark:bg-amber-900/30 px-3 py-1 rounded-full">
+          <span className="text-sm font-medium text-amber-700 dark:text-amber-400">
+            Total Members: {members.length}
+          </span>
+        </div>
+      </div>
+
       {members.length === 0 ? (
-        <p className="text-sm text-muted-foreground italic">No staff members listed yet.</p>
+        <div className="text-center py-12 bg-secondary/30 rounded-lg">
+          <p className="text-sm text-muted-foreground italic">No staff members listed yet.</p>
+        </div>
       ) : (
-      <div className="overflow-x-auto border border-border rounded-md">
-        <table className="w-full text-sm">
-          <thead className="bg-secondary">
-            <tr>
-              <th className="px-3 py-2 text-left">Sr.No</th>
-              <th className="px-3 py-2 text-left">Name</th>
-              <th className="px-3 py-2 text-left">PHOTO</th>
-              <th className="px-3 py-2 text-left">Position</th>
-              <th className="px-3 py-2 text-left">Mobile No.</th>
-            </tr>
-          </thead>
-          <tbody>
+        <>
+          {/* Mobile View - Card Layout */}
+          <div className="block md:hidden space-y-3">
             {members.map((m, i) => (
-              <tr key={m.id} className="border-t border-border hover:bg-secondary/40">
-                <td className="px-3 py-2">{i + 1}</td>
-                  <td className="px-3 py-2">
-                  <button onClick={() => setActive(i)} className="block">
+              <div
+                key={m.id}
+                className="bg-card border border-border rounded-lg p-4 hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-start gap-4">
+                  <button onClick={() => setActive(i)} className="flex-shrink-0">
                     <img
                       src={m.photo}
                       alt={m.name}
                       loading="lazy"
-                      className="h-12 w-12 rounded-full object-cover border-2 border-brand hover:scale-110 transition-transform"
+                      className="h-16 w-16 rounded-full object-cover border-2 border-brand hover:scale-110 transition-transform"
                     />
                   </button>
-                </td>
-                <td className="px-3 py-2 font-medium">{m.name}</td>
-              
-                <td className="px-3 py-2">{m.designation}</td>
-                <td className="px-3 py-2 text-muted-foreground">{m.mobile ?? "—"}</td>
-              </tr>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <h3 className="font-semibold text-brand">{m.name}</h3>
+                        <p className="text-xs text-muted-foreground mt-0.5">#{i + 1}</p>
+                      </div>
+                    </div>
+                    <p className="text-sm mt-1">{m.designation}</p>
+                    {m.mobile && (
+                      <a
+                        href={`tel:${m.mobile}`}
+                        className="text-xs text-brand hover:underline inline-flex items-center gap-1 mt-2"
+                      >
+                        📞 {m.mobile}
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </div>
+
+          {/* Desktop View - Table */}
+          <div className="hidden md:block overflow-x-auto border border-border rounded-lg">
+            <table className="w-full text-sm">
+              <thead className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30">
+                <tr>
+                  <th className="px-4 py-3 text-left font-semibold text-brand w-16">Sr.No</th>
+                  <th className="px-4 py-3 text-left font-semibold text-brand">PHOTO</th>
+                  <th className="px-4 py-3 text-left font-semibold text-brand">Name</th>
+                  <th className="px-4 py-3 text-left font-semibold text-brand">Position</th>
+                  <th className="px-4 py-3 text-left font-semibold text-brand">Mobile No.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {members.map((m, i) => (
+                  <tr key={m.id} className="border-t border-border hover:bg-secondary/40 transition-colors">
+                    <td className="px-4 py-3 text-muted-foreground">{i + 1}</td>
+                    <td className="px-4 py-3">
+                      <button onClick={() => setActive(i)} className="block">
+                        <img
+                          src={m.photo}
+                          alt={m.name}
+                          loading="lazy"
+                          className="h-12 w-12 rounded-full object-cover border-2 border-brand hover:scale-110 transition-transform"
+                        />
+                      </button>
+                    </td>
+                    <td className="px-4 py-3 font-semibold text-brand">{m.name}</td>
+                    <td className="px-4 py-3">{m.designation}</td>
+                    <td className="px-4 py-3">
+                      {m.mobile ? (
+                        <a href={`tel:${m.mobile}`} className="text-brand hover:underline">
+                          {m.mobile}
+                        </a>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       <DocSection slug={slug} />
 
+      {/* Lightbox Modal */}
       {active !== null && members[active] && (
         <div
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 animate-fade-in"
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 animate-fade-in"
           onClick={() => setActive(null)}
         >
-          <div className="max-w-lg w-full" onClick={(e) => e.stopPropagation()}>
-            <img src={members[active].photo} alt={members[active].name} className="w-full rounded-md" />
-            <div className="flex items-center justify-between text-white mt-3">
+          <div className="max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+            {/* Image Container */}
+            <div className="relative rounded-xl overflow-hidden bg-black/50">
+              <img
+                src={members[active].photo}
+                alt={members[active].name}
+                className="w-full aspect-square object-cover"
+              />
               <button
-                onClick={() => setActive((active - 1 + members.length) % members.length)}
-                className="px-3 py-1 bg-white/10 rounded hover:bg-white/20"
+                onClick={() => setActive(null)}
+                className="absolute top-2 right-2 w-8 h-8 bg-black/50 rounded-full text-white text-xl hover:bg-black/70 transition-colors"
               >
-                ‹ Prev
-              </button>
-              <div className="text-center">
-                <p className="font-semibold">{members[active].name}</p>
-                <p className="text-xs opacity-80">{members[active].designation}</p>
-              </div>
-              <button
-                onClick={() => setActive((active + 1) % members.length)}
-                className="px-3 py-1 bg-white/10 rounded hover:bg-white/20"
-              >
-                Next ›
+                ×
               </button>
             </div>
+            
+            {/* Info Bar */}
+            <div className="bg-white/10 backdrop-blur rounded-lg mt-3 p-3">
+              <div className="text-center mb-3">
+                <p className="text-white font-semibold text-lg">{members[active].name}</p>
+                <p className="text-white/70 text-sm">{members[active].designation}</p>
+              </div>
+              
+              {/* Navigation Buttons */}
+              <div className="flex items-center justify-between gap-3">
+                <button
+                  onClick={() => setActive((active - 1 + members.length) % members.length)}
+                  className="px-4 py-2 bg-white/20 rounded-lg text-white text-sm hover:bg-white/30 transition-colors flex items-center gap-1"
+                >
+                  ‹ Prev
+                </button>
+                <div className="text-white/60 text-xs">
+                  {active + 1} of {members.length}
+                </div>
+                <button
+                  onClick={() => setActive((active + 1) % members.length)}
+                  className="px-4 py-2 bg-white/20 rounded-lg text-white text-sm hover:bg-white/30 transition-colors flex items-center gap-1"
+                >
+                  Next ›
+                </button>
+              </div>
+            </div>
+
+            {/* Contact Info (if available) */}
+            {members[active].mobile && (
+              <div className="mt-3 text-center">
+                <a
+                  href={`tel:${members[active].mobile}`}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg text-sm hover:bg-amber-600 transition-colors"
+                >
+                  📞 Call {members[active].mobile}
+                </a>
+              </div>
+            )}
           </div>
         </div>
       )}
