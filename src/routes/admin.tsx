@@ -47,6 +47,13 @@ import {
   newDocId,
   type DocSection as DocSectionT,
 } from "@/lib/docsStore";
+import { DEPARTMENTS } from "@/components/DepartmentContent";
+import {
+  getDepartmentFaculties,
+  setDepartmentFaculties,
+  newFacultyId,
+  type FacultyMember,
+} from "@/lib/departmentStore";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin Panel" }] }),
@@ -239,6 +246,7 @@ function Editor({ onLogout }: { onLogout: () => void }) {
 
       <DocsManager />
       <CouncilManager />
+      <DepartmentManager />
       <GalleryManager />
       <StaffManager />
     </div>
@@ -515,6 +523,116 @@ function CouncilManager() {
 
       <Button className="mt-3" size="sm" onClick={addRow}>
         + Add Member
+      </Button>
+    </div>
+  );
+}
+
+function DepartmentManager() {
+  const [slug, setSlug] = useState<string>(DEPARTMENTS[0]?.slug ?? "");
+  const [members, setMembers] = useState<FacultyMember[]>(() => {
+    const department = DEPARTMENTS[0];
+    if (!department) return [];
+    return getDepartmentFaculties(department.slug, department.faculties);
+  });
+
+  const reload = (nextSlug: string) => {
+    setSlug(nextSlug);
+    const department = DEPARTMENTS.find((d) => d.slug === nextSlug);
+    if (department) {
+      setMembers(getDepartmentFaculties(nextSlug, department.faculties));
+    }
+  };
+
+  const commit = (next: FacultyMember[]) => {
+    setMembers(next);
+    setDepartmentFaculties(slug, next);
+  };
+
+  const updateRow = (id: string, patch: Partial<FacultyMember>) =>
+    commit(members.map((m) => (m.id === id ? { ...m, ...patch } : m)));
+
+  const removeRow = (id: string) => {
+    if (!confirm("Remove this faculty member?")) return;
+    commit(members.filter((m) => m.id !== id));
+  };
+
+  const addRow = () =>
+    commit([
+      ...members,
+      { id: newFacultyId(), name: "", designation: "", qualification: "" },
+    ]);
+
+  return (
+    <div className="mt-8 border border-border rounded-md p-5 bg-card">
+      <h2 className="font-semibold text-lg mb-1">Department Faculty Members</h2>
+      <p className="text-xs text-muted-foreground mb-4">
+        Choose a department and edit its faculty member list. Columns: Sr.No, Name, Designation, Qualification.
+      </p>
+
+      <div className="mb-4">
+        <Label className="text-xs">Select Department</Label>
+        <select
+          className="w-full mt-1 border border-border rounded-md p-2 bg-background text-sm"
+          value={slug}
+          onChange={(e) => reload(e.target.value)}
+        >
+          {DEPARTMENTS.map((item) => (
+            <option key={item.slug} value={item.slug}>
+              {item.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="overflow-x-auto border border-border rounded-md">
+        <table className="w-full text-xs">
+          <thead className="bg-secondary">
+            <tr>
+              <th className="p-2 text-left w-10">Sr.No</th>
+              <th className="p-2 text-left">Name</th>
+              <th className="p-2 text-left">Designation</th>
+              <th className="p-2 text-left">Qualification</th>
+              <th className="p-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {members.map((m, idx) => (
+              <tr key={m.id} className="border-t border-border">
+                <td className="p-2 text-muted-foreground">{idx + 1}</td>
+                <td className="p-2">
+                  <Input value={m.name} onChange={(e) => updateRow(m.id, { name: e.target.value })} />
+                </td>
+                <td className="p-2">
+                  <Input
+                    value={m.designation}
+                    onChange={(e) => updateRow(m.id, { designation: e.target.value })}
+                  />
+                </td>
+                <td className="p-2">
+                  <Input
+                    value={m.qualification}
+                    onChange={(e) => updateRow(m.id, { qualification: e.target.value })}
+                  />
+                </td>
+                <td className="p-2">
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    className="h-7 text-xs"
+                    onClick={() => removeRow(m.id)}
+                  >
+                    ×
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <Button className="mt-3" size="sm" onClick={addRow}>
+        + Add Faculty Member
       </Button>
     </div>
   );

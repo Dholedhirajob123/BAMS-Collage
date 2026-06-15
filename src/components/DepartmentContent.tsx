@@ -1,4 +1,9 @@
 import React from "react";
+import {
+  useDepartmentFaculties,
+  type FacultyMember,
+  type FacultyMemberInput,
+} from "@/lib/departmentStore";
 
 export type DeptInfo = {
   slug: string;
@@ -6,7 +11,7 @@ export type DeptInfo = {
   short: string;
   about: string[];
   aim: string[];
-  faculties: { name: string; designation: string; qualification: string }[];
+  faculties: FacultyMemberInput[];
   image: string;
 };
 
@@ -231,6 +236,7 @@ function FacultiesCard({ Faculties, index }: { Faculties: DeptInfo["faculties"][
 
 export function DepartmentPage({ slug }: { slug: string }) {
   const d = DEPT_MAP[slug];
+  const faculties = useDepartmentFaculties(slug, d?.faculties ?? []);
   if (!d) return null;
   
   return (
@@ -316,8 +322,8 @@ export function DepartmentPage({ slug }: { slug: string }) {
         </div>
         
         <div className="grid md:grid-cols-2 gap-4">
-          {d.faculties.map((Faculties, idx) => (
-            <FacultiesCard key={idx} Faculties={Faculties} index={idx} />
+          {faculties.map((Faculties, idx) => (
+            <FacultiesCard key={Faculties.id ?? idx} Faculties={Faculties} index={idx} />
           ))}
         </div>
       </div>
