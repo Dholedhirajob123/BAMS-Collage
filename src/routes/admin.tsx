@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { addPhoto, getAllForAdmin, removePhoto, restorePhoto } from "@/lib/galleryStore";
+import { addPhoto, getAllForAdmin, removePhoto, restorePhoto, updatePhoto } from "@/lib/galleryStore";
 import { getStaff, setStaff, resetStaff, newId, STAFF_GROUPS, type StaffGroupKey, type StaffMember } from "@/lib/staffStore";
 import { loadAdmins, addAdmin, updateAdmin, removeAdmin, verifyLogin, MAX_ADMINS, type Admin } from "@/lib/adminStore";
 import { COUNCIL_GROUPS, getCouncil, setCouncil, resetCouncil, newCouncilId, type CouncilKey, type CouncilMember } from "@/lib/councilStore";
@@ -69,6 +69,7 @@ function AdminPage() {
 function Editor({ onLogout }: { onLogout: () => void }) {
   const [overrides, setOverrides] = useState<OverridesMap>(() => loadOverrides());
   const [savedMsg, setSavedMsg] = useState("");
+  const [selectedOverride, setSelectedOverride] = useState<string>("");
 
   const flatItems = useMemo(() => {
     const rows: { group: string | null; slug: string; defaultLabel: string; defaultUrl?: string }[] = [];
@@ -84,6 +85,15 @@ function Editor({ onLogout }: { onLogout: () => void }) {
     });
     return rows;
   }, []);
+
+  useEffect(() => {
+    if (!selectedOverride && flatItems.length > 0) {
+      setSelectedOverride(keyFor(flatItems[0].group, flatItems[0].slug));
+    }
+  }, [flatItems, selectedOverride]);
+
+  const selectedNavItem = flatItems.find((item) => keyFor(item.group, item.slug) === selectedOverride);
+  const currentOverride = overrides[selectedOverride] || {};
 
   const update = (k: string, patch: Partial<{ label: string; url: string }>) => {
     setOverrides((prev) => {
@@ -103,11 +113,7 @@ function Editor({ onLogout }: { onLogout: () => void }) {
     setTimeout(() => setSavedMsg(""), 2500);
   };
 
-  const reset = () => {
-    if (!confirm("Reset all link customizations?")) return;
-    setOverrides({});
-    saveOverrides({});
-  };
+
 
   return (
     <div className="mx-auto max-w-5xl p-6">
@@ -128,49 +134,53 @@ function Editor({ onLogout }: { onLogout: () => void }) {
 
       <div className="flex gap-2 mb-6">
         <Button onClick={save}>Save Changes</Button>
-        <Button variant="outline" onClick={reset}>Reset All</Button>
       </div>
 
-      <div className="border border-border rounded-md overflow-hidden bg-card mb-8">
-        <table className="w-full text-sm">
-          <thead className="bg-secondary">
-            <tr>
-              <th className="text-left p-2">Section</th>
-              <th className="text-left p-2">Original Label</th>
-              <th className="text-left p-2">Custom Label</th>
-              <th className="text-left p-2">Custom URL (optional)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {flatItems.map((row) => {
-              const k = keyFor(row.group, row.slug);
-              const ov = overrides[k] || {};
-              return (
-                <tr key={k} className="border-t border-border">
-                  <td className="p-2 text-muted-foreground text-xs">{row.group ?? "—"}</td>
-                  <td className="p-2">{row.defaultLabel}</td>
-                  <td className="p-2">
-                    <Input
-                      value={ov.label ?? ""}
-                      placeholder={row.defaultLabel}
-                      onChange={(e) => update(k, { label: e.target.value })}
-                    />
-                  </td>
-                  <td className="p-2">
-                    <Input
-                      value={ov.url ?? ""}
-                      placeholder={row.defaultUrl || `/${row.slug}`}
-                      onChange={(e) => update(k, { url: e.target.value })}
-                    />
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <div className="mt-8 border border-border rounded-md p-5 bg-card">
+        <h2 className="font-semibold text-lg mb-1">Sidebar Link Editor</h2>
+        <p className="text-xs text-muted-foreground mb-4">
+          Choose a sidebar item and update its label or URL. Admin changes apply immediately after saving.
+        </p>
+
+        <div className="grid gap-4 md:grid-cols-[1fr_1.6fr]">
+          <div>
+            <Label className="text-xs">Select Sidebar Item</Label>
+            <select
+              className="w-full mt-1 border border-border rounded-md p-2 bg-background text-sm"
+              value={selectedOverride}
+              onChange={(e) => setSelectedOverride(e.target.value)}
+            >
+              {flatItems.map((item) => (
+                <option key={keyFor(item.group, item.slug)} value={keyFor(item.group, item.slug)}>
+                  {item.group ? `${item.group} › ${item.defaultLabel}` : item.defaultLabel}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-3">
+            <div>
+              <Label className="text-xs">Current Label</Label>
+              <Input
+                value={currentOverride.label ?? selectedNavItem?.defaultLabel ?? ""}
+                onChange={(e) => update(selectedOverride, { label: e.target.value })}
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label className="text-xs">URL / Target</Label>
+              <Input
+                value={currentOverride.url ?? selectedNavItem?.defaultUrl ?? ""}
+                onChange={(e) => update(selectedOverride, { url: e.target.value })}
+                className="mt-1"
+                placeholder="Leave blank to keep default slug"
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
-      <AdminManager />
       <DocsManager />
       <CouncilManager />
       <GalleryManager />
@@ -199,6 +209,8 @@ function DocsManager() {
     setTimeout(() => setMsg(""), 2000);
   };
 
+  const [batch, setBatch] = useState<string>("");
+
   const onPdf = (file: File) => {
     if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf"))
       return alert("Please upload a PDF file.");
@@ -209,10 +221,18 @@ function DocsManager() {
         ...section,
         files: [
           ...section.files,
-          { id: newDocId(), name: file.name, dataUrl: reader.result as string, size: file.size, addedAt: Date.now() },
+          {
+            id: newDocId(),
+            name: file.name,
+            dataUrl: reader.result as string,
+            size: file.size,
+            addedAt: Date.now(),
+            batch: batch.trim() || undefined,
+          },
         ],
       });
       flash("✓ PDF uploaded.");
+      setBatch("");
     };
     reader.readAsDataURL(file);
   };
@@ -254,18 +274,29 @@ function DocsManager() {
         />
       </div>
 
-      <div className="mb-4">
-        <Label className="text-xs">Upload New PDF</Label>
-        <Input
-          type="file"
-          accept="application/pdf"
-          className="mt-1"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) onPdf(f);
-            e.target.value = "";
-          }}
-        />
+      <div className="mb-4 grid gap-3">
+        <div>
+          <Label className="text-xs">Batch (optional)</Label>
+          <Input
+            value={batch}
+            placeholder="e.g. BAMS 2025-26"
+            className="mt-1"
+            onChange={(e) => setBatch(e.target.value)}
+          />
+        </div>
+        <div>
+          <Label className="text-xs">Upload New PDF</Label>
+          <Input
+            type="file"
+            accept="application/pdf"
+            className="mt-1"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) onPdf(f);
+              e.target.value = "";
+            }}
+          />
+        </div>
       </div>
 
       <div className="border border-border rounded-md">
@@ -289,18 +320,7 @@ function DocsManager() {
         )}
       </div>
 
-      <Button
-        size="sm"
-        variant="ghost"
-        className="mt-3"
-        onClick={() => {
-          if (!confirm("Reset this section to defaults?")) return;
-          resetSection(key);
-          setSectionState(getSection(key));
-        }}
-      >
-        Reset Section
-      </Button>
+    
     </div>
   );
 }
@@ -335,31 +355,22 @@ function CouncilManager() {
     <div className="mt-8 border border-border rounded-md p-5 bg-card">
       <h2 className="font-semibold text-lg mb-1">Council / Committee Members</h2>
       <p className="text-xs text-muted-foreground mb-4">
-        Edit IQAC, Council & Committee tables. Columns: Name, Designation, Position, Mobile No., Email ID.
+        Choose a committee and edit its member list. Columns: Name, Designation, Position, Mobile No., Email ID.
       </p>
 
-      <div className="flex flex-wrap gap-2 mb-4">
-        {COUNCIL_GROUPS.map((g) => (
-          <Button
-            key={g.key}
-            size="sm"
-            variant={group === g.key ? "default" : "outline"}
-            onClick={() => reload(g.key)}
-          >
-            {g.label}
-          </Button>
-        ))}
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => {
-            if (!confirm("Reset this group to defaults?")) return;
-            resetCouncil(group);
-            setMembers(getCouncil(group));
-          }}
+      <div className="mb-4">
+        <Label className="text-xs">Select Committee</Label>
+        <select
+          className="w-full mt-1 border border-border rounded-md p-2 bg-background text-sm"
+          value={group}
+          onChange={(e) => reload(e.target.value as CouncilKey)}
         >
-          Reset Group
-        </Button>
+          {COUNCIL_GROUPS.map((g) => (
+            <option key={g.key} value={g.key}>
+              {g.label}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="overflow-x-auto border border-border rounded-md">
@@ -398,89 +409,7 @@ function CouncilManager() {
   );
 }
 
-function AdminManager() {
-  const [list, setList] = useState<Admin[]>(() => loadAdmins());
-  const [draft, setDraft] = useState({ name: "", phone: "", password: "" });
-  const [msg, setMsg] = useState("");
 
-  useEffect(() => {
-    const sync = () => setList(loadAdmins());
-    window.addEventListener("admins-changed", sync);
-    return () => window.removeEventListener("admins-changed", sync);
-  }, []);
-
-  const flash = (text: string) => {
-    setMsg(text);
-    setTimeout(() => setMsg(""), 2500);
-  };
-
-  const handleAdd = () => {
-    const res = addAdmin(draft);
-    if (!res.ok) return alert(res.error);
-    setDraft({ name: "", phone: "", password: "" });
-    flash("✓ Admin added.");
-  };
-
-  const handleUpdate = (id: string, patch: Partial<Omit<Admin, "id">>) => {
-    const res = updateAdmin(id, patch);
-    if (!res.ok) return alert(res.error);
-  };
-
-  const handleRemove = (id: string) => {
-    if (!confirm("Delete this admin?")) return;
-    const res = removeAdmin(id);
-    if (!res.ok) return alert(res.error);
-    flash("✓ Admin removed.");
-  };
-
-  return (
-    <div className="mt-8 border border-border rounded-md p-5 bg-card">
-      <h2 className="font-semibold text-lg mb-1">Admin Accounts</h2>
-      <p className="text-xs text-muted-foreground mb-4">
-        Manage admin logins (phone + password). Max {MAX_ADMINS} admins. Currently {list.length}/{MAX_ADMINS}.
-      </p>
-
-      {msg && <div className="mb-3 p-2 bg-green-100 text-green-800 rounded text-sm">{msg}</div>}
-
-      <div className="overflow-x-auto border border-border rounded-md mb-4">
-        <table className="w-full text-xs">
-          <thead className="bg-secondary">
-            <tr>
-              <th className="p-2 text-left">Name</th>
-              <th className="p-2 text-left">Phone</th>
-              <th className="p-2 text-left">Password</th>
-              <th className="p-2"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {list.map((a) => (
-              <tr key={a.id} className="border-t border-border">
-                <td className="p-2"><Input defaultValue={a.name ?? ""} onBlur={(e) => handleUpdate(a.id, { name: e.target.value })} /></td>
-                <td className="p-2"><Input defaultValue={a.phone} onBlur={(e) => handleUpdate(a.id, { phone: e.target.value })} /></td>
-                <td className="p-2"><Input defaultValue={a.password} onBlur={(e) => handleUpdate(a.id, { password: e.target.value })} /></td>
-                <td className="p-2">
-                  <Button size="sm" variant="destructive" className="h-7 text-xs" onClick={() => handleRemove(a.id)}>Delete</Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {list.length < MAX_ADMINS && (
-        <div className="border border-border rounded-md p-3 bg-secondary/30">
-          <p className="text-xs font-medium mb-2">Add new admin</p>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-            <Input placeholder="Name (optional)" value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
-            <Input placeholder="Phone (digits only)" inputMode="numeric" value={draft.phone} onChange={(e) => setDraft({ ...draft, phone: e.target.value })} />
-            <Input placeholder="Password (min 4)" value={draft.password} onChange={(e) => setDraft({ ...draft, password: e.target.value })} />
-            <Button onClick={handleAdd}>+ Add Admin</Button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 function StaffManager() {
   const [group, setGroup] = useState<StaffGroupKey>("hospital");
@@ -518,30 +447,21 @@ function StaffManager() {
   return (
     <div className="mt-8 border border-border rounded-md p-5 bg-card">
       <h2 className="font-semibold text-lg mb-1">Staff Management</h2>
-      <p className="text-xs text-muted-foreground mb-4">Add, edit, or remove rows in the staff tables.</p>
+      <p className="text-xs text-muted-foreground mb-4">Choose a staff group and edit faculty, hospital, or support staff entries.</p>
 
-      <div className="flex flex-wrap gap-2 mb-4">
-        {STAFF_GROUPS.map((g) => (
-          <Button
-            key={g.key}
-            size="sm"
-            variant={group === g.key ? "default" : "outline"}
-            onClick={() => reload(g.key)}
-          >
-            {g.label}
-          </Button>
-        ))}
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => {
-            if (!confirm("Reset this group to defaults?")) return;
-            resetStaff(group);
-            setMembers(getStaff(group));
-          }}
+      <div className="mb-4">
+        <Label className="text-xs">Select Staff Group</Label>
+        <select
+          className="w-full mt-1 border border-border rounded-md p-2 bg-background text-sm"
+          value={group}
+          onChange={(e) => reload(e.target.value as StaffGroupKey)}
         >
-          Reset Group
-        </Button>
+          {STAFF_GROUPS.map((item) => (
+            <option key={item.key} value={item.key}>
+              {item.label}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="overflow-x-auto border border-border rounded-md">
@@ -594,6 +514,8 @@ function StaffManager() {
 function GalleryManager() {
   const [items, setItems] = useState(() => getAllForAdmin());
   const [caption, setCaption] = useState("");
+  const [date, setDate] = useState("");
+  const [place, setPlace] = useState("");
   const refresh = () => setItems(getAllForAdmin());
 
   const onFile = (file: File) => {
@@ -601,8 +523,15 @@ function GalleryManager() {
     if (file.size > 3 * 1024 * 1024) return alert("Image must be under 3MB.");
     const reader = new FileReader();
     reader.onload = () => {
-      addPhoto(reader.result as string, caption || file.name.replace(/\.[^.]+$/, ""));
+      addPhoto(
+        reader.result as string,
+        caption || file.name.replace(/\.[^.]+$/, ""),
+        date,
+        place,
+      );
       setCaption("");
+      setDate("");
+      setPlace("");
       refresh();
     };
     reader.readAsDataURL(file);
@@ -613,11 +542,23 @@ function GalleryManager() {
       <h2 className="font-semibold text-lg mb-1">Photo Gallery</h2>
       <p className="text-xs text-muted-foreground mb-4">Add or remove photos shown on the Photo Gallery page.</p>
 
-      <div className="flex flex-col md:flex-row gap-2 mb-5">
+      <div className="grid gap-3 mb-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <Input
           placeholder="Caption (optional)"
           value={caption}
           onChange={(e) => setCaption(e.target.value)}
+          className="md:max-w-xs"
+        />
+        <Input
+          placeholder="Date (optional)"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="md:max-w-xs"
+        />
+        <Input
+          placeholder="Place (optional)"
+          value={place}
+          onChange={(e) => setPlace(e.target.value)}
           className="md:max-w-xs"
         />
         <Input
@@ -631,26 +572,61 @@ function GalleryManager() {
         />
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="space-y-3">
         {items.map(({ photo, isDefault, hidden }) => (
           <div
             key={photo.id}
-            className={`relative border border-border rounded-md overflow-hidden bg-card ${hidden ? "opacity-40" : ""}`}
+            className={`border border-border rounded-md overflow-hidden bg-card ${hidden ? "opacity-40" : ""}`}
           >
-            <img src={photo.src} alt={photo.caption} className="aspect-square object-cover w-full" />
-            <div className="p-2">
-              <p className="text-xs truncate" title={photo.caption}>{photo.caption}</p>
-              <p className="text-[10px] text-muted-foreground">{isDefault ? "Default" : "Uploaded"}{hidden ? " · Hidden" : ""}</p>
-              <div className="mt-2 flex gap-1">
-                {hidden ? (
-                  <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => { restorePhoto(photo.id); refresh(); }}>
-                    Restore
-                  </Button>
-                ) : (
-                  <Button size="sm" variant="destructive" className="text-xs h-7" onClick={() => { removePhoto(photo.id); refresh(); }}>
-                    Remove
-                  </Button>
-                )}
+            <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-4 p-3">
+              <img src={photo.src} alt={photo.caption} className="h-40 w-full rounded-md object-cover md:h-full" />
+              <div className="space-y-3">
+                <div className="flex flex-wrap gap-2 items-center">
+                  <span className="text-xs font-semibold">{isDefault ? "Default" : "Uploaded"}</span>
+                  {hidden && <span className="text-[10px] text-muted-foreground">Hidden</span>}
+                </div>
+
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <Input
+                    value={photo.caption}
+                    onChange={(e) => {
+                      const next = e.target.value;
+                      updatePhoto(photo.id, { caption: next });
+                      refresh();
+                    }}
+                    placeholder="Caption"
+                  />
+                  <Input
+                    value={photo.date ?? ""}
+                    onChange={(e) => {
+                      const next = e.target.value;
+                      updatePhoto(photo.id, { date: next || undefined });
+                      refresh();
+                    }}
+                    placeholder="Date"
+                  />
+                  <Input
+                    value={photo.place ?? ""}
+                    onChange={(e) => {
+                      const next = e.target.value;
+                      updatePhoto(photo.id, { place: next || undefined });
+                      refresh();
+                    }}
+                    placeholder="Place"
+                  />
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {hidden ? (
+                    <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => { restorePhoto(photo.id); refresh(); }}>
+                      Restore
+                    </Button>
+                  ) : (
+                    <Button size="sm" variant="destructive" className="text-xs h-7" onClick={() => { removePhoto(photo.id); refresh(); }}>
+                      Remove
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

@@ -354,7 +354,7 @@ const Contact = () => (
 
 import { useStaff, type StaffGroupKey } from "@/lib/staffStore";
 
-function StaffSection({ title, group }: { title: string; group: StaffGroupKey }) {
+function StaffSection({ title, group, slug }: { title: string; group: StaffGroupKey; slug: string }) {
   const members = useStaff(group);
   const [active, setActive] = useState<number | null>(null);
   return (
@@ -367,38 +367,39 @@ function StaffSection({ title, group }: { title: string; group: StaffGroupKey })
         <table className="w-full text-sm">
           <thead className="bg-secondary">
             <tr>
-              <th className="px-3 py-2 text-left">Sr.</th>
-              <th className="px-3 py-2 text-left">Photo</th>
+              <th className="px-3 py-2 text-left">Sr.No</th>
               <th className="px-3 py-2 text-left">Name</th>
-              <th className="px-3 py-2 text-left">Designation</th>
-              <th className="px-3 py-2 text-left">Education</th>
-              <th className="px-3 py-2 text-left">Year</th>
+              <th className="px-3 py-2 text-left">PHOTO</th>
+              <th className="px-3 py-2 text-left">Position</th>
+              <th className="px-3 py-2 text-left">Mobile No.</th>
             </tr>
           </thead>
           <tbody>
             {members.map((m, i) => (
               <tr key={m.id} className="border-t border-border hover:bg-secondary/40">
                 <td className="px-3 py-2">{i + 1}</td>
-                <td className="px-3 py-2">
+                  <td className="px-3 py-2">
                   <button onClick={() => setActive(i)} className="block">
                     <img
                       src={m.photo}
                       alt={m.name}
                       loading="lazy"
-                      className="h-14 w-14 rounded-full object-cover border-2 border-brand hover:scale-110 transition-transform"
+                      className="h-12 w-12 rounded-full object-cover border-2 border-brand hover:scale-110 transition-transform"
                     />
                   </button>
                 </td>
                 <td className="px-3 py-2 font-medium">{m.name}</td>
+              
                 <td className="px-3 py-2">{m.designation}</td>
-                <td className="px-3 py-2 text-muted-foreground">{m.education}</td>
-                <td className="px-3 py-2 text-muted-foreground">{m.year}</td>
+                <td className="px-3 py-2 text-muted-foreground">{m.mobile ?? "—"}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
       )}
+
+      <DocSection slug={slug} />
 
       {active !== null && members[active] && (
         <div
@@ -465,6 +466,10 @@ export const PAGE_CONTENT: Record<string, React.FC> = {
   "faculty-teaching-staff": TeachingStaff,
   ...DEPT_PAGE_CONTENT,
   ...DOC_PAGES,
+    "staff-college": CollegeStaff,
+    "staff-non-teaching": NonTeachingStaff,
+    "staff-hospital": HospitalStaff,
+    "faculty-teaching-staff": TeachingStaff,
 };
 
 

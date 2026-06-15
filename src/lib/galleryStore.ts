@@ -12,7 +12,7 @@ import campus2 from "@/assets/campus-2.jpg";
 import campus3 from "@/assets/campus-3.jpg";
 import campus4 from "@/assets/campus-4.jpg";
 
-export type Photo = { id: string; src: string; caption: string };
+export type Photo = { id: string; src: string; caption: string; date?: string; place?: string };
 
 const DEFAULTS: Photo[] = [
   { id: "d1", src: g1, caption: "Digital Library" },
@@ -30,14 +30,14 @@ const DEFAULTS: Photo[] = [
 ];
 
 const KEY = "ssam-gallery-v1";
-type State = { removed: string[]; custom: Photo[] };
+type State = { removed: string[]; custom: Photo[]; updated: Photo[] };
 
 function load(): State {
-  if (typeof window === "undefined") return { removed: [], custom: [] };
+  if (typeof window === "undefined") return { removed: [], custom: [], updated: [] };
   try {
-    return { removed: [], custom: [], ...JSON.parse(localStorage.getItem(KEY) || "{}") };
+    return { removed: [], custom: [], updated: [], ...JSON.parse(localStorage.getItem(KEY) || "{}") };
   } catch {
-    return { removed: [], custom: [] };
+    return { removed: [], custom: [], updated: [] };
   }
 }
 
@@ -46,15 +46,27 @@ function save(s: State) {
   window.dispatchEvent(new Event("gallery-changed"));
 }
 
+const applyUpdate = (photo: Photo, update?: Photo): Photo =>
+  update ? { ...photo, ...update } : photo;
+
 export function getGallery(): Photo[] {
   const s = load();
-  return [...DEFAULTS.filter((p) => !s.removed.includes(p.id)), ...s.custom];
+  const updatedById = new Map(s.updated.map((p) => [p.id, p]));
+  return [
+    ...DEFAULTS.filter((p) => !s.removed.includes(p.id)).map((p) => applyUpdate(p, updatedById.get(p.id))),
+    ...s.custom,
+  ];
 }
 
 export function getAllForAdmin(): { photo: Photo; isDefault: boolean; hidden: boolean }[] {
   const s = load();
+  const updatedById = new Map(s.updated.map((p) => [p.id, p]));
   return [
-    ...DEFAULTS.map((p) => ({ photo: p, isDefault: true, hidden: s.removed.includes(p.id) })),
+    ...DEFAULTS.map((p) => ({
+      photo: applyUpdate(p, updatedById.get(p.id)),
+      isDefault: true,
+      hidden: s.removed.includes(p.id),
+    })),
     ...s.custom.map((p) => ({ photo: p, isDefault: false, hidden: false })),
   ];
 }
@@ -75,9 +87,32 @@ export function restorePhoto(id: string) {
   save(s);
 }
 
-export function addPhoto(src: string, caption: string) {
+export function addPhoto(src: string, caption: string, date?: string, place?: string) {
   const s = load();
-  s.custom.push({ id: `c-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, src, caption });
+  s.custom.push({
+    id: `c-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    src,
+    caption,
+    date: date?.trim() || undefined,
+    place: place?.trim() || undefined,
+  });
+  save(s);
+}
+
+export function updatePhoto(id: string, patch: Partial<Pick<Photo, "caption" | "date" | "place">>) {
+  const s = load();
+  if (s.custom.some((photo) => photo.id === id)) {
+    s.custom = s.custom.map((photo) => (photo.id === id ? { ...photo, ...patch } : photo));
+  } else {
+    const existing = s.updated.find((photo) => photo.id === id);
+    if (existing) {
+      s.updated = s.updated.map((photo) => (photo.id === id ? { ...photo, ...patch } : photo));
+    } else {
+      const base = DEFAULTS.find((photo) => photo.id === id);
+      if (!base) return;
+      s.updated.push({ ...base, ...patch });
+    }
+  }
   save(s);
 }
 

@@ -54,15 +54,18 @@ export const PAGES: PageDef[] = [
   p("innovation-ecosystem", "Innovation Ecosystem", "Innovation"),
 
   // Council / Committee
-  p("board-of-governance", "Board of Governance (BOG / LMC)", "Council"),
-  p("iqac", "IQAC", "Council"),
-  p("college-council-curriculum", "College Council & Curriculum (CDC)", "Council"),
-  p("grievances-cell", "Grievances Cell", "Council"),
-  p("anti-ragging-cell", "Anti Ragging Cell", "Council"),
-  p("internal-grievances-vishakha", "Internal Grievances / Vishakha — Womens Anti Exploitation Cell", "Council"),
-  p("reservation-cell", "Reservation Cell", "Council"),
+  p("iqac", "Internal Quality Assurance Cell for AY 2024-25", "Council"),
+  p("college-council-curriculum", "College Council Committee for the AY 2024-2025", "Council"),
+  p("grievances-cell", "Student Grievances and Redressal Committee", "Council"),
+  p("anti-ragging-cell", "Anti-Ragging Committee 2024-25", "Council"),
+  p("internal-grievances-vishakha", "Committee Against Sexual Harassment", "Council"),
+  p("reservation-cell", "Human Resources Development Cell for the AY 2024-25", "Council"),
   p("student-council", "Student Council", "Council"),
   p("rti-committee", "RTI Committee & Act", "Council"),
+  p("academic-council-committee-2023-2024", "Academic Council Committee for the AY 2023-2024", "Council", "Academic Council Committee details for AY 2023-2024."),
+  p("co-curricular-extra-curricular-activity-cell", "Co-Curricular & Extra-Curricular Activity Cell", "Council", "Co-curricular and extra-curricular activity cell information."),
+  p("research-innovation-entrepreneurship-cell", "Research Innovation and Entrepreneurship Cell", "Council", "Research, innovation, and entrepreneurship cell details."),
+  p("student-support-career-guidance-placement-cell", "Student Support, Career Guidance and Placement Cell", "Council", "Student support, career guidance, and placement cell information."),
 
   // Academics
   p("dept-sanskrit-samhita-siddhanta", "Sanskrit, Samhita and Siddhanta", "Academics"),
@@ -73,13 +76,7 @@ export const PAGES: PageDef[] = [
   p("dept-ras-shastra", "Ras Shastra and Bhaishajya Kalpana", "Academics"),
   p("dept-rog-nidan", "Rog Nidan Evum Vikruti Vidnyan", "Academics"),
   p("dept-swasthavritta", "Swasthavritta", "Academics"),
-  p("dept-prasuti-streerog", "Prasuti Tantra Evum Streerog Tantra", "Academics"),
-  p("dept-kaumarbhritya", "Kaumarbhritya", "Academics"),
-  p("dept-kayachikitsa", "Kayachikitsa", "Academics"),
-  p("dept-shalya-tantra", "Shalya Tantra", "Academics"),
-  p("dept-shalakya-tantra", "Shalakya Tantra", "Academics"),
-  p("dept-panchkarma", "Panchkarma", "Academics"),
-  p("dept-research-methodology", "Research Methodology", "Academics"),
+ 
 
   // Faculty / Staff
   p("faculty-teaching-staff", "Teaching Staff", "Faculty"),
@@ -91,14 +88,12 @@ export const PAGES: PageDef[] = [
   p("attendance-non-teaching", "Non Teaching Staff Attendance", "Attendance"),
   p("attendance-hospital", "Hospital Staff Attendance", "Attendance"),
   p("attendance-ug", "UG Student Attendance", "Attendance"),
-  p("attendance-pg", "PG Student Attendance", "Attendance"),
 
   // Admissions / Programs
   p("programs-admission", "Programs Offered — Admission Details", "Admissions"),
   p("government-approvals", "Government Approvals", "Admissions"),
   p("fra-fee-structure", "FRA Fee Structure", "Admissions"),
   p("fra-ug", "FRA UG Fee Structure", "Admissions"),
-  p("fra-pg", "FRA PG Fee Structure", "Admissions"),
   p("student-admission-list", "Student Admission List", "Admissions"),
   p("result", "Result", "Academics"),
 
@@ -106,11 +101,9 @@ export const PAGES: PageDef[] = [
   p("alumni-association", "Alumni Association", "Alumni"),
   p("academic-calendar", "Academic Calendar", "Academics"),
   p("calendar-ug", "Academic Calendar — UG", "Academics"),
-  p("calendar-pg", "Academic Calendar — PG", "Academics"),
   p("time-table", "Time Table", "Academics"),
   p("timetable-ug", "Time Table — UG", "Academics"),
-  p("timetable-pg", "Time Table — PG", "Academics"),
-  p("academic-syllabus", "Academic Syllabus UG & PG", "Academics"),
+  p("academic-syllabus", "Academic Syllabus UG", "Academics"),
   p("question-papers", "Question Papers", "Academics"),
   p("cie-cme", "CIE / CME", "Academics"),
   p("cie", "CIE", "Academics"),
@@ -128,7 +121,6 @@ export const PAGES: PageDef[] = [
   p("muhs-mandate-circulars", "MUHS Mandate — Circulars", "Resources"),
   p("muhs-mandate-notifications", "MUHS Mandate — Notifications", "Resources"),
   p("azadi-ka-amrut-mahosav", "Azadi ka Amrut Mahosav", "Events"),
-  p("covid-19", "COVID-19 Announcements", "Notices"),
   p("affiliated-university", "Details of Affiliated University : MUHS", "Notices"),
 ];
 
@@ -202,15 +194,17 @@ export const SIDE_NAV: NavItem[] = [
   {
     label: "Council / Committee",
     children: [
-      { label: "Board of Governance ( BOG / LMC )", slug: "board-of-governance" },
-      { label: "IQAC", slug: "iqac" },
-      { label: "College Council & Curriculum ( CDC )", slug: "college-council-curriculum" },
-      { label: "Grievances Cell", slug: "grievances-cell" },
-      { label: "Anti Ragging Cell", slug: "anti-ragging-cell" },
-      { label: "Internal Grievances / Vishakha", slug: "internal-grievances-vishakha" },
-      { label: "Reservation cell", slug: "reservation-cell" },
+      { label: "Academic Council Committee for the AY 2023-2024", slug: "academic-council-committee-2023-2024" },
+      { label: "Internal Quality Assurance Cell for AY 2024-25", slug: "iqac" },
+      { label: "College Council Committee for the AY 2024-2025", slug: "college-council-curriculum" },
+      { label: "Student Grievances and Redressal Committee", slug: "grievances-cell" },
+      { label: "Anti-Ragging Committee 2024-25", slug: "anti-ragging-cell" },
+      { label: "Co-Curricular & Extra-Curricular Activity Cell", slug: "co-curricular-extra-curricular-activity-cell" },
+      { label: "Committee Against Sexual Harassment", slug: "internal-grievances-vishakha" },
+      { label: "Human Resources Development Cell for the AY 2024-25", slug: "reservation-cell" },
+      { label: "Research Innovation and Entrepreneurship Cell", slug: "research-innovation-entrepreneurship-cell" },
+      { label: "Student Support, Career Guidance and Placement Cell", slug: "student-support-career-guidance-placement-cell" },
       { label: "Student Council", slug: "student-council" },
-      { label: "RTI Committee & Act", slug: "rti-committee" },
     ],
   },
   {
@@ -224,13 +218,7 @@ export const SIDE_NAV: NavItem[] = [
       { label: "Ras Shastra and Bhaishajya Kalpana", slug: "dept-ras-shastra" },
       { label: "Rog Nidan Evum Vikruti Vidnyan", slug: "dept-rog-nidan" },
       { label: "Swasthavritta", slug: "dept-swasthavritta" },
-      { label: "Prasuti Tantra Evum Streerog Tantra", slug: "dept-prasuti-streerog" },
-      { label: "Kaumarbhritya", slug: "dept-kaumarbhritya" },
-      { label: "Kayachikitsa", slug: "dept-kayachikitsa" },
-      { label: "Shalya Tantra", slug: "dept-shalya-tantra" },
-      { label: "Shalakya Tantra", slug: "dept-shalakya-tantra" },
-      { label: "Panchkarma", slug: "dept-panchkarma" },
-      { label: "Research Methodology", slug: "dept-research-methodology" },
+     
     ],
   },
   {
@@ -256,7 +244,6 @@ export const SIDE_NAV: NavItem[] = [
     label: "Student Attendance",
     children: [
       { label: "UG Student", slug: "attendance-ug" },
-      { label: "PG Student", slug: "attendance-pg" },
     ],
   },
   { label: "Programs Offered - Admission Details", slug: "programs-admission" },
@@ -266,7 +253,6 @@ export const SIDE_NAV: NavItem[] = [
     children: [
       { label: "Overview", slug: "fra-fee-structure" },
       { label: "UG", slug: "fra-ug" },
-      { label: "PG", slug: "fra-pg" },
     ],
   },
   { label: "Student Admission List", slug: "student-admission-list" },
@@ -276,27 +262,17 @@ export const SIDE_NAV: NavItem[] = [
     label: "Academic Calendar",
     children: [
       { label: "UG", slug: "calendar-ug" },
-      { label: "PG", slug: "calendar-pg" },
     ],
   },
   {
     label: "Time Table",
     children: [
       { label: "UG", slug: "timetable-ug" },
-      { label: "PG", slug: "timetable-pg" },
     ],
   },
-  { label: "Academic Syllabus UG & PG", slug: "academic-syllabus" },
-  { label: "Question Papers", slug: "question-papers" },
-  {
-    label: "CIE/CME",
-    children: [
-      { label: "CIE", slug: "cie" },
-      { label: "CME", slug: "cme" },
-    ],
-  },
+  { label: "Academic Syllabus UG ", slug: "academic-syllabus" },
+  
   { label: "Research and Publications", slug: "research-publications" },
-  { label: "E-Portal", slug: "e-portal" },
   {
     label: "Activities",
     children: [
@@ -306,7 +282,6 @@ export const SIDE_NAV: NavItem[] = [
     ],
   },
   { label: "Feedback", slug: "feedback" },
-  { label: "PLACEMENT CELL", slug: "placement-cell" },
   { label: "Institute Annual Report", slug: "institute-annual-report" },
   {
     label: "MUHS Mandate Information",

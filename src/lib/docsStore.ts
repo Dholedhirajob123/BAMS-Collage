@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export type DocFile = { id: string; name: string; dataUrl: string; size: number; addedAt: number };
+export type DocFile = { id: string; name: string; dataUrl: string; size: number; addedAt: number; batch?: string };
 export type DocSection = { info: string; files: DocFile[] };
 
 const KEY = "ssam-docs-v1";
@@ -10,16 +10,24 @@ export const DOC_SECTIONS: { key: string; label: string }[] = [
   { key: "attendance-non-teaching", label: "Staff Attendance — Non Teaching Staff" },
   { key: "attendance-hospital", label: "Staff Attendance — Hospital Staff" },
   { key: "attendance-ug", label: "Student Attendance — UG" },
-  { key: "attendance-pg", label: "Student Attendance — PG" },
   { key: "fra-fee-structure", label: "FRA Fee Structure — Overview" },
   { key: "fra-ug", label: "FRA Fee Structure — UG" },
-  { key: "fra-pg", label: "FRA Fee Structure — PG" },
   { key: "student-admission-list", label: "Student Admission List" },
+  { key: "programs-admission", label: "Programs Offered — Admission Details" },
+  { key: "government-approvals", label: "Government Approvals" },
+  { key: "result", label: "Result" },
+  { key: "alumni-association", label: "Alumni Association" },
+  { key: "academic-syllabus", label: "Academic Syllabus UG" },
+  { key: "research-publications", label: "Research and Publications" },
+  { key: "download", label: "Downloads" },
+  { key: "important-links", label: "Important Links" },
   { key: "calendar-ug", label: "Academic Calendar — UG" },
-  { key: "calendar-pg", label: "Academic Calendar — PG" },
+  { key: "time-table", label: "Time Table" },
+  { key: "timetable-ug", label: "Time Table — UG" },
   { key: "muhs-mandate", label: "MUHS Mandate — Overview" },
   { key: "muhs-mandate-circulars", label: "MUHS Mandate — Circulars" },
   { key: "muhs-mandate-notifications", label: "MUHS Mandate — Notifications" },
+  
 ];
 
 const DEFAULT_INFO: Record<string, string> = {
@@ -27,16 +35,24 @@ const DEFAULT_INFO: Record<string, string> = {
   "attendance-non-teaching": "Monthly attendance record of Non-Teaching Staff. Download the latest attendance sheets below.",
   "attendance-hospital": "Monthly attendance record of Hospital Staff including doctors, nurses, and support staff.",
   "attendance-ug": "UG (BAMS) student attendance reports — year-wise and month-wise sheets.",
-  "attendance-pg": "PG scholar attendance reports — year-wise and month-wise sheets.",
   "fra-fee-structure": "Fee structure approved by the Fee Regulating Authority (FRA), Government of Maharashtra. Download notifications below.",
   "fra-ug": "FRA approved Undergraduate (BAMS) fee structure documents.",
-  "fra-pg": "FRA approved Postgraduate (MD/MS Ayurveda) fee structure documents.",
-  "student-admission-list": "Official list of students admitted to UG / PG programs. Download year-wise admission lists below.",
+  "student-admission-list": "Official list of students admitted to UG  programs. Download year-wise admission lists below.",
+  "programs-admission": "Details of programs offered and admission criteria for RAJASHRI AYURVEDIC MEDICAL COLLEGE & HOSPITAL.",
+  "government-approvals": "Government approvals and regulatory certificates held by the institute.",
+  "result": "Exam results and merit list PDFs for affiliated courses.",
+  "alumni-association": "Information about our alumni association and its activities.",
+  "academic-syllabus": "UG (BAMS) academic syllabus documents and curriculum details.",
+  "research-publications": "Research publications, papers and academic output from the college.",
+  "download": "Download PDF resources and important documents available to visitors.",
+  "important-links": "Important links and downloadable resources for students and staff.",
   "calendar-ug": "Academic calendar for Undergraduate (BAMS) program as per MUHS guidelines.",
-  "calendar-pg": "Academic calendar for Postgraduate (MD/MS) program as per MUHS guidelines.",
+  "time-table": "Time table documents organized by batch. Download the latest timetable PDFs below.",
   "muhs-mandate": "Mandatory disclosures and circulars issued by Maharashtra University of Health Sciences (MUHS), Nashik.",
   "muhs-mandate-circulars": "Latest circulars released by MUHS for affiliated colleges.",
   "muhs-mandate-notifications": "Official notifications from MUHS for students, faculty and administration.",
+  "faculty-teaching-staff": "Teaching staff details and department faculty information for the current academic year.",
+ 
 };
 
 type Store = Record<string, DocSection>;

@@ -16,15 +16,23 @@ export type CouncilKey =
   | "anti-ragging-cell"
   | "internal-grievances-vishakha"
   | "reservation-cell"
+  | "academic-council-committee-2023-2024"
+  | "co-curricular-extra-curricular-activity-cell"
+  | "research-innovation-entrepreneurship-cell"
+  | "student-support-career-guidance-placement-cell"
   | "student-council";
 
 export const COUNCIL_GROUPS: { key: CouncilKey; label: string }[] = [
-  { key: "iqac", label: "IQAC" },
-  { key: "college-council-curriculum", label: "College Council (CDC)" },
-  { key: "grievances-cell", label: "Grievance Redressal Cell" },
-  { key: "anti-ragging-cell", label: "Anti-Ragging Committee" },
-  { key: "internal-grievances-vishakha", label: "Internal Complaint (Vishakha)" },
-  { key: "reservation-cell", label: "Reservation Cell" },
+  { key: "iqac", label: "Internal Quality Assurance Cell for AY 2024-25" },
+  { key: "college-council-curriculum", label: "College Council Committee for the AY 2024-2025" },
+  { key: "grievances-cell", label: "Student Grievances and Redressal Committee" },
+  { key: "anti-ragging-cell", label: "Anti-Ragging Committee 2024-25" },
+  { key: "internal-grievances-vishakha", label: "Committee Against Sexual Harassment" },
+  { key: "reservation-cell", label: "Human Resources Development Cell for the AY 2024-25" },
+  { key: "academic-council-committee-2023-2024", label: "Academic Council Committee for the AY 2023-2024" },
+  { key: "co-curricular-extra-curricular-activity-cell", label: "Co-Curricular & Extra-Curricular Activity Cell" },
+  { key: "research-innovation-entrepreneurship-cell", label: "Research Innovation and Entrepreneurship Cell" },
+  { key: "student-support-career-guidance-placement-cell", label: "Student Support, Career Guidance and Placement Cell" },
   { key: "student-council", label: "Student Council" },
 ];
 
@@ -81,6 +89,22 @@ const DEFAULTS: Record<CouncilKey, CouncilMember[]> = {
     { id: "r4", ...mk("Dr. Yogesh Surse", "Professor") },
     { id: "r5", ...mk("Dr. Sunil More", "Professor") },
     { id: "r6", ...mk("Mr. Akshay Khairnar", "Student Representative") },
+  ],
+  "academic-council-committee-2023-2024": [
+    { id: "ac1", ...mk("Dr. A. P. Deshmukh", "Chairperson") },
+    { id: "ac2", ...mk("Prof. S. Y. Patil", "Member") },
+  ],
+  "co-curricular-extra-curricular-activity-cell": [
+    { id: "cc1", ...mk("Ms. S. N. Kulkarni", "Convenor") },
+    { id: "cc2", ...mk("Mr. V. R. Jadhav", "Member") },
+  ],
+  "research-innovation-entrepreneurship-cell": [
+    { id: "ri1", ...mk("Dr. M. K. Sharma", "Coordinator") },
+    { id: "ri2", ...mk("Ms. P. S. Bhosale", "Research Fellow") },
+  ],
+  "student-support-career-guidance-placement-cell": [
+    { id: "sp1", ...mk("Mr. R. P. Desai", "Head") },
+    { id: "sp2", ...mk("Ms. K. A. Jagtap", "Placement Officer") },
   ],
   "student-council": [
     { id: "s1", ...mk("Mr. Anurag Nikam", "General Secretary") },

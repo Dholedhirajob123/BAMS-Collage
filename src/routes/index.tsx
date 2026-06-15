@@ -116,29 +116,7 @@ function Index() {
             </div>
           </section>
 
-          <section className="space-y-3">
-            <Link
-              to="/$slug"
-              params={{ slug: "covid-19" }}
-              className="inline-block bg-destructive text-white px-4 py-2 rounded font-bold tracking-wider hover:scale-105 transition-transform"
-            >
-              COVID-19
-            </Link>
-            <Link
-              to="/$slug"
-              params={{ slug: "covid-19" }}
-              className="block text-saffron font-semibold hover:underline"
-            >
-              Important Announcements and Information Related with Covid-19
-            </Link>
-            <Link
-              to="/$slug"
-              params={{ slug: "affiliated-university" }}
-              className="block text-saffron font-semibold hover:underline"
-            >
-              Details of Affiliated University : MUHS
-            </Link>
-          </section>
+       
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useCouncil, type CouncilKey, COUNCIL_GROUPS } from "@/lib/councilStore";
+import councilPic from "@/assets/gallery-1.jpg";
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return <h2 className="text-2xl font-semibold text-brand mb-2">{children}</h2>;
@@ -20,6 +21,9 @@ function CouncilTable({ slug, title, year }: { slug: CouncilKey; title: string; 
   const rows = useCouncil(slug);
   return (
     <div>
+      <div className="mb-6 rounded-md overflow-hidden border border-border bg-card">
+        <img src={councilPic} alt={title} className="w-full h-44 object-cover" />
+      </div>
       <SectionTitle>{title}</SectionTitle>
       <YearTag>{year ?? "Academic Year 2025-26"}</YearTag>
       <div className="rounded-md border border-border overflow-hidden">
