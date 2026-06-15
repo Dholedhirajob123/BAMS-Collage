@@ -37,10 +37,10 @@ export const PAGES: PageDef[] = [
     "Hospital",
     "220-bed hospital with 3 operation theatres, ICU, Sonography and X-Ray facilities.",
   ),
-  p("hospital-opd", "OPD Services", "Hospital"),
-  p("hospital-ipd", "IPD Services", "Hospital"),
-  p("hospital-departments", "Hospital Departments", "Hospital"),
-  p("hospital-operation-theatre", "Operation Theatre", "Hospital"),
+   p("opd-services", "OPD Services", "Hospital", "Outpatient department services and guidelines."),
+  p("ipd-services", "IPD Services", "Hospital", "Inpatient department services and admission procedures."),
+  p("hospital-departments", "Hospital Departments", "Hospital", "Various hospital departments and their services."),
+  p("operation-theatre", "Operation Theatre", "Hospital", "Surgical facilities and OT protocols."),
   p("facilities", "Facilities", "Facilities"),
   p("facility-infrastructure", "Infrastructure", "Facilities"),
   p("facility-herbal-garden", "Herbal Garden", "Facilities"),
@@ -58,7 +58,7 @@ export const PAGES: PageDef[] = [
     "contact",
     "Contact Us",
     "Contact",
-    "Kamal Nagar, Hirawadi, Panchavati, Nashik - 422003. Email: rajshreeayurvedic@gmail.com  Landline: +91 253 2621565",
+    "Kamal Nagar, Hirawadi, Panchavati, Nashik - 422003. Email: rajshreeayurvedic@gmail.com  Landline: +91 - 8087203870 | 8087303870",
   ),
   p("pay-online", "Pay Online", "Services"),
   p("naac", "NAAC", "NAAC", "Accredited with Grade B++"),
@@ -178,10 +178,10 @@ export const TOP_NAV: NavItem[] = [
     label: "Hospital",
     children: [
       { label: "Overview", slug: "hospital" },
-      { label: "OPD Services", slug: "hospital-opd" },
-      { label: "IPD Services", slug: "hospital-ipd" },
+      { label: "OPD Services", slug: "opd-services" },        // Changed from hospital-opd
+      { label: "IPD Services", slug: "ipd-services" },        // Changed from hospital-ipd
       { label: "Departments", slug: "hospital-departments" },
-      { label: "Operation Theatre", slug: "hospital-operation-theatre" },
+      { label: "Operation Theatre", slug: "operation-theatre" }, // Changed from hospital-operation-theatre
     ],
   },
   {
@@ -199,6 +199,14 @@ export const TOP_NAV: NavItem[] = [
       { label: "Hospital Staff", slug: "staff-hospital" },
       { label: "College Staff", slug: "staff-college" },
       { label: "Non-Teaching", slug: "staff-non-teaching" },
+    ],
+  },
+   {
+    label: "Admission",
+    children: [
+      { label: "Admission", slug: "programs-admission" },
+      { label: "UG Fee Structure", slug: "fra-ug" },
+      { label: "Student Admission List", slug: "student-admission-list" },
     ],
   },
   {
