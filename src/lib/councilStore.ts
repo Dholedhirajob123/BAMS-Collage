@@ -29,15 +29,37 @@ export const COUNCIL_GROUPS: { key: CouncilKey; label: string }[] = [
   { key: "anti-ragging-cell", label: "Anti-Ragging Committee 2024-25" },
   { key: "internal-grievances-vishakha", label: "Committee Against Sexual Harassment" },
   { key: "reservation-cell", label: "Human Resources Development Cell for the AY 2024-25" },
-  { key: "academic-council-committee-2023-2024", label: "Academic Council Committee for the AY 2023-2024" },
-  { key: "co-curricular-extra-curricular-activity-cell", label: "Co-Curricular & Extra-Curricular Activity Cell" },
-  { key: "research-innovation-entrepreneurship-cell", label: "Research Innovation and Entrepreneurship Cell" },
-  { key: "student-support-career-guidance-placement-cell", label: "Student Support, Career Guidance and Placement Cell" },
+  {
+    key: "academic-council-committee-2023-2024",
+    label: "Academic Council Committee for the AY 2023-2024",
+  },
+  {
+    key: "co-curricular-extra-curricular-activity-cell",
+    label: "Co-Curricular & Extra-Curricular Activity Cell",
+  },
+  {
+    key: "research-innovation-entrepreneurship-cell",
+    label: "Research Innovation and Entrepreneurship Cell",
+  },
+  {
+    key: "student-support-career-guidance-placement-cell",
+    label: "Student Support, Career Guidance and Placement Cell",
+  },
   { key: "student-council", label: "Student Council" },
 ];
 
-const mk = (name: string, designation: string, position = "Member", phone = "", email = ""): Omit<CouncilMember, "id"> => ({
-  name, designation, position, phone, email,
+const mk = (
+  name: string,
+  designation: string,
+  position = "Member",
+  phone = "",
+  email = "",
+): Omit<CouncilMember, "id"> => ({
+  name,
+  designation,
+  position,
+  phone,
+  email,
 });
 
 const DEFAULTS: Record<CouncilKey, CouncilMember[]> = {
@@ -122,7 +144,11 @@ type Store = Partial<Record<CouncilKey, CouncilMember[]>>;
 
 function load(): Store {
   if (typeof window === "undefined") return {};
-  try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch { return {}; }
+  try {
+    return JSON.parse(localStorage.getItem(KEY) || "{}");
+  } catch {
+    return {};
+  }
 }
 function save(s: Store) {
   localStorage.setItem(KEY, JSON.stringify(s));
@@ -133,10 +159,14 @@ export function getCouncil(k: CouncilKey): CouncilMember[] {
   return load()[k] ?? DEFAULTS[k];
 }
 export function setCouncil(k: CouncilKey, list: CouncilMember[]) {
-  const s = load(); s[k] = list; save(s);
+  const s = load();
+  s[k] = list;
+  save(s);
 }
 export function resetCouncil(k: CouncilKey) {
-  const s = load(); delete s[k]; save(s);
+  const s = load();
+  delete s[k];
+  save(s);
 }
 export function newCouncilId() {
   return `cm-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;

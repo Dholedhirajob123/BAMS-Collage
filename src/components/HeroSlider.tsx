@@ -62,9 +62,7 @@ export function HeroSlider() {
                 <h2 className="text-white font-bold text-2xl md:text-4xl lg:text-5xl leading-tight drop-shadow-lg">
                   {s.title}
                 </h2>
-                <p className="mt-3 text-white/90 text-sm md:text-lg max-w-2xl">
-                  {s.sub}
-                </p>
+                <p className="mt-3 text-white/90 text-sm md:text-lg max-w-2xl">{s.sub}</p>
               </div>
             </div>
           </div>

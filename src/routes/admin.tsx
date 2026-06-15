@@ -1,23 +1,52 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { SIDE_NAV } from "@/lib/pages";
-import {
-  loadOverrides,
-  saveOverrides,
-  keyFor,
-  type OverridesMap,
-} from "@/lib/navOverrides";
+import { loadOverrides, saveOverrides, keyFor, type OverridesMap } from "@/lib/navOverrides";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { addPhoto, getAllForAdmin, removePhoto, restorePhoto, updatePhoto } from "@/lib/galleryStore";
-import { getStaff, setStaff, resetStaff, newId, STAFF_GROUPS, type StaffGroupKey, type StaffMember } from "@/lib/staffStore";
-import { loadAdmins, addAdmin, updateAdmin, removeAdmin, verifyLogin, MAX_ADMINS, type Admin } from "@/lib/adminStore";
-import { COUNCIL_GROUPS, getCouncil, setCouncil, resetCouncil, newCouncilId, type CouncilKey, type CouncilMember } from "@/lib/councilStore";
-import { DOC_SECTIONS, getSection, setSection, resetSection, newDocId, type DocSection as DocSectionT } from "@/lib/docsStore";
-
-
-
+import {
+  addPhoto,
+  getAllForAdmin,
+  removePhoto,
+  restorePhoto,
+  updatePhoto,
+} from "@/lib/galleryStore";
+import {
+  getStaff,
+  setStaff,
+  resetStaff,
+  newId,
+  STAFF_GROUPS,
+  type StaffGroupKey,
+  type StaffMember,
+} from "@/lib/staffStore";
+import {
+  loadAdmins,
+  addAdmin,
+  updateAdmin,
+  removeAdmin,
+  verifyLogin,
+  MAX_ADMINS,
+  type Admin,
+} from "@/lib/adminStore";
+import {
+  COUNCIL_GROUPS,
+  getCouncil,
+  setCouncil,
+  resetCouncil,
+  newCouncilId,
+  type CouncilKey,
+  type CouncilMember,
+} from "@/lib/councilStore";
+import {
+  DOC_SECTIONS,
+  getSection,
+  setSection,
+  resetSection,
+  newDocId,
+  type DocSection as DocSectionT,
+} from "@/lib/docsStore";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin Panel" }] }),
@@ -35,7 +64,8 @@ function AdminPage() {
       <div className="mx-auto max-w-sm p-8 mt-10 border border-border rounded-md bg-card">
         <h1 className="text-2xl font-semibold text-brand mb-1">Admin Login</h1>
         <p className="text-xs text-muted-foreground mb-4">
-          Default: phone <code className="bg-secondary px-1 rounded">0000000000</code> · password <code className="bg-secondary px-1 rounded">admin123</code>
+          Default: phone <code className="bg-secondary px-1 rounded">0000000000</code> · password{" "}
+          <code className="bg-secondary px-1 rounded">admin123</code>
         </p>
         <form
           onSubmit={(e) => {
@@ -50,14 +80,29 @@ function AdminPage() {
           className="space-y-3"
         >
           <Label htmlFor="phone">Phone Number</Label>
-          <Input id="phone" inputMode="numeric" value={phone} onChange={(e) => setPhone(e.target.value)} autoFocus />
+          <Input
+            id="phone"
+            inputMode="numeric"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            autoFocus
+          />
           <Label htmlFor="pw">Password</Label>
-          <Input id="pw" type="password" value={pwInput} onChange={(e) => setPwInput(e.target.value)} />
+          <Input
+            id="pw"
+            type="password"
+            value={pwInput}
+            onChange={(e) => setPwInput(e.target.value)}
+          />
           {err && <p className="text-sm text-destructive">{err}</p>}
-          <Button type="submit" className="w-full">Sign In</Button>
+          <Button type="submit" className="w-full">
+            Sign In
+          </Button>
         </form>
         <p className="text-xs text-muted-foreground mt-4 text-center">
-          <Link to="/" className="hover:underline">← Back to site</Link>
+          <Link to="/" className="hover:underline">
+            ← Back to site
+          </Link>
         </p>
       </div>
     );
@@ -72,12 +117,18 @@ function Editor({ onLogout }: { onLogout: () => void }) {
   const [selectedOverride, setSelectedOverride] = useState<string>("");
 
   const flatItems = useMemo(() => {
-    const rows: { group: string | null; slug: string; defaultLabel: string; defaultUrl?: string }[] = [];
+    const rows: {
+      group: string | null;
+      slug: string;
+      defaultLabel: string;
+      defaultUrl?: string;
+    }[] = [];
     SIDE_NAV.forEach((item) => {
       if (item.children?.length) {
         item.children.forEach((c) => {
           if (c.slug) rows.push({ group: item.label, slug: c.slug, defaultLabel: c.label });
-          else if (c.to) rows.push({ group: item.label, slug: c.to, defaultLabel: c.label, defaultUrl: c.to });
+          else if (c.to)
+            rows.push({ group: item.label, slug: c.to, defaultLabel: c.label, defaultUrl: c.to });
         });
       } else if (item.slug) {
         rows.push({ group: null, slug: item.slug, defaultLabel: item.label });
@@ -92,7 +143,9 @@ function Editor({ onLogout }: { onLogout: () => void }) {
     }
   }, [flatItems, selectedOverride]);
 
-  const selectedNavItem = flatItems.find((item) => keyFor(item.group, item.slug) === selectedOverride);
+  const selectedNavItem = flatItems.find(
+    (item) => keyFor(item.group, item.slug) === selectedOverride,
+  );
   const currentOverride = overrides[selectedOverride] || {};
 
   const update = (k: string, patch: Partial<{ label: string; url: string }>) => {
@@ -113,8 +166,6 @@ function Editor({ onLogout }: { onLogout: () => void }) {
     setTimeout(() => setSavedMsg(""), 2500);
   };
 
-
-
   return (
     <div className="mx-auto max-w-5xl p-6">
       <div className="flex items-center justify-between mb-6">
@@ -123,8 +174,12 @@ function Editor({ onLogout }: { onLogout: () => void }) {
           <p className="text-sm text-muted-foreground">Edit sidebar link names and target URLs.</p>
         </div>
         <div className="flex gap-2">
-          <Link to="/" className="text-sm text-brand hover:underline self-center">View Site</Link>
-          <Button variant="outline" onClick={onLogout}>Logout</Button>
+          <Link to="/" className="text-sm text-brand hover:underline self-center">
+            View Site
+          </Link>
+          <Button variant="outline" onClick={onLogout}>
+            Logout
+          </Button>
         </div>
       </div>
 
@@ -139,7 +194,8 @@ function Editor({ onLogout }: { onLogout: () => void }) {
       <div className="mt-8 border border-border rounded-md p-5 bg-card">
         <h2 className="font-semibold text-lg mb-1">Sidebar Link Editor</h2>
         <p className="text-xs text-muted-foreground mb-4">
-          Choose a sidebar item and update its label or URL. Admin changes apply immediately after saving.
+          Choose a sidebar item and update its label or URL. Admin changes apply immediately after
+          saving.
         </p>
 
         <div className="grid gap-4 md:grid-cols-[1fr_1.6fr]">
@@ -246,7 +302,8 @@ function DocsManager() {
     <div className="mt-8 border border-border rounded-md p-5 bg-card">
       <h2 className="font-semibold text-lg mb-1">Page Information & PDF Documents</h2>
       <p className="text-xs text-muted-foreground mb-4">
-        Edit the information shown on each page and upload PDFs that visitors can download. Max 4MB per PDF.
+        Edit the information shown on each page and upload PDFs that visitors can download. Max 4MB
+        per PDF.
       </p>
 
       {msg && <div className="mb-3 p-2 bg-green-100 text-green-800 rounded text-sm">{msg}</div>}
@@ -259,7 +316,9 @@ function DocsManager() {
           onChange={(e) => reload(e.target.value)}
         >
           {DOC_SECTIONS.map((s) => (
-            <option key={s.key} value={s.key}>{s.label}</option>
+            <option key={s.key} value={s.key}>
+              {s.label}
+            </option>
           ))}
         </select>
       </div>
@@ -308,23 +367,35 @@ function DocsManager() {
               <li key={f.id} className="flex items-center justify-between p-2 text-xs">
                 <div className="min-w-0">
                   <p className="font-medium truncate">{f.name}</p>
-                  <p className="text-[10px] text-muted-foreground">{(f.size / 1024).toFixed(0)} KB</p>
+                  <p className="text-[10px] text-muted-foreground">
+                    {(f.size / 1024).toFixed(0)} KB
+                  </p>
                 </div>
                 <div className="flex gap-1 ml-2">
-                  <a href={f.dataUrl} download={f.name} className="text-brand hover:underline text-xs px-2 py-1">View</a>
-                  <Button size="sm" variant="destructive" className="h-7 text-xs" onClick={() => removeFile(f.id)}>×</Button>
+                  <a
+                    href={f.dataUrl}
+                    download={f.name}
+                    className="text-brand hover:underline text-xs px-2 py-1"
+                  >
+                    View
+                  </a>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    className="h-7 text-xs"
+                    onClick={() => removeFile(f.id)}
+                  >
+                    ×
+                  </Button>
                 </div>
               </li>
             ))}
           </ul>
         )}
       </div>
-
-    
     </div>
   );
 }
-
 
 function CouncilManager() {
   const [group, setGroup] = useState<CouncilKey>("iqac");
@@ -349,13 +420,17 @@ function CouncilManager() {
   };
 
   const addRow = () =>
-    commit([...members, { id: newCouncilId(), name: "", designation: "", position: "", phone: "", email: "" }]);
+    commit([
+      ...members,
+      { id: newCouncilId(), name: "", designation: "", position: "", phone: "", email: "" },
+    ]);
 
   return (
     <div className="mt-8 border border-border rounded-md p-5 bg-card">
       <h2 className="font-semibold text-lg mb-1">Council / Committee Members</h2>
       <p className="text-xs text-muted-foreground mb-4">
-        Choose a committee and edit its member list. Columns: Name, Designation, Position, Mobile No., Email ID.
+        Choose a committee and edit its member list. Columns: Name, Designation, Position, Mobile
+        No., Email ID.
       </p>
 
       <div className="mb-4">
@@ -390,13 +465,47 @@ function CouncilManager() {
             {members.map((m, i) => (
               <tr key={m.id} className="border-t border-border">
                 <td className="p-2 text-muted-foreground">{i + 1}</td>
-                <td className="p-2"><Input value={m.name} onChange={(e) => updateRow(m.id, { name: e.target.value })} /></td>
-                <td className="p-2"><Input value={m.designation} onChange={(e) => updateRow(m.id, { designation: e.target.value })} /></td>
-                <td className="p-2"><Input value={m.position ?? ""} onChange={(e) => updateRow(m.id, { position: e.target.value })} /></td>
-                <td className="p-2"><Input value={m.phone} inputMode="tel" onChange={(e) => updateRow(m.id, { phone: e.target.value })} /></td>
-                <td className="p-2"><Input value={m.email} type="email" onChange={(e) => updateRow(m.id, { email: e.target.value })} /></td>
                 <td className="p-2">
-                  <Button size="sm" variant="destructive" className="h-7 text-xs" onClick={() => removeRow(m.id)}>×</Button>
+                  <Input
+                    value={m.name}
+                    onChange={(e) => updateRow(m.id, { name: e.target.value })}
+                  />
+                </td>
+                <td className="p-2">
+                  <Input
+                    value={m.designation}
+                    onChange={(e) => updateRow(m.id, { designation: e.target.value })}
+                  />
+                </td>
+                <td className="p-2">
+                  <Input
+                    value={m.position ?? ""}
+                    onChange={(e) => updateRow(m.id, { position: e.target.value })}
+                  />
+                </td>
+                <td className="p-2">
+                  <Input
+                    value={m.phone}
+                    inputMode="tel"
+                    onChange={(e) => updateRow(m.id, { phone: e.target.value })}
+                  />
+                </td>
+                <td className="p-2">
+                  <Input
+                    value={m.email}
+                    type="email"
+                    onChange={(e) => updateRow(m.id, { email: e.target.value })}
+                  />
+                </td>
+                <td className="p-2">
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    className="h-7 text-xs"
+                    onClick={() => removeRow(m.id)}
+                  >
+                    ×
+                  </Button>
                 </td>
               </tr>
             ))}
@@ -404,12 +513,12 @@ function CouncilManager() {
         </table>
       </div>
 
-      <Button className="mt-3" size="sm" onClick={addRow}>+ Add Member</Button>
+      <Button className="mt-3" size="sm" onClick={addRow}>
+        + Add Member
+      </Button>
     </div>
   );
 }
-
-
 
 function StaffManager() {
   const [group, setGroup] = useState<StaffGroupKey>("hospital");
@@ -434,7 +543,10 @@ function StaffManager() {
   };
 
   const addRow = () =>
-    commit([...members, { id: newId(), name: "", designation: "", education: "", year: "", photo: "" }]);
+    commit([
+      ...members,
+      { id: newId(), name: "", designation: "", education: "", year: "", photo: "" },
+    ]);
 
   const onPhoto = (id: string, file: File) => {
     if (!file.type.startsWith("image/")) return alert("Please choose an image file.");
@@ -447,7 +559,9 @@ function StaffManager() {
   return (
     <div className="mt-8 border border-border rounded-md p-5 bg-card">
       <h2 className="font-semibold text-lg mb-1">Staff Management</h2>
-      <p className="text-xs text-muted-foreground mb-4">Choose a staff group and edit faculty, hospital, or support staff entries.</p>
+      <p className="text-xs text-muted-foreground mb-4">
+        Choose a staff group and edit faculty, hospital, or support staff entries.
+      </p>
 
       <div className="mb-4">
         <Label className="text-xs">Select Staff Group</Label>
@@ -480,7 +594,13 @@ function StaffManager() {
             {members.map((m) => (
               <tr key={m.id} className="border-t border-border align-top">
                 <td className="p-2 w-24">
-                  {m.photo && <img src={m.photo} alt="" className="h-12 w-12 rounded-full object-cover mb-1" />}
+                  {m.photo && (
+                    <img
+                      src={m.photo}
+                      alt=""
+                      className="h-12 w-12 rounded-full object-cover mb-1"
+                    />
+                  )}
                   <input
                     type="file"
                     accept="image/*"
@@ -492,12 +612,39 @@ function StaffManager() {
                     }}
                   />
                 </td>
-                <td className="p-2"><Input value={m.name} onChange={(e) => updateRow(m.id, { name: e.target.value })} /></td>
-                <td className="p-2"><Input value={m.designation} onChange={(e) => updateRow(m.id, { designation: e.target.value })} /></td>
-                <td className="p-2"><Input value={m.education} onChange={(e) => updateRow(m.id, { education: e.target.value })} /></td>
-                <td className="p-2"><Input value={m.year} onChange={(e) => updateRow(m.id, { year: e.target.value })} /></td>
                 <td className="p-2">
-                  <Button size="sm" variant="destructive" className="h-7 text-xs" onClick={() => removeRow(m.id)}>×</Button>
+                  <Input
+                    value={m.name}
+                    onChange={(e) => updateRow(m.id, { name: e.target.value })}
+                  />
+                </td>
+                <td className="p-2">
+                  <Input
+                    value={m.designation}
+                    onChange={(e) => updateRow(m.id, { designation: e.target.value })}
+                  />
+                </td>
+                <td className="p-2">
+                  <Input
+                    value={m.education}
+                    onChange={(e) => updateRow(m.id, { education: e.target.value })}
+                  />
+                </td>
+                <td className="p-2">
+                  <Input
+                    value={m.year}
+                    onChange={(e) => updateRow(m.id, { year: e.target.value })}
+                  />
+                </td>
+                <td className="p-2">
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    className="h-7 text-xs"
+                    onClick={() => removeRow(m.id)}
+                  >
+                    ×
+                  </Button>
                 </td>
               </tr>
             ))}
@@ -505,11 +652,12 @@ function StaffManager() {
         </table>
       </div>
 
-      <Button className="mt-3" size="sm" onClick={addRow}>+ Add Staff Member</Button>
+      <Button className="mt-3" size="sm" onClick={addRow}>
+        + Add Staff Member
+      </Button>
     </div>
   );
 }
-
 
 function GalleryManager() {
   const [items, setItems] = useState(() => getAllForAdmin());
@@ -523,12 +671,7 @@ function GalleryManager() {
     if (file.size > 3 * 1024 * 1024) return alert("Image must be under 3MB.");
     const reader = new FileReader();
     reader.onload = () => {
-      addPhoto(
-        reader.result as string,
-        caption || file.name.replace(/\.[^.]+$/, ""),
-        date,
-        place,
-      );
+      addPhoto(reader.result as string, caption || file.name.replace(/\.[^.]+$/, ""), date, place);
       setCaption("");
       setDate("");
       setPlace("");
@@ -540,7 +683,9 @@ function GalleryManager() {
   return (
     <div className="mt-8 border border-border rounded-md p-5 bg-card">
       <h2 className="font-semibold text-lg mb-1">Photo Gallery</h2>
-      <p className="text-xs text-muted-foreground mb-4">Add or remove photos shown on the Photo Gallery page.</p>
+      <p className="text-xs text-muted-foreground mb-4">
+        Add or remove photos shown on the Photo Gallery page.
+      </p>
 
       <div className="grid gap-3 mb-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <Input
@@ -579,10 +724,16 @@ function GalleryManager() {
             className={`border border-border rounded-md overflow-hidden bg-card ${hidden ? "opacity-40" : ""}`}
           >
             <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-4 p-3">
-              <img src={photo.src} alt={photo.caption} className="h-40 w-full rounded-md object-cover md:h-full" />
+              <img
+                src={photo.src}
+                alt={photo.caption}
+                className="h-40 w-full rounded-md object-cover md:h-full"
+              />
               <div className="space-y-3">
                 <div className="flex flex-wrap gap-2 items-center">
-                  <span className="text-xs font-semibold">{isDefault ? "Default" : "Uploaded"}</span>
+                  <span className="text-xs font-semibold">
+                    {isDefault ? "Default" : "Uploaded"}
+                  </span>
                   {hidden && <span className="text-[10px] text-muted-foreground">Hidden</span>}
                 </div>
 
@@ -618,11 +769,27 @@ function GalleryManager() {
 
                 <div className="flex flex-wrap gap-2">
                   {hidden ? (
-                    <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => { restorePhoto(photo.id); refresh(); }}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="text-xs h-7"
+                      onClick={() => {
+                        restorePhoto(photo.id);
+                        refresh();
+                      }}
+                    >
                       Restore
                     </Button>
                   ) : (
-                    <Button size="sm" variant="destructive" className="text-xs h-7" onClick={() => { removePhoto(photo.id); refresh(); }}>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      className="text-xs h-7"
+                      onClick={() => {
+                        removePhoto(photo.id);
+                        refresh();
+                      }}
+                    >
                       Remove
                     </Button>
                   )}
@@ -635,4 +802,3 @@ function GalleryManager() {
     </div>
   );
 }
-

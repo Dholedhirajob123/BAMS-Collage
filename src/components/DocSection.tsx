@@ -19,13 +19,17 @@ export function DocSection({ slug }: { slug: string }) {
         ) : (
           <ul className="divide-y divide-border border border-border rounded-md bg-card">
             {files.map((f) => (
-              <li key={f.id} className="flex flex-col gap-3 p-3 hover:bg-secondary/40 sm:flex-row sm:items-center sm:justify-between">
+              <li
+                key={f.id}
+                className="flex flex-col gap-3 p-3 hover:bg-secondary/40 sm:flex-row sm:items-center sm:justify-between"
+              >
                 <div className="flex items-start gap-3 min-w-0">
                   <span className="text-red-600 text-lg shrink-0">📄</span>
                   <div className="min-w-0">
                     <p className="text-sm font-medium truncate">{f.name}</p>
                     <p className="text-[11px] text-muted-foreground">
-                      {(f.size / 1024).toFixed(0)} KB · Added {new Date(f.addedAt).toLocaleDateString()}
+                      {(f.size / 1024).toFixed(0)} KB · Added{" "}
+                      {new Date(f.addedAt).toLocaleDateString()}
                     </p>
                     {f.batch && (
                       <p className="text-[11px] text-muted-foreground mt-1">Batch: {f.batch}</p>

@@ -21,12 +21,22 @@ const p = (slug: string, title: string, category: string, body?: string): PageDe
 
 export const PAGES: PageDef[] = [
   // Top nav
-  p("about-us", "About Us", "About", "Learn about RAJASHRI AYURVEDIC MEDICAL COLLEGE & HOSPITAL, established in 2015."),
+  p(
+    "about-us",
+    "About Us",
+    "About",
+    "Learn about RAJASHRI AYURVEDIC MEDICAL COLLEGE & HOSPITAL, established in 2015.",
+  ),
   p("history", "History", "About"),
   p("vision-mission", "Vision & Mission", "About"),
   p("founder-chairman", "Founder Chairman", "About"),
   p("chairman", "Chairman", "About"),
-  p("hospital", "Hospital", "Hospital", "220-bed hospital with 3 operation theatres, ICU, Sonography and X-Ray facilities."),
+  p(
+    "hospital",
+    "Hospital",
+    "Hospital",
+    "220-bed hospital with 3 operation theatres, ICU, Sonography and X-Ray facilities.",
+  ),
   p("hospital-opd", "OPD Services", "Hospital"),
   p("hospital-ipd", "IPD Services", "Hospital"),
   p("hospital-departments", "Hospital Departments", "Hospital"),
@@ -44,7 +54,12 @@ export const PAGES: PageDef[] = [
   p("download", "Downloads", "Resources"),
   p("important-links", "Important Links", "Resources"),
   p("photo-gallery", "Photo Gallery", "Media"),
-  p("contact", "Contact Us", "Contact", "Kamal Nagar, Hirawadi, Panchavati, Nashik - 422003. Email: ssamnsk@gmail.com  Landline: +91 253 2621565"),
+  p(
+    "contact",
+    "Contact Us",
+    "Contact",
+    "Kamal Nagar, Hirawadi, Panchavati, Nashik - 422003. Email: rajshreeayurvedic@gmail.com  Landline: +91 253 2621565",
+  ),
   p("pay-online", "Pay Online", "Services"),
   p("naac", "NAAC", "NAAC", "Accredited with Grade B++"),
   p("naac-ssr", "NAAC SSR", "NAAC"),
@@ -62,10 +77,30 @@ export const PAGES: PageDef[] = [
   p("reservation-cell", "Human Resources Development Cell for the AY 2024-25", "Council"),
   p("student-council", "Student Council", "Council"),
   p("rti-committee", "RTI Committee & Act", "Council"),
-  p("academic-council-committee-2023-2024", "Academic Council Committee for the AY 2023-2024", "Council", "Academic Council Committee details for AY 2023-2024."),
-  p("co-curricular-extra-curricular-activity-cell", "Co-Curricular & Extra-Curricular Activity Cell", "Council", "Co-curricular and extra-curricular activity cell information."),
-  p("research-innovation-entrepreneurship-cell", "Research Innovation and Entrepreneurship Cell", "Council", "Research, innovation, and entrepreneurship cell details."),
-  p("student-support-career-guidance-placement-cell", "Student Support, Career Guidance and Placement Cell", "Council", "Student support, career guidance, and placement cell information."),
+  p(
+    "academic-council-committee-2023-2024",
+    "Academic Council Committee for the AY 2023-2024",
+    "Council",
+    "Academic Council Committee details for AY 2023-2024.",
+  ),
+  p(
+    "co-curricular-extra-curricular-activity-cell",
+    "Co-Curricular & Extra-Curricular Activity Cell",
+    "Council",
+    "Co-curricular and extra-curricular activity cell information.",
+  ),
+  p(
+    "research-innovation-entrepreneurship-cell",
+    "Research Innovation and Entrepreneurship Cell",
+    "Council",
+    "Research, innovation, and entrepreneurship cell details.",
+  ),
+  p(
+    "student-support-career-guidance-placement-cell",
+    "Student Support, Career Guidance and Placement Cell",
+    "Council",
+    "Student support, career guidance, and placement cell information.",
+  ),
 
   // Academics
   p("dept-sanskrit-samhita-siddhanta", "Sanskrit, Samhita and Siddhanta", "Academics"),
@@ -76,7 +111,6 @@ export const PAGES: PageDef[] = [
   p("dept-ras-shastra", "Ras Shastra and Bhaishajya Kalpana", "Academics"),
   p("dept-rog-nidan", "Rog Nidan Evum Vikruti Vidnyan", "Academics"),
   p("dept-swasthavritta", "Swasthavritta", "Academics"),
- 
 
   // Faculty / Staff
   p("faculty-teaching-staff", "Teaching Staff", "Faculty"),
@@ -169,9 +203,7 @@ export const TOP_NAV: NavItem[] = [
   },
   {
     label: "Faculty",
-    children: [
-      { label: "Teaching Staff", slug: "faculty-teaching-staff" },
-    ],
+    children: [{ label: "Teaching Staff", slug: "faculty-teaching-staff" }],
   },
   { label: "Download", slug: "download" },
   { label: "Important Links", slug: "important-links" },
@@ -194,16 +226,31 @@ export const SIDE_NAV: NavItem[] = [
   {
     label: "Council / Committee",
     children: [
-      { label: "Academic Council Committee for the AY 2023-2024", slug: "academic-council-committee-2023-2024" },
+      {
+        label: "Academic Council Committee for the AY 2023-2024",
+        slug: "academic-council-committee-2023-2024",
+      },
       { label: "Internal Quality Assurance Cell for AY 2024-25", slug: "iqac" },
-      { label: "College Council Committee for the AY 2024-2025", slug: "college-council-curriculum" },
+      {
+        label: "College Council Committee for the AY 2024-2025",
+        slug: "college-council-curriculum",
+      },
       { label: "Student Grievances and Redressal Committee", slug: "grievances-cell" },
       { label: "Anti-Ragging Committee 2024-25", slug: "anti-ragging-cell" },
-      { label: "Co-Curricular & Extra-Curricular Activity Cell", slug: "co-curricular-extra-curricular-activity-cell" },
+      {
+        label: "Co-Curricular & Extra-Curricular Activity Cell",
+        slug: "co-curricular-extra-curricular-activity-cell",
+      },
       { label: "Committee Against Sexual Harassment", slug: "internal-grievances-vishakha" },
       { label: "Human Resources Development Cell for the AY 2024-25", slug: "reservation-cell" },
-      { label: "Research Innovation and Entrepreneurship Cell", slug: "research-innovation-entrepreneurship-cell" },
-      { label: "Student Support, Career Guidance and Placement Cell", slug: "student-support-career-guidance-placement-cell" },
+      {
+        label: "Research Innovation and Entrepreneurship Cell",
+        slug: "research-innovation-entrepreneurship-cell",
+      },
+      {
+        label: "Student Support, Career Guidance and Placement Cell",
+        slug: "student-support-career-guidance-placement-cell",
+      },
       { label: "Student Council", slug: "student-council" },
     ],
   },
@@ -218,7 +265,6 @@ export const SIDE_NAV: NavItem[] = [
       { label: "Ras Shastra and Bhaishajya Kalpana", slug: "dept-ras-shastra" },
       { label: "Rog Nidan Evum Vikruti Vidnyan", slug: "dept-rog-nidan" },
       { label: "Swasthavritta", slug: "dept-swasthavritta" },
-     
     ],
   },
   {
@@ -242,9 +288,7 @@ export const SIDE_NAV: NavItem[] = [
   },
   {
     label: "Student Attendance",
-    children: [
-      { label: "UG Student", slug: "attendance-ug" },
-    ],
+    children: [{ label: "UG Student", slug: "attendance-ug" }],
   },
   { label: "Programs Offered - Admission Details", slug: "programs-admission" },
   { label: "Government Approvals", slug: "government-approvals" },
@@ -260,18 +304,14 @@ export const SIDE_NAV: NavItem[] = [
   { label: "Alumni Association", slug: "alumni-association" },
   {
     label: "Academic Calendar",
-    children: [
-      { label: "UG", slug: "calendar-ug" },
-    ],
+    children: [{ label: "UG", slug: "calendar-ug" }],
   },
   {
     label: "Time Table",
-    children: [
-      { label: "UG", slug: "timetable-ug" },
-    ],
+    children: [{ label: "UG", slug: "timetable-ug" }],
   },
   { label: "Academic Syllabus UG ", slug: "academic-syllabus" },
-  
+
   { label: "Research and Publications", slug: "research-publications" },
   {
     label: "Activities",

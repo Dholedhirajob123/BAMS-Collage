@@ -42,13 +42,20 @@ export function applyOverrides(nav: NavItem[], map: OverridesMap): NavItem[] {
         ...item,
         children: item.children.map((c) => {
           const o = map[keyFor(item.label, c.slug!)];
-          return o ? { ...c, label: o.label ?? c.label, ...(o.url ? { to: o.url, slug: undefined } : {}) } : c;
+          return o
+            ? { ...c, label: o.label ?? c.label, ...(o.url ? { to: o.url, slug: undefined } : {}) }
+            : c;
         }),
       };
     }
     if (item.slug) {
       const o = map[keyFor(null, item.slug)];
-      if (o) return { ...item, label: o.label ?? item.label, ...(o.url ? { to: o.url, slug: undefined } : {}) };
+      if (o)
+        return {
+          ...item,
+          label: o.label ?? item.label,
+          ...(o.url ? { to: o.url, slug: undefined } : {}),
+        };
     }
     return item;
   });

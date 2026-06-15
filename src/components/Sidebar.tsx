@@ -21,10 +21,23 @@ export function Sidebar() {
   const renderLink = (label: string, slug?: string, to?: string, cls = "") => {
     if (to) {
       const external = /^https?:\/\//.test(to);
-      if (external) return <a href={to} target="_blank" rel="noreferrer" className={cls}>{label}</a>;
-      return <Link to={to} className={cls}>{label}</Link>;
+      if (external)
+        return (
+          <a href={to} target="_blank" rel="noreferrer" className={cls}>
+            {label}
+          </a>
+        );
+      return (
+        <Link to={to} className={cls}>
+          {label}
+        </Link>
+      );
     }
-    return <Link to="/$slug" params={{ slug: slug! }} className={cls}>{label}</Link>;
+    return (
+      <Link to="/$slug" params={{ slug: slug! }} className={cls}>
+        {label}
+      </Link>
+    );
   };
 
   return (
@@ -48,14 +61,24 @@ export function Sidebar() {
                     <ul className="bg-secondary/50">
                       {item.children!.map((c) => (
                         <li key={c.label}>
-                          {renderLink(c.label, c.slug, c.to, "block pl-6 pr-4 py-2 text-sm text-brand hover:underline")}
+                          {renderLink(
+                            c.label,
+                            c.slug,
+                            c.to,
+                            "block pl-6 pr-4 py-2 text-sm text-brand hover:underline",
+                          )}
                         </li>
                       ))}
                     </ul>
                   )}
                 </>
               ) : (
-                renderLink(item.label, item.slug, item.to, "block px-4 py-3 text-sm text-muted-foreground hover:bg-secondary")
+                renderLink(
+                  item.label,
+                  item.slug,
+                  item.to,
+                  "block px-4 py-3 text-sm text-muted-foreground hover:bg-secondary",
+                )
               )}
             </li>
           );

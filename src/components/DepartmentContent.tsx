@@ -14,8 +14,7 @@ export type DeptInfo = {
   image: string;
 };
 
-const img = (q: string) =>
-  `https://images.unsplash.com/${q}?auto=format&fit=crop&w=1200&q=70`;
+const img = (q: string) => `https://images.unsplash.com/${q}?auto=format&fit=crop&w=1200&q=70`;
 
 export const DEPARTMENTS: DeptInfo[] = [
   {
@@ -130,7 +129,6 @@ export const DEPARTMENTS: DeptInfo[] = [
     activities: ["International Yoga Day", "Health awareness rallies", "Village surveys"],
     image: img("photo-1545205597-3d9d02c29597"),
   },
-  
 ];
 
 export const DEPT_MAP: Record<string, DeptInfo> = Object.fromEntries(

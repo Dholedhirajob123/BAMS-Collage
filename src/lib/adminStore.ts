@@ -37,18 +37,25 @@ export function verifyLogin(phone: string, password: string): Admin | null {
 
 export function addAdmin(a: Omit<Admin, "id">): { ok: boolean; error?: string } {
   const list = loadAdmins();
-  if (list.length >= MAX_ADMINS) return { ok: false, error: `Maximum ${MAX_ADMINS} admins allowed.` };
+  if (list.length >= MAX_ADMINS)
+    return { ok: false, error: `Maximum ${MAX_ADMINS} admins allowed.` };
   if (!/^\d{7,15}$/.test(a.phone.trim())) return { ok: false, error: "Phone must be 7–15 digits." };
   if (a.password.length < 4) return { ok: false, error: "Password must be at least 4 characters." };
-  if (list.some((x) => x.phone.trim() === a.phone.trim())) return { ok: false, error: "Phone already exists." };
+  if (list.some((x) => x.phone.trim() === a.phone.trim()))
+    return { ok: false, error: "Phone already exists." };
   saveAdmins([...list, { ...a, id: newId() }]);
   return { ok: true };
 }
 
-export function updateAdmin(id: string, patch: Partial<Omit<Admin, "id">>): { ok: boolean; error?: string } {
+export function updateAdmin(
+  id: string,
+  patch: Partial<Omit<Admin, "id">>,
+): { ok: boolean; error?: string } {
   const list = loadAdmins();
-  if (patch.phone && !/^\d{7,15}$/.test(patch.phone.trim())) return { ok: false, error: "Phone must be 7–15 digits." };
-  if (patch.password !== undefined && patch.password.length < 4) return { ok: false, error: "Password must be at least 4 characters." };
+  if (patch.phone && !/^\d{7,15}$/.test(patch.phone.trim()))
+    return { ok: false, error: "Phone must be 7–15 digits." };
+  if (patch.password !== undefined && patch.password.length < 4)
+    return { ok: false, error: "Password must be at least 4 characters." };
   if (patch.phone && list.some((x) => x.id !== id && x.phone.trim() === patch.phone!.trim()))
     return { ok: false, error: "Phone already exists." };
   saveAdmins(list.map((a) => (a.id === id ? { ...a, ...patch } : a)));

@@ -28,7 +28,9 @@ export const Route = createFileRoute("/$slug")({
     <div className="mx-auto max-w-3xl p-10 text-center">
       <h1 className="text-3xl font-bold mb-2">Page not found</h1>
       <p className="text-muted-foreground mb-6">This section is not available.</p>
-      <Link to="/" className="text-brand hover:underline">Back to Home</Link>
+      <Link to="/" className="text-brand hover:underline">
+        Back to Home
+      </Link>
     </div>
   ),
 });
@@ -39,7 +41,9 @@ function SlugPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
       <nav className="text-xs text-muted-foreground mb-4">
-        <Link to="/" className="hover:underline">Home</Link>
+        <Link to="/" className="hover:underline">
+          Home
+        </Link>
         <span className="mx-2">›</span>
         <span>{page.category}</span>
         <span className="mx-2">›</span>
@@ -69,17 +73,18 @@ function SlugPage() {
               <p className="text-foreground leading-relaxed">{page.body}</p>
             ) : (
               <p className="text-muted-foreground leading-relaxed">
-                Content for <strong className="text-foreground">{page.title}</strong> will be updated soon. This page
-                is part of the <em>{page.category}</em> section of RAJASHRI AYURVEDIC MEDICAL COLLEGE & HOSPITAL.
+                Content for <strong className="text-foreground">{page.title}</strong> will be
+                updated soon. This page is part of the <em>{page.category}</em> section of RAJASHRI
+                AYURVEDIC MEDICAL COLLEGE & HOSPITAL.
               </p>
             )}
 
             <div className="border-t border-border pt-4">
               <h2 className="text-sm font-semibold mb-2">For more information</h2>
               <p className="text-sm text-muted-foreground">
-                Contact the office at <strong>+91 253 2621565</strong> or email{" "}
-                <a className="text-brand hover:underline" href="mailto:ssamnsk@gmail.com">
-                  ssamnsk@gmail.com
+                Contact the office at <strong>+91 - 8087203870 | 8087303870</strong> or email{" "}
+                <a className="text-brand hover:underline" href="mailto:rajshreeayurvedic@gmail.com">
+                  rajshreeayurvedic@gmail.com
                 </a>
                 .
               </p>

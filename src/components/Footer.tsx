@@ -8,8 +8,8 @@ export function Footer() {
         </div>
         <div>
           <h3 className="font-semibold mb-2">Contact</h3>
-          <p>Email: rajashriayurved@gmail.com</p>
-          <p>Phone: +91 7264 222333</p>
+          <p>Email: <a href="mailto:rajshreeayurvedic@gmail.com" className="text-brand hover:underline">rajshreeayurvedic@gmail.com</a></p>
+          <p>Phone: 91 - 8087203870 | 8087303870</p>
         </div>
         <div>
           <h3 className="font-semibold mb-2">Codes</h3>

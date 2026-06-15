@@ -35,7 +35,12 @@ type State = { removed: string[]; custom: Photo[]; updated: Photo[] };
 function load(): State {
   if (typeof window === "undefined") return { removed: [], custom: [], updated: [] };
   try {
-    return { removed: [], custom: [], updated: [], ...JSON.parse(localStorage.getItem(KEY) || "{}") };
+    return {
+      removed: [],
+      custom: [],
+      updated: [],
+      ...JSON.parse(localStorage.getItem(KEY) || "{}"),
+    };
   } catch {
     return { removed: [], custom: [], updated: [] };
   }
@@ -53,7 +58,9 @@ export function getGallery(): Photo[] {
   const s = load();
   const updatedById = new Map(s.updated.map((p) => [p.id, p]));
   return [
-    ...DEFAULTS.filter((p) => !s.removed.includes(p.id)).map((p) => applyUpdate(p, updatedById.get(p.id))),
+    ...DEFAULTS.filter((p) => !s.removed.includes(p.id)).map((p) =>
+      applyUpdate(p, updatedById.get(p.id)),
+    ),
     ...s.custom,
   ];
 }
@@ -117,7 +124,9 @@ export function updatePhoto(id: string, patch: Partial<Pick<Photo, "caption" | "
 }
 
 export function useGallery() {
-  const [photos, setPhotos] = useState<Photo[]>(() => (typeof window === "undefined" ? DEFAULTS : getGallery()));
+  const [photos, setPhotos] = useState<Photo[]>(() =>
+    typeof window === "undefined" ? DEFAULTS : getGallery(),
+  );
   useEffect(() => {
     const update = () => setPhotos(getGallery());
     update();

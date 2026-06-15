@@ -44,17 +44,23 @@ function CouncilTable({ slug, title, year }: { slug: CouncilKey; title: string; 
                 <TableCell>{i + 1}</TableCell>
                 <TableCell className="font-medium">{r.name}</TableCell>
                 <TableCell>{r.designation}</TableCell>
-                <TableCell>{r.position || <span className="text-muted-foreground">—</span>}</TableCell>
+                <TableCell>
+                  {r.position || <span className="text-muted-foreground">—</span>}
+                </TableCell>
                 <TableCell>
                   {r.phone ? (
-                    <a href={`tel:${r.phone}`} className="text-brand hover:underline">{r.phone}</a>
+                    <a href={`tel:${r.phone}`} className="text-brand hover:underline">
+                      {r.phone}
+                    </a>
                   ) : (
                     <span className="text-muted-foreground">—</span>
                   )}
                 </TableCell>
                 <TableCell>
                   {r.email ? (
-                    <a href={`mailto:${r.email}`} className="text-brand hover:underline">{r.email}</a>
+                    <a href={`mailto:${r.email}`} className="text-brand hover:underline">
+                      {r.email}
+                    </a>
                   ) : (
                     <span className="text-muted-foreground">—</span>
                   )}

@@ -28,14 +28,16 @@ function Index() {
                 RAJASHRI AYURVEDIC MEDICAL COLLEGE & HOSPITAL
               </h3>
               <p className="text-sm text-foreground leading-relaxed text-justify">
-                Rajashri Ayurvedic Medical College & Hospital was established in 2015 and successfully completed the
-                milestone of 25 years. With huge college campus covering state-of-the-art college building, high-tech
-                infrastructure, hospital with 220 beds capacity and 3 operation theaters, nursery of ayurvedic medicinal
-                plants, first digital library, Teaching Pharmacy with Advance Research Laboratory etc. are the key features
-                of the Institute. The hospital is also equipped with ICU unit, Sonography, X-Ray unit. Intake capacity of
-                UG BAMS is 100. Post Graduation in Ayurveda for 9 programs (Samhita Siddhant, Kriya Sharir, Dravyaguna,
-                Rasashastra & Bhaishajya Kalpana, Prasuti & Streerog, Kaumarbhritya, Kayachikitsa, Shalya tantra,
-                Panchkarma) is also operational since recent times with intake capacity of 54 seats for PG.
+                Rajashri Ayurvedic Medical College & Hospital was established in 2015 and
+                successfully completed the milestone of 25 years. With huge college campus covering
+                state-of-the-art college building, high-tech infrastructure, hospital with 220 beds
+                capacity and 3 operation theaters, nursery of ayurvedic medicinal plants, first
+                digital library, Teaching Pharmacy with Advance Research Laboratory etc. are the key
+                features of the Institute. The hospital is also equipped with ICU unit, Sonography,
+                X-Ray unit. Intake capacity of UG BAMS is 100. Post Graduation in Ayurveda for 9
+                programs (Samhita Siddhant, Kriya Sharir, Dravyaguna, Rasashastra & Bhaishajya
+                Kalpana, Prasuti & Streerog, Kaumarbhritya, Kayachikitsa, Shalya tantra, Panchkarma)
+                is also operational since recent times with intake capacity of 54 seats for PG.
               </p>
             </div>
           </section>
@@ -52,8 +54,8 @@ function Index() {
             </header>
             <div className="bg-vision/90 text-white p-5">
               <p className="text-sm">
-                To be a pioneer Institute providing the health services to the community and also to be one of the best
-                academic Institutes in the field of Health Sciences.
+                To be a pioneer Institute providing the health services to the community and also to
+                be one of the best academic Institutes in the field of Health Sciences.
               </p>
             </div>
           </section>
@@ -65,7 +67,10 @@ function Index() {
             <div className="bg-mission/90 text-white p-5">
               <ol className="text-sm space-y-1 list-decimal list-inside">
                 <li>To provide State of the art infrastructure in the Institute.</li>
-                <li>To produce Highly Reputed Ayurveda Professionals contributing for Global Health Developments.</li>
+                <li>
+                  To produce Highly Reputed Ayurveda Professionals contributing for Global Health
+                  Developments.
+                </li>
                 <li>To strengthen the Research and Innovation in the field of Ayurveda.</li>
                 <li>To provide Health facilities across the rural and urban areas.</li>
               </ol>
@@ -115,8 +120,6 @@ function Index() {
               ))}
             </div>
           </section>
-
-       
         </div>
       </div>
     </div>
@@ -133,7 +136,11 @@ function PersonCard({ name, role, slug }: { name: string; role: string; slug: st
       <p className="text-sm text-muted-foreground mb-2">{role}</p>
       <div className="h-32 w-32 mx-auto rounded-full bg-secondary flex items-center justify-center mb-2">
         <span className="text-3xl font-bold text-brand">
-          {name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+          {name
+            .split(" ")
+            .map((n) => n[0])
+            .slice(0, 2)
+            .join("")}
         </span>
       </div>
       <p className="font-semibold text-brand">{name}</p>
@@ -155,7 +162,10 @@ function NewsCard() {
       </div>
       <ul className="space-y-2">
         {items.map((i) => (
-          <li key={i.slug} className="flex items-center justify-between gap-2 text-sm bg-secondary/40 p-2 rounded">
+          <li
+            key={i.slug}
+            className="flex items-center justify-between gap-2 text-sm bg-secondary/40 p-2 rounded"
+          >
             <span className="line-clamp-2">{i.title}</span>
             <Link
               to="/$slug"
