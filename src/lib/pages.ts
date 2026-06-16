@@ -20,6 +20,10 @@ const p = (slug: string, title: string, category: string, body?: string): PageDe
 });
 
 export const PAGES: PageDef[] = [
+
+  p("news-events", "News & Events", "News", "Latest news and events at the college."),
+p("notices", "Notices & Announcements", "News", "Important notices and announcements."),
+p("press-releases", "Press Releases", "News", "Official press releases and media coverage."),
   // Top nav
   p(
     "about-us",
@@ -30,7 +34,7 @@ export const PAGES: PageDef[] = [
   p("history", "History", "About"),
   p("vision-mission", "Vision & Mission", "About"),
   p("founder-chairman", "Founder Chairman", "About"),
-  p("chairman", "Chairman", "About"),
+  p("chairman", "Secretary", "About"),
   p(
     "hospital",
     "Hospital",
@@ -138,12 +142,8 @@ export const PAGES: PageDef[] = [
   p("time-table", "Time Table", "Academics"),
   p("timetable-ug", "Time Table — UG", "Academics"),
   p("academic-syllabus", "Academic Syllabus UG", "Academics"),
-  p("question-papers", "Question Papers", "Academics"),
-  p("cie-cme", "CIE / CME", "Academics"),
-  p("cie", "CIE", "Academics"),
-  p("cme", "CME", "Academics"),
+ 
   p("research-publications", "Research and Publications", "Research"),
-  p("e-portal", "E-Portal", "Resources"),
   p("activities", "Activities", "Activities"),
   p("activities-cultural", "Cultural Activities", "Activities"),
   p("activities-sports", "Sports Activities", "Activities"),
@@ -163,6 +163,9 @@ export const PAGE_MAP: Record<string, PageDef> = Object.fromEntries(
 );
 
 export const TOP_NAV: NavItem[] = [
+
+
+ 
   { label: "Home", to: "/" },
   {
     label: "About Us",
@@ -171,7 +174,7 @@ export const TOP_NAV: NavItem[] = [
       { label: "History", slug: "history" },
       { label: "Vision & Mission", slug: "vision-mission" },
       { label: "Founder Chairman", slug: "founder-chairman" },
-      { label: "Chairman", slug: "chairman" },
+      { label: "Secretary", slug: "chairman" },
     ],
   },
   {
@@ -213,9 +216,20 @@ export const TOP_NAV: NavItem[] = [
     label: "Faculty",
     children: [{ label: "Teaching Staff", slug: "faculty-teaching-staff" }],
   },
+
+
   { label: "Download", slug: "download" },
   { label: "Important Links", slug: "important-links" },
   { label: "Photo Gallery", slug: "photo-gallery" },
+  {
+    label: "News & Events",
+    children: [
+      { label: "News & Events", slug: "news-events" },
+      { label: "Notices", slug: "notices" },
+      { label: "Press Releases", slug: "press-releases" },
+    ],
+  },
+
   { label: "Contact", slug: "contact" },
   {
     label: "NAAC",

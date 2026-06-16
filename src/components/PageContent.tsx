@@ -7,10 +7,10 @@ import g5 from "@/assets/gallery-5.jpg";
 import g6 from "@/assets/gallery-6.jpg";
 import g7 from "@/assets/gallery-7.jpg";
 import g8 from "@/assets/gallery-8.jpg";
-import aboutHero from "@/assets/about-hero.jpg";
+import aboutHero from "@/assets/Dr. Rathi Sonal Mohanlal.jpg";
 import campus1 from "@/assets/campus-1.jpg";
-import campus2 from "@/assets/campus-2.jpg";
-import campus3 from "@/assets/campus-3.jpg";
+import campus2 from "@/assets/Secretary.jpg";
+import campus3 from "@/assets/President.jpg";
 import campus4 from "@/assets/campus-4.jpg";
 import { useGallery } from "@/lib/galleryStore";
 
@@ -152,10 +152,13 @@ function AboutUs() {
                   
                   {/* College Name Overlay on Image */}
                   <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <p className="text-white text-xs font-medium opacity-80">⚕️ Ayurvedic Campus</p>
+                    <p className="text-white text-xs font-medium opacity-80">Medical Superitendent
+
+
+</p>
                     <h3 className="text-white text-lg font-bold leading-tight">
-                      Rajashri Ayurvedic<br />
-                      <span className="text-amber-300">Medical College</span>
+                      Dr. Rathi Sonal Mohanlal<br />
+                      <span className="text-amber-300">Medical Superitendent</span>
                     </h3>
                   </div>
                 </div>
@@ -195,20 +198,7 @@ function AboutUs() {
                     providing students with the perfect environment to learn ancient healing sciences. The institution has produced 
                     over <span className="font-semibold">500+ skilled Vaidyas</span> serving across Maharashtra and India.
                   </p>
-                  <div className="grid grid-cols-2 gap-2 mt-3">
-                    <div className="flex items-center gap-2 text-xs">
-                      <span className="text-indigo-600">✓</span> Established: 2014
-                    </div>
-                    <div className="flex items-center gap-2 text-xs">
-                      <span className="text-indigo-600">✓</span> Intake Capacity: 60 Students
-                    </div>
-                    <div className="flex items-center gap-2 text-xs">
-                      <span className="text-indigo-600">✓</span> Course Duration: 5.5 Years
-                    </div>
-                    <div className="flex items-center gap-2 text-xs">
-                      <span className="text-indigo-600">✓</span> Hospital Beds: 100+
-                    </div>
-                  </div>
+                
                 </div>
               </div>
             </div>
@@ -399,7 +389,7 @@ const History = () => (
           <div className="md:w-1/2 md:order-2">
             <div className="relative rounded-2xl overflow-hidden shadow-xl group">
               <img
-                src={campus2}
+                src={campus4}
                 alt="Growth"
                 className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -428,7 +418,7 @@ const History = () => (
           <div className="md:w-1/2">
             <div className="relative rounded-2xl overflow-hidden shadow-xl group">
               <img
-                src={campus3}
+                src={campus1}
                 alt="Community Healthcare"
                 className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -696,120 +686,184 @@ const FounderChairman = () => (
 
 const Chairman = () => (
   <div className="space-y-12">
-    {/* Section Header - No Hero */}
-   
-
-    {/* First Row - Image Left, Text Right (Chairman) */}
-    <div className="flex flex-col md:flex-row gap-8 items-center">
-      <div className="md:w-1/2">
-        <div className="relative rounded-2xl overflow-hidden shadow-xl group">
-          <img
-            src={campus4}
-            alt="Chairman - Rajashri Ayurvedic Medical College"
-            className="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-            <p className="text-white text-lg font-bold">Shri. Rajendra Rahate</p>
-            <p className="text-amber-300 text-sm">Chairman</p>
-            <p className="text-white/70 text-xs">Dharmveer Diliprao Rahate Shikshan Sanstha</p>
-          </div>
-        </div>
-      </div>
-      <div className="md:w-1/2 space-y-4">
-        <p className="text-foreground leading-relaxed text-lg">
-          On behalf of <span className="text-amber-600 dark:text-amber-400 font-semibold">Dharmveer Diliprao Rahate Shikshan & Bahu-Uddeshiya Sanstha</span>, 
-          I warmly welcome you to Rajashri Ayurvedic Medical College & Hospital, Mehkar.
-        </p>
-        <p className="text-foreground leading-relaxed">
-          It brings me immense pride to see our institution growing into a centre of excellence in Ayurvedic education 
-          and healthcare. Our commitment has always been to provide quality education that transforms students into 
-          skilled, compassionate, and ethical Ayurvedic physicians.
-        </p>
-        <p className="text-foreground leading-relaxed">
-          We believe that every student who walks through our doors has the potential to become a healer who can 
-          serve society with dedication. Our mission is to nurture this potential with the best infrastructure, 
-          experienced faculty, and a curriculum that balances ancient wisdom with modern science.
-        </p>
-      </div>
-    </div>
-
-    {/* Second Row - Text Left, Image Right (Secretary) - Zigzag */}
-    <div className="flex flex-col md:flex-row gap-8 items-center">
-      <div className="md:w-1/2 md:order-2">
+    
+    {/* Secretary - Mr. Rushikesh P. Jadhao (Image Left, Text Right) */}
+    <div className="flex flex-col md:flex-row gap-8 items-start">
+      {/* Image Section - Left Side (Sticky for scroll) */}
+      <div className="md:w-1/2 md:sticky md:top-24">
         <div className="relative rounded-2xl overflow-hidden shadow-xl group">
           <img
             src={campus2}
             alt="Secretary - Rajashri Ayurvedic Medical College"
-            className="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
           />
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-            <p className="text-white text-lg font-bold">Shri. Anand Rahate</p>
+            <p className="text-white text-lg font-bold">Mr. Rushikesh P. Jadhao</p>
             <p className="text-amber-300 text-sm">Secretary</p>
-            <p className="text-white/70 text-xs">Dharmveer Diliprao Rahate Shikshan Sanstha</p>
+            <p className="text-white/70 text-xs">Dharmveer Diliprao Rahate Shikshan & Bahu-Uddeshiya Sanstha</p>
           </div>
         </div>
       </div>
-      <div className="md:w-1/2 md:order-1 space-y-4">
+      
+      {/* Content Section - Right Side (Scrollable) */}
+      <div className="md:w-1/2 space-y-6 max-h-[600px] overflow-y-auto pr-4 custom-scrollbar">
         <div className="relative pl-6 border-l-4 border-amber-500">
           <p className="text-foreground leading-relaxed text-lg italic">
-            "Our institution stands as a testament to the visionary dream of M.P. Shri. Prataprao G. Jadhao. 
-            We are dedicated to creating an environment where traditional Ayurvedic knowledge meets contemporary 
-            scientific advancements, producing world-class Ayurvedic professionals."
+            "Our vision is to create world-class Ayurvedic professionals who can serve humanity with 
+            compassion, integrity, and excellence, while preserving the rich heritage of Indian medical science."
           </p>
-          <p className="text-amber-600 dark:text-amber-400 font-semibold mt-3">— Shri. Anand Rahate, Secretary</p>
+          <p className="text-amber-600 dark:text-amber-400 font-semibold mt-3">— Mr. Rushikesh P. Jadhao, Secretary</p>
         </div>
+        
         <p className="text-foreground leading-relaxed">
-          The Secretary of our trust has been instrumental in shaping the institution's vision and ensuring that 
-          we stay true to our founding principles. Under his guidance, the college has achieved numerous milestones 
-          in academics, research, and patient care.
+          Mr. Rushikesh P. Jadhao, the dynamic Secretary of Dharmveer Diliprao Rahate Shikshan & Bahu-Uddeshiya Sanstha, 
+          brings youthful energy, modern vision, and administrative excellence to Rajashri Ayurvedic Medical College & Hospital. 
+          As a young leader with a forward-thinking approach, he is committed to transforming the institution into a 
+          center of excellence in Ayurvedic education and healthcare.
         </p>
+        
         <p className="text-foreground leading-relaxed">
-          His dedication to expanding quality education in rural Maharashtra has helped establish multiple institutions 
-          that serve thousands of students and patients across the region.
+          With a strong background in educational management and a deep understanding of the challenges facing 
+          rural education, Mr. Rushikesh Jadhao has been instrumental in implementing innovative programs and 
+          infrastructure upgrades at the college. Under his leadership, the institution has witnessed significant 
+          growth in academic standards, research output, and student development initiatives.
+        </p>
+        
+        <p className="text-foreground leading-relaxed">
+          Mr. Rushikesh Jadhao is particularly passionate about integrating technology with traditional Ayurvedic 
+          education. He has spearheaded the establishment of the digital library, smart classrooms, and online 
+          learning resources, ensuring that students have access to the best educational tools and resources 
+          available globally.
+        </p>
+        
+        <p className="text-foreground leading-relaxed">
+          Under his visionary leadership, the college has achieved NAAC B++ accreditation, established PG programs 
+          in 9 specializations, and developed state-of-the-art research facilities. His commitment to quality 
+          education and affordable healthcare continues to drive the institution towards greater heights of excellence.
+        </p>
+        
+        <p className="text-foreground leading-relaxed">
+          Mr. Rushikesh Jadhao has also introduced various student welfare programs, including scholarship schemes 
+          for meritorious students, mentorship initiatives, career guidance cells, and soft skills training workshops. 
+          These programs ensure that students are not only academically proficient but also industry-ready.
+        </p>
+        
+        <p className="text-foreground leading-relaxed">
+          His vision extends beyond academic excellence to holistic student development. He believes in nurturing 
+          not just skilled professionals but compassionate human beings who can contribute meaningfully to society. 
+          Under his guidance, the college regularly organizes community health camps, NSS activities, and rural 
+          outreach programs.
         </p>
       </div>
     </div>
 
-    {/* Third Row - Image Left, Text Right (Treasurer/Management) */}
-    <div className="flex flex-col md:flex-row gap-8 items-center">
-      <div className="md:w-1/2">
-        <div className="relative rounded-2xl overflow-hidden shadow-xl group">
-          <img
-            src={campus3}
-            alt="Management Team - Rajashri Ayurvedic Medical College"
-            className="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-            <p className="text-white text-lg font-bold">Management Team</p>
-            <p className="text-amber-300 text-sm">Governing Body</p>
-            <p className="text-white/70 text-xs">Rajashri Ayurvedic Medical College</p>
-          </div>
+    {/* Secretary's Message Box - Full Width */}
+    <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-2xl p-8 border border-amber-100 dark:border-amber-800">
+      <div className="text-center mb-6">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900 mb-4">
+          <span className="text-3xl">📜</span>
         </div>
+        <h3 className="text-2xl font-bold text-amber-700 dark:text-amber-400">Secretary's Message</h3>
       </div>
-      <div className="md:w-1/2 space-y-4">
-        <p className="text-foreground leading-relaxed text-lg">
-          Ayurveda is India's living medical heritage. Our endeavour at <span className="text-amber-600 dark:text-amber-400 font-semibold">Rajashri Ayurvedic</span> 
-          is to nurture young minds who can carry this heritage forward with both classical depth and contemporary scientific outlook.
+      <div className="space-y-4">
+        <p className="text-foreground leading-relaxed text-center italic">
+          "At Rajashri Ayurvedic Medical College, we are committed to nurturing the next generation of Ayurvedic 
+          physicians who will carry forward India's ancient medical heritage with pride and scientific rigor. 
+          Our institution is a perfect blend of tradition and modernity, where students learn classical texts 
+          in state-of-the-art facilities."
         </p>
-        <p className="text-foreground leading-relaxed">
-          The management team works tirelessly to ensure that our students receive the best possible education, 
-          our patients get quality healthcare, and our institution continues to grow and serve the community.
+        <p className="text-foreground leading-relaxed text-center">
+          I invite all aspiring medical students to join our family. Here, you will not only receive quality 
+          education but also develop the compassion, integrity, and professional skills needed to serve society 
+          as dedicated healthcare providers. Together, let us work towards making quality healthcare accessible 
+          to all, especially in rural areas.
         </p>
-        <div className="relative pl-6 border-l-4 border-amber-500 mt-4">
-          <p className="text-foreground leading-relaxed italic">
-            "We invite aspiring students, patients and well-wishers to be part of this growing institution that places 
-            knowledge, integrity and service above everything else."
-          </p>
-          <p className="text-amber-600 dark:text-amber-400 font-semibold mt-2">— Chairman, Rajashri Ayurvedic Medical College</p>
+        <div className="text-center mt-6 pt-4 border-t border-amber-200 dark:border-amber-800">
+          <p className="font-bold text-amber-700 dark:text-amber-400">Mr. Rushikesh P. Jadhao</p>
+          <p className="text-sm text-muted-foreground">Secretary</p>
+          <p className="text-xs text-muted-foreground mt-1">Dharmveer Diliprao Rahate Shikshan & Bahu-Uddeshiya Sanstha</p>
         </div>
       </div>
     </div>
 
-   
+    {/* Secretary's Vision Cards - Grid */}
+    <div className="grid md:grid-cols-3 gap-6">
+      <div className="p-6 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 border border-blue-100 dark:border-blue-800 text-center">
+        <div className="text-4xl mb-3">🎓</div>
+        <h4 className="font-bold text-blue-700 dark:text-blue-400 mb-2">Quality Education</h4>
+        <p className="text-sm text-muted-foreground">
+          Committed to providing world-class Ayurvedic education that meets global standards and prepares 
+          students for successful careers in healthcare.
+        </p>
+      </div>
+      
+      <div className="p-6 rounded-xl bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-950/20 dark:to-teal-950/20 border border-green-100 dark:border-green-800 text-center">
+        <div className="text-4xl mb-3">🔬</div>
+        <h4 className="font-bold text-green-700 dark:text-green-400 mb-2">Research & Innovation</h4>
+        <p className="text-sm text-muted-foreground">
+          Promoting cutting-edge research in classical Ayurvedic formulations, drug standardization, and 
+          evidence-based medicine for global recognition.
+        </p>
+      </div>
+      
+      <div className="p-6 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-100 dark:border-purple-800 text-center">
+        <div className="text-4xl mb-3">🤝</div>
+        <h4 className="font-bold text-purple-700 dark:text-purple-400 mb-2">Community Service</h4>
+        <p className="text-sm text-muted-foreground">
+          Dedicated to serving rural communities through affordable healthcare, health awareness camps, and 
+          outreach programs that make a difference.
+        </p>
+      </div>
+    </div>
 
+    {/* About the Trust */}
+    <div className="bg-gradient-to-r from-slate-50 to-gray-50 dark:from-slate-950/20 dark:to-gray-950/20 rounded-2xl p-8 border border-border">
+      <div className="text-center mb-6">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-900 mb-4">
+          <span className="text-3xl">🏛️</span>
+        </div>
+        <h3 className="text-2xl font-bold text-slate-700 dark:text-slate-400">About the Trust</h3>
+        <p className="text-muted-foreground">Dharmveer Diliprao Rahate Shikshan & Bahu-Uddeshiya Sanstha</p>
+      </div>
+      <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+        <p className="text-foreground leading-relaxed">
+          Dharmveer Diliprao Rahate Shikshan & Bahu-Uddeshiya Sanstha is a renowned educational trust dedicated to 
+          spreading quality education and healthcare services in the rural belts of Maharashtra. Established with 
+          the noble vision of empowering rural youth through education, the trust has been instrumental in 
+          establishing multiple educational institutions across the region.
+        </p>
+        <p className="text-foreground leading-relaxed">
+          Under the able leadership of Mr. Rushikesh P. Jadhao as Secretary, the trust continues to expand its 
+          footprint in the education sector, with a special focus on professional courses like Ayurveda, Engineering, 
+          and Management. The trust's commitment to excellence, transparency, and social service has earned it a 
+          stellar reputation among students and parents alike.
+        </p>
+        <p className="text-foreground leading-relaxed">
+          Rajashri Ayurvedic Medical College & Hospital stands as a shining example of the trust's dedication to 
+          healthcare education. With state-of-the-art infrastructure, experienced faculty, and a strong focus on 
+          research and innovation, the college is poised to become a leading institution in Ayurvedic education 
+          in Maharashtra.
+        </p>
+      </div>
+    </div>
 
-
-
+    {/* Custom Scrollbar Styles */}
+    <style>{`
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #e5e7eb;
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+    `}</style>
   </div>
 );
 
@@ -1087,58 +1141,253 @@ const Lab = () => (
   </div>
 );
 
-const Contact = () => (
-  <div className="space-y-6">
-    <div className="relative overflow-hidden rounded-md">
-      <img src={campus1} alt="Campus" loading="lazy" className="w-full h-52 object-cover" />
-      <div className="absolute inset-0 bg-gradient-to-t from-brand/85 via-brand/30 to-transparent flex items-end p-5">
-        <h2 className="text-2xl font-bold text-white">Contact Us</h2>
-      </div>
-    </div>
+const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
-    <div className="grid md:grid-cols-2 gap-4">
-      <div className="border border-border rounded-md p-5 bg-card space-y-3">
-        <h3 className="font-semibold text-brand">College Address</h3>
-        <p className="text-sm leading-relaxed">
-          Rajashri Ayurvedic Medical College & Hospital<br />
-          Dharmveer Diliprao Rahate Shikshan & Bahu-Uddeshiya Sanstha<br />
-          Mehkar, Dist. Buldhana – 443301<br />
-          Maharashtra, India
-        </p>
-      </div>
-      <div className="border border-border rounded-md p-5 bg-card space-y-3">
-        <h3 className="font-semibold text-brand">Reach Us</h3>
-        <ul className="text-sm space-y-2">
-          <li><strong>Office:</strong> 91 - 8087203870 | 8087303870</li>
-         
-          <li><strong>Email:</strong> <a className="text-brand hover:underline" href="mailto:rajashriayurved@gmail.com">rajashriayurved@gmail.com</a></li>
-        </ul>
-      </div>
-    </div>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
-    <div className="grid md:grid-cols-3 gap-3">
-      {[
-        { t: "Office Hours", d: "Mon–Sat · 9:00 AM – 5:00 PM" },
-        { t: "OPD Timings", d: "Mon–Sat · 9 AM – 1 PM & 4 PM – 7 PM" },
-        { t: "Emergency", d: "24 × 7 Hospital Services" },
-      ].map((x, i) => (
-        <div key={i} className="border border-border rounded-md p-4 bg-secondary/30">
-          <div className="text-sm font-semibold text-brand">{x.t}</div>
-          <div className="text-xs text-muted-foreground mt-1">{x.d}</div>
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    // Simulate form submission - Replace with your actual API endpoint
+    try {
+      // For now, just simulate success
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // You can replace this with actual API call:
+      // const response = await fetch('/api/contact', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(formData)
+      // });
+      
+      setSubmitStatus({ type: 'success', message: 'Thank you! Your message has been sent successfully. We will get back to you soon.' });
+      setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+    } catch (error) {
+      setSubmitStatus({ type: 'error', message: 'Something went wrong. Please try again later.' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Hero Image */}
+      {/* <div className="relative overflow-hidden rounded-md">
+        <img src={campus1} alt="Campus" loading="lazy" className="w-full h-52 object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-brand/85 via-brand/30 to-transparent flex items-end p-5">
+          <h2 className="text-2xl font-bold text-white">Contact Us</h2>
         </div>
-      ))}
-    </div>
+      </div> */}
 
-    <div className="rounded-md overflow-hidden border border-border">
-      <iframe
-        title="Mehkar location"
-        src="https://www.google.com/maps?q=Mehkar,Buldhana,Maharashtra&output=embed"
-        className="w-full h-72"
-        loading="lazy"
-      />
+      {/* Contact Info and Form Grid */}
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Left Side - Contact Information */}
+        <div className="space-y-4">
+          <div className="border border-border rounded-md p-5 bg-card space-y-3">
+            <h3 className="font-semibold text-brand">College Address</h3>
+            <p className="text-sm leading-relaxed">
+              Rajashri Ayurvedic Medical College & Hospital<br />
+              Dharmveer Diliprao Rahate Shikshan & Bahu-Uddeshiya Sanstha<br />
+              Mehkar, Dist. Buldhana – 443301<br />
+              Maharashtra, India
+            </p>
+          </div>
+          
+          <div className="border border-border rounded-md p-5 bg-card space-y-3">
+            <h3 className="font-semibold text-brand">Reach Us</h3>
+            <ul className="text-sm space-y-2">
+              <li className="flex items-center gap-2">
+                <span className="text-brand">📞</span>
+                <strong>Office:</strong> 91 - 8087203870 | 8087303870
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-brand">✉️</span>
+                <strong>Email:</strong> 
+                <a className="text-brand hover:underline" href="mailto:rajashriayurved@gmail.com">rajashriayurved@gmail.com</a>
+              </li>
+              {/* <li className="flex items-center gap-2">
+                <span className="text-brand">🌐</span>
+                <strong>Website:</strong> 
+                <a className="text-brand hover:underline" href="#">www.rajashriayurvedic.com</a>
+              </li> */}
+            </ul>
+          </div>
+
+          {/* Quick Info Cards */}
+          <div className="grid grid-cols-1 gap-3">
+            {[
+              { t: "Office Hours", d: "Mon–Sat · 9:00 AM – 5:00 PM", icon: "🕐" },
+             
+              { t: "Emergency", d: "24 × 7 Hospital Services", icon: "🚨" },
+            ].map((x, i) => (
+              <div key={i} className="border border-border rounded-md p-4 bg-secondary/30">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">{x.icon}</span>
+                  <div className="text-sm font-semibold text-brand">{x.t}</div>
+                </div>
+                <div className="text-xs text-muted-foreground mt-1">{x.d}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right Side - Contact Form */}
+        <div className="border border-border rounded-md bg-card p-6">
+          <div className="text-center mb-6">
+            <h3 className="text-xl font-semibold text-brand">Send us a Message</h3>
+            <p className="text-sm text-muted-foreground mt-1">We'd love to hear from you. Fill out the form and we'll respond promptly.</p>
+          </div>
+
+          {submitStatus && (
+            <div className={`mb-4 p-3 rounded-md text-sm ${
+              submitStatus.type === 'success' 
+                ? 'bg-green-100 text-green-800 border border-green-200' 
+                : 'bg-red-100 text-red-800 border border-red-200'
+            }`}>
+              {submitStatus.message}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Full Name *</label>
+                <input
+                  type="text"
+                  name="name"
+                  required
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-brand/50"
+                  placeholder="Enter your full name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Email Address *</label>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-brand/50"
+                  placeholder="your@email.com"
+                />
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Phone Number</label>
+                <input
+  type="tel"
+  name="phone"
+  maxLength={10}
+  value={formData.phone}
+  onChange={(e) => {
+    const numericValue = e.target.value.replace(/\D/g, '');
+    setFormData({
+      ...formData,
+      phone: numericValue
+    });
+  }}
+  onKeyPress={(e) => {
+    // Allow only numbers, backspace, delete, arrow keys, and tab
+    if (!/[0-9]/.test(e.key) && 
+        e.key !== 'Backspace' && 
+        e.key !== 'Delete' && 
+        e.key !== 'ArrowLeft' && 
+        e.key !== 'ArrowRight' && 
+        e.key !== 'Tab') {
+      e.preventDefault();
+    }
+  }}
+  className="w-full px-3 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-brand/50"
+  placeholder="Enter 10 digit mobile number"
+/>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Subject *</label>
+                <select
+                  name="subject"
+                  required
+                  value={formData.subject}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-brand/50"
+                >
+                  <option value="">Select subject</option>
+                  <option value="Admission Inquiry">Admission Inquiry</option>
+                  <option value="Course Information">Course Information</option>
+                  <option value="Hospital Services">Hospital Services</option>
+                  <option value="Feedback">Feedback</option>
+                  <option value="Complaint">Complaint</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">Message *</label>
+              <textarea
+                name="message"
+                required
+                rows={5}
+                value={formData.message}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-brand/50 resize-none"
+                placeholder="Write your message here..."
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-brand text-white py-2 px-4 rounded-md hover:bg-brand/80 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? 'Sending...' : 'Send Message'}
+            </button>
+          </form>
+
+          <div className="mt-4 text-center text-xs text-muted-foreground">
+            <p>We respect your privacy. Your information will not be shared with third parties.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Map Section */}
+      <div className="rounded-md overflow-hidden border border-border">
+        <iframe
+          title="Mehkar location"
+          src="https://www.google.com/maps?q=Mehkar,Buldhana,Maharashtra&output=embed"
+          className="w-full h-72"
+          loading="lazy"
+        />
+      </div>
+
+      {/* Social Media Links */}
+      <div className="border border-border rounded-md p-6 bg-card">
+        
+       
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 import { useStaff, type StaffGroupKey } from "@/lib/staffStore";
 
@@ -1358,6 +1607,10 @@ export const PAGE_CONTENT: Record<string, React.FC> = {
     "staff-non-teaching": NonTeachingStaff,
     "staff-hospital": HospitalStaff,
     "faculty-teaching-staff": TeachingStaff,
+    // News & Events pages
+  "news-events": () => <DocSection slug="news-events" />,
+  "notices": () => <DocSection slug="notices" />,
+  "press-releases": () => <DocSection slug="press-releases" />,
 };
 
 

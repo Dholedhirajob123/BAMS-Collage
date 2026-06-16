@@ -14,6 +14,13 @@ export type DocSection = { info: string; files: DocFile[] };
 const KEY = "ssam-docs-v1";
 
 export const DOC_SECTIONS: { key: string; label: string }[] = [
+
+
+  // News & Events
+  { key: "news-events", label: "📰 News & Events" },
+  { key: "notices", label: "📢 Notices & Announcements" },
+  { key: "press-releases", label: "📰 Press Releases" },
+
   // Attendance sections
   { key: "attendance-teaching", label: "Staff Attendance — Teaching Staff" },
   { key: "attendance-non-teaching", label: "Staff Attendance — Non Teaching Staff" },
@@ -131,6 +138,9 @@ const DEFAULT_INFO: Record<string, string> = {
   "hospital-departments": "Various hospital departments including Kayachikitsa, Panchakarma, Shalya Tantra, Shalakya Tantra, Prasuti Tantra & Streerog, Kaumarbhritya, and Swasthavritta.",
   "operation-theatre": "Operation Theatre facilities, surgical protocols, pre and post-operative care guidelines, and list of available surgical procedures. Equipped with 3 modern operation theatres.",
   
+    "news-events": "Latest news, events, and happenings at Rajashri Ayurvedic Medical College & Hospital. Download event reports, newsletters, and announcements below.",
+  "notices": "Important notices and announcements from the college administration for students, faculty, and staff.",
+  "press-releases": "Official press releases and media coverage about the college's achievements and activities.",
   // NAAC
   "naac": "NAAC accreditation documents, reports, and related information for Rajashri Ayurvedic Medical College & Hospital. The institution is NAAC accredited with Grade B++.",
   "naac-ssr": "NAAC Self Study Report (SSR) - Comprehensive institutional assessment document submitted for accreditation.",

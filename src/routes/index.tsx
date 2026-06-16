@@ -1,16 +1,38 @@
+// routes/index.tsx
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Sidebar } from "@/components/Sidebar";
 import { HeroSlider } from "@/components/HeroSlider";
+import { useDocSection } from "@/lib/docsStore";
 import gPreview1 from "@/assets/gallery-1.jpg";
 import gPreview2 from "@/assets/gallery-2.jpg";
 import gPreview5 from "@/assets/gallery-5.jpg";
 import gPreview8 from "@/assets/gallery-8.jpg";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+
+// Import person images
+import founderImage from "@/assets/President.jpg";
+import secretaryImage from "@/assets/secretary.jpg";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
 function Index() {
+  const homeDocs = useDocSection("home-page-documents");
+  const homeNotices = useDocSection("home-page-notices");
+  const homeLinks = useDocSection("home-page-important-links");
+  const newsEvents = useDocSection("news-events");
+  const notices = useDocSection("notices");
+  
+  const [showAllDocs, setShowAllDocs] = useState(false);
+  const [showAllNotices, setShowAllNotices] = useState(false);
+  const [showAllNews, setShowAllNews] = useState(false);
+
+  const displayedDocs = showAllDocs ? homeDocs.files : homeDocs.files.slice(0, 3);
+  const displayedNotices = showAllNotices ? homeNotices.files : homeNotices.files.slice(0, 3);
+  const displayedNews = showAllNews ? newsEvents.files : newsEvents.files.slice(0, 3);
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
       <HeroSlider />
@@ -19,35 +41,71 @@ function Index() {
         <Sidebar />
 
         <div className="space-y-6">
+
           <section className="border border-border rounded-md bg-card">
             <header className="bg-secondary px-4 py-2 border-b border-border">
               <h2 className="text-sm font-medium text-muted-foreground">Welcome To</h2>
             </header>
-            <div className="p-6">
-              <h3 className="text-xl font-semibold mb-3 text-brand">
+            <div className="p-6 space-y-4">
+              <h3 className="text-xl font-semibold text-brand">
                 RAJASHRI AYURVEDIC MEDICAL COLLEGE & HOSPITAL
               </h3>
+              
               <p className="text-sm text-foreground leading-relaxed text-justify">
-                Rajashri Ayurvedic Medical College & Hospital was established in 2015 and
-                successfully completed the milestone of 25 years. With huge college campus covering
-                state-of-the-art college building, high-tech infrastructure, hospital with 220 beds
-                capacity and 3 operation theaters, nursery of ayurvedic medicinal plants, first
-                digital library, Teaching Pharmacy with Advance Research Laboratory etc. are the key
-                features of the Institute. The hospital is also equipped with ICU unit, Sonography,
-                X-Ray unit. Intake capacity of UG BAMS is 100. Post Graduation in Ayurveda for 9
-                programs (Samhita Siddhant, Kriya Sharir, Dravyaguna, Rasashastra & Bhaishajya
-                Kalpana, Prasuti & Streerog, Kaumarbhritya, Kayachikitsa, Shalya tantra, Panchkarma)
-                is also operational since recent times with intake capacity of 54 seats for PG.
+                Rajashri Ayurvedic Medical College & Hospital is a premier institution dedicated to excellence in 
+                Ayurvedic education, research, and patient care. Run by the esteemed Dharmveer Diliprao Rahate 
+                Shikshan & Bahu-Uddeshiya Sanstha, the college is committed to producing skilled, compassionate, 
+                and ethical Ayurvedic physicians who can serve society with dedication and integrity.
+              </p>
+              
+              <p className="text-sm text-foreground leading-relaxed text-justify">
+                The college is affiliated to Maharashtra University of Health Sciences (MUHS), Nashik and recognized 
+                by the National Commission for Indian System of Medicine (NCISM), New Delhi. With NAAC B++ 
+                accreditation, the institution maintains the highest standards of quality education and continuous 
+                improvement in all its academic and clinical activities.
+              </p>
+              
+              <p className="text-sm text-foreground leading-relaxed text-justify">
+                The sprawling campus features state-of-the-art college buildings with spacious lecture halls, 
+                well-equipped laboratories for each pre-clinical and para-clinical department, departmental museums, 
+                and a central seminar hall. The infrastructure is designed to facilitate immersive learning 
+                experiences and practical training for BAMS students as per NCISM standards.
+              </p>
+
+              <p className="text-sm text-foreground leading-relaxed text-justify">
+                The institution takes pride in its digital library, stocked with classical Ayurvedic Samhitas, 
+                modern medical textbooks, reference journals, and research publications. The library offers access 
+                to e-journals and online databases, with separate reading halls for UG students, faculty, and 
+                visitors, all equipped with Wi-Fi connectivity throughout the campus.
+              </p>
+              
+              <p className="text-sm text-foreground leading-relaxed text-justify">
+                A lush medicinal plant nursery (herbal garden) cultivates numerous species of Ayurvedic herbs used 
+                in Dravyaguna and Rasashastra teaching, giving students live exposure to the plants they study in 
+                classical texts. The garden also supports the teaching pharmacy with raw materials for in-house 
+                Ayurvedic formulations, promoting hands-on learning in pharmaceutical sciences.
               </p>
             </div>
           </section>
 
+          {/* Person Cards with Images */}
           <div className="grid md:grid-cols-3 gap-4">
-            <PersonCard name="Dr. Balasaheb Aher" role="Founder Chairman" slug="founder-chairman" />
+            <PersonCard 
+              name="M.P. Shri. Prataprao G. Jadhao" 
+              role="Founder Chairman" 
+              slug="founder-chairman"
+              imageUrl={founderImage}
+            />
             <NewsCard />
-            <PersonCard name="Smt. Himgauri Aher" role="Chairman" slug="chairman" />
+            <PersonCard 
+              name="Mr. Rushikesh P. Jadhao" 
+              role="Secretary" 
+              slug="secretary"
+              imageUrl={secretaryImage}
+            />
           </div>
 
+          {/* Vision Section */}
           <section className="rounded-md overflow-hidden border border-border">
             <header className="bg-vision text-white px-5 py-3">
               <h3 className="font-semibold text-lg">Vision</h3>
@@ -60,6 +118,7 @@ function Index() {
             </div>
           </section>
 
+          {/* Mission Section */}
           <section className="rounded-md overflow-hidden border border-border">
             <header className="bg-mission text-white px-5 py-3">
               <h3 className="font-semibold text-lg">Mission</h3>
@@ -77,6 +136,7 @@ function Index() {
             </div>
           </section>
 
+          {/* Campus Glimpses */}
           <section className="rounded-md overflow-hidden border border-border bg-gradient-to-br from-saffron-soft via-card to-secondary p-6 animate-fade-in">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -126,57 +186,108 @@ function Index() {
   );
 }
 
-function PersonCard({ name, role, slug }: { name: string; role: string; slug: string }) {
+function PersonCard({ 
+  name, 
+  role, 
+  slug, 
+  imageUrl 
+}: { 
+  name: string; 
+  role: string; 
+  slug: string;
+  imageUrl?: string;
+}) {
+  const [imgError, setImgError] = useState(false);
+  
+  const getInitials = () => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .slice(0, 2)
+      .join("");
+  };
+
   return (
     <Link
       to="/$slug"
       params={{ slug }}
-      className="block border border-border rounded-md bg-card p-4 text-center hover:shadow-md transition-shadow"
+      className="block border border-border rounded-md bg-card p-4 text-center hover:shadow-md transition-shadow group"
     >
       <p className="text-sm text-muted-foreground mb-2">{role}</p>
-      <div className="h-32 w-32 mx-auto rounded-full bg-secondary flex items-center justify-center mb-2">
-        <span className="text-3xl font-bold text-brand">
-          {name
-            .split(" ")
-            .map((n) => n[0])
-            .slice(0, 2)
-            .join("")}
-        </span>
+      <div className="h-32 w-32 mx-auto rounded-full overflow-hidden bg-secondary flex items-center justify-center mb-2 ring-2 ring-brand/20 group-hover:ring-brand/50 transition-all">
+        {imageUrl && !imgError ? (
+          <img
+            src={imageUrl}
+            alt={name}
+            className="w-full h-full object-cover"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <span className="text-3xl font-bold text-brand">
+            {getInitials()}
+          </span>
+        )}
       </div>
-      <p className="font-semibold text-brand">{name}</p>
+      <p className="font-semibold text-brand mt-2">{name}</p>
     </Link>
   );
 }
 
 function NewsCard() {
-  const items = [
-    { title: "Student's Summer Vacation 2026", slug: "muhs-mandate-circulars" },
-    { title: "Hospital Data Monitoring & Administrative Committee", slug: "iqac" },
-    { title: "Fresher's Party 2nd May", slug: "activities-cultural" },
-  ];
+  const newsEvents = useDocSection("news-events");
+  const notices = useDocSection("notices");
+  
+  // Get latest items for display
+  const latestNews = [...newsEvents.files, ...notices.files]
+    .sort((a, b) => b.addedAt - a.addedAt)
+    .slice(0, 5);
+
   return (
     <div className="border border-border rounded-md bg-card p-4">
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-semibold">News & Events</h3>
-        <span className="text-xs text-destructive font-semibold">Show More</span>
+        <Link
+          to="/$slug"
+          params={{ slug: "news-events" }}
+          className="text-xs text-brand hover:underline font-semibold"
+        >
+          View All →
+        </Link>
       </div>
-      <ul className="space-y-2">
-        {items.map((i) => (
-          <li
-            key={i.slug}
-            className="flex items-center justify-between gap-2 text-sm bg-secondary/40 p-2 rounded"
-          >
-            <span className="line-clamp-2">{i.title}</span>
-            <Link
-              to="/$slug"
-              params={{ slug: i.slug }}
-              className="bg-destructive text-white text-xs px-2 py-1 rounded shrink-0"
-            >
-              View Details
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {latestNews.length === 0 ? (
+        <p className="text-xs text-muted-foreground text-center py-4">No news yet. Check back soon!</p>
+      ) : (
+        <div className="max-h-[320px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+          <ul className="space-y-2">
+            {latestNews.map((item, index) => (
+              <li
+                key={item.id}
+                className="flex items-center justify-between gap-2 text-sm bg-secondary/40 p-2 rounded hover:bg-secondary/60 transition-all duration-200 animate-slide-in"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <span className="text-lg shrink-0">📢</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium truncate">{item.name}</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">
+                      {new Date(item.addedAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href={item.dataUrl}
+                  download={item.name}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-brand text-white text-xs px-2 py-1 rounded shrink-0 hover:bg-brand/80 transition-colors"
+                >
+                  Download
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
