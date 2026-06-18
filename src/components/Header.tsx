@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { TOP_NAV, type NavItem } from "@/lib/pages";
-import logoAsset from "@/assets/main logo.png";
+import logoAsset from "@/assets/logo.jpg";
 import Drlogo from "@/assets/Dr  logo.png";
 
 function linkFor(item: NavItem) {
@@ -70,7 +70,7 @@ export function Header() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
           <span className="text-xs font-medium text-white">
-            rajshreeayurvedic@gmail.com
+            rajshreeayurvedic@gmail.com || 2024rajashriayu0870@gmail.com
           </span>
         </a>
 
@@ -120,7 +120,9 @@ export function Header() {
         <div className="flex items-center justify-center gap-1 mt-0.5">
           <div className="w-4 h-px bg-gradient-to-r from-amber-400 to-transparent hidden md:block"></div>
           <p className="text-[10px] md:text-xs text-muted-foreground flex items-center gap-0.5">
-            <span>MEHKAR, DIST. BULDHANA, MAHARASHTRA</span>
+            <span>COTTON MARKET ROAD, MEHKAR, TQ. MEHKAR, DIST. BULDHANA, MAHARASHTRA
+
+</span>
           </p>
           <div className="w-4 h-px bg-gradient-to-l from-amber-400 to-transparent hidden md:block"></div>
         </div>

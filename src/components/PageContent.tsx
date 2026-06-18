@@ -152,13 +152,10 @@ function AboutUs() {
                   
                   {/* College Name Overlay on Image */}
                   <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <p className="text-white text-xs font-medium opacity-80">Medical Superitendent
-
-
-</p>
+ 
                     <h3 className="text-white text-lg font-bold leading-tight">
                       Dr. Rathi Sonal Mohanlal<br />
-                      <span className="text-amber-300">Medical Superitendent</span>
+                      <span className="text-amber-300">Principal</span>
                     </h3>
                   </div>
                 </div>
@@ -1202,9 +1199,10 @@ const Contact = () => {
           <div className="border border-border rounded-md p-5 bg-card space-y-3">
             <h3 className="font-semibold text-brand">College Address</h3>
             <p className="text-sm leading-relaxed">
+              Dharmveer Diliprao Rahate Shikshan & Bahu-Uddeshiya Sanstha's<br />
+
               Rajashri Ayurvedic Medical College & Hospital<br />
-              Dharmveer Diliprao Rahate Shikshan & Bahu-Uddeshiya Sanstha<br />
-              Mehkar, Dist. Buldhana – 443301<br />
+              Cotton Market Road,Mehkar,Tq.Mehkar, Dist. Buldhana – 443301<br />
               Maharashtra, India
             </p>
           </div>
@@ -1219,7 +1217,7 @@ const Contact = () => {
               <li className="flex items-center gap-2">
                 <span className="text-brand">✉️</span>
                 <strong>Email:</strong> 
-                <a className="text-brand hover:underline" href="mailto:rajashriayurved@gmail.com">rajashriayurved@gmail.com</a>
+                <a className="text-brand hover:underline" href="mailto:rajashriayurved@gmail.com">rajshreeayurvedic@gmail.com <br />2024rajashriayu0870@gmail.com</a>
               </li>
               {/* <li className="flex items-center gap-2">
                 <span className="text-brand">🌐</span>
@@ -1397,20 +1395,7 @@ function StaffSection({ title, group, slug }: { title: string; group: StaffGroup
 
   return (
     <div className="space-y-6">
-      {/* Section Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h2 className="text-xl md:text-2xl font-bold text-brand border-l-4 border-amber-500 pl-3">
-            {title}
-          </h2>
-          <p className="text-sm text-muted-foreground mt-1 ml-3">Academic Year 2025-26</p>
-        </div>
-        <div className="bg-amber-100 dark:bg-amber-900/30 px-3 py-1 rounded-full">
-          <span className="text-sm font-medium text-amber-700 dark:text-amber-400">
-            Total Members: {members.length}
-          </span>
-        </div>
-      </div>
+  
 
       {members.length === 0 ? (
         <div className="text-center py-12 bg-secondary/30 rounded-lg">
@@ -1442,14 +1427,7 @@ function StaffSection({ title, group, slug }: { title: string; group: StaffGroup
                       </div>
                     </div>
                     <p className="text-sm mt-1">{m.designation}</p>
-                    {m.mobile && (
-                      <a
-                        href={`tel:${m.mobile}`}
-                        className="text-xs text-brand hover:underline inline-flex items-center gap-1 mt-2"
-                      >
-                        📞 {m.mobile}
-                      </a>
-                    )}
+                 
                   </div>
                 </div>
               </div>
@@ -1465,7 +1443,6 @@ function StaffSection({ title, group, slug }: { title: string; group: StaffGroup
                   <th className="px-4 py-3 text-left font-semibold text-brand">PHOTO</th>
                   <th className="px-4 py-3 text-left font-semibold text-brand">Name</th>
                   <th className="px-4 py-3 text-left font-semibold text-brand">Position</th>
-                  <th className="px-4 py-3 text-left font-semibold text-brand">Mobile No.</th>
                 </tr>
               </thead>
               <tbody>
@@ -1484,15 +1461,7 @@ function StaffSection({ title, group, slug }: { title: string; group: StaffGroup
                     </td>
                     <td className="px-4 py-3 font-semibold text-brand">{m.name}</td>
                     <td className="px-4 py-3">{m.designation}</td>
-                    <td className="px-4 py-3">
-                      {m.mobile ? (
-                        <a href={`tel:${m.mobile}`} className="text-brand hover:underline">
-                          {m.mobile}
-                        </a>
-                      ) : (
-                        <span className="text-muted-foreground">—</span>
-                      )}
-                    </td>
+                  
                   </tr>
                 ))}
               </tbody>
@@ -1552,17 +1521,7 @@ function StaffSection({ title, group, slug }: { title: string; group: StaffGroup
               </div>
             </div>
 
-            {/* Contact Info (if available) */}
-            {members[active].mobile && (
-              <div className="mt-3 text-center">
-                <a
-                  href={`tel:${members[active].mobile}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg text-sm hover:bg-amber-600 transition-colors"
-                >
-                  📞 Call {members[active].mobile}
-                </a>
-              </div>
-            )}
+         
           </div>
         </div>
       )}

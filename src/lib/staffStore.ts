@@ -1,3 +1,4 @@
+// lib/staffStore.ts
 import { useEffect, useState } from "react";
 import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
@@ -16,13 +17,20 @@ export type StaffMember = {
   year: string;
   photo: string;
   mobile?: string;
+  // Teaching staff fields
+  teacherCode?: string;
+  dob?: string;
+  registrationNumber?: string;
+  qualification?: string;
+  dateOfJoining?: string;
+  email?: string;
+  experience?: string;
 };
 
-export type StaffGroupKey = "hospital" | "college" | "non-teaching" | "teaching";
+export type StaffGroupKey = "hospital" | "non-teaching" | "teaching";
 
 export const STAFF_GROUPS: { key: StaffGroupKey; label: string }[] = [
   { key: "hospital", label: "Hospital Staff" },
-  { key: "college", label: "College Staff" },
   { key: "non-teaching", label: "Non-Teaching Staff" },
   { key: "teaching", label: "Teaching Staff" },
 ];
@@ -49,63 +57,9 @@ const DEFAULTS: Record<StaffGroupKey, StaffMember[]> = {
       photo: P[1],
       mobile: "+91 98200 10002",
     },
-    {
-      id: "h3",
-      name: "Dr. Pritam Pawale",
-      designation: "Casualty Medical Officer",
-      education: "M.D. (Shalya Tantra)",
-      year: "Since 2016",
-      photo: P[2],
-      mobile: "+91 98200 10003",
-    },
-    {
-      id: "h4",
-      name: "Dr. Gayatri Patil",
-      designation: "Gynecologist",
-      education: "M.S. (Prasuti Tantra)",
-      year: "Since 2015",
-      photo: P[3],
-      mobile: "+91 98200 10004",
-    },
   ],
-  college: [
-    {
-      id: "c1",
-      name: "Dr. Milind Aware",
-      designation: "Principal",
-      education: "M.D. Ph.D. (Ayurveda)",
-      year: "Since 2008",
-      photo: P[4],
-      mobile: "+91 98200 20001",
-    },
-    {
-      id: "c2",
-      name: "Dr. Parshuram Pawar",
-      designation: "Vice Principal",
-      education: "M.D. (Samhita Siddhanta)",
-      year: "Since 2012",
-      photo: P[5],
-      mobile: "+91 98200 20002",
-    },
-    {
-      id: "c3",
-      name: "Dr. Sandip Patil",
-      designation: "HOD - Kayachikitsa",
-      education: "M.D. (Kayachikitsa)",
-      year: "Since 2010",
-      photo: P[6],
-      mobile: "+91 98200 20003",
-    },
-    {
-      id: "c4",
-      name: "Dr. Aparna Raut",
-      designation: "Associate Professor",
-      education: "M.D. (Panchakarma)",
-      year: "Since 2014",
-      photo: P[7],
-      mobile: "+91 98200 20004",
-    },
-  ],
+ 
+  
   "non-teaching": [
     {
       id: "n1",
@@ -125,24 +79,6 @@ const DEFAULTS: Record<StaffGroupKey, StaffMember[]> = {
       photo: P[1],
       mobile: "+91 98200 30002",
     },
-    {
-      id: "n3",
-      name: "Shri Ramesh Kale",
-      designation: "Librarian",
-      education: "M.Lib.Sc.",
-      year: "Since 2011",
-      photo: P[2],
-      mobile: "+91 98200 30003",
-    },
-    {
-      id: "n4",
-      name: "Shri Vijay Shinde",
-      designation: "Office Assistant",
-      education: "B.A.",
-      year: "Since 2013",
-      photo: P[3],
-      mobile: "+91 98200 30004",
-    },
   ],
   teaching: [
     {
@@ -153,33 +89,29 @@ const DEFAULTS: Record<StaffGroupKey, StaffMember[]> = {
       year: "Since 2008",
       photo: P[4],
       mobile: "+91 98200 40001",
+      teacherCode: "TCH001",
+      dob: "15/06/1975",
+      registrationNumber: "NCISM-12345",
+      qualification: "M.D. Ph.D. (Ayurveda)",
+      dateOfJoining: "01/07/2008",
+      email: "milind.aware@rajashriayurvedic.edu.in",
+      experience: "17 years",
     },
     {
       id: "t2",
-      name: "Dr. Parshuram Pawar",
+      name: "Dr. Dineshwar Daware",
       designation: "Professor",
       education: "M.D. (Samhita Siddhanta)",
       year: "Since 2012",
       photo: P[5],
       mobile: "+91 98200 40002",
-    },
-    {
-      id: "t3",
-      name: "Dr. Sandip Patil",
-      designation: "Associate Professor",
-      education: "M.D. (Kayachikitsa)",
-      year: "Since 2010",
-      photo: P[6],
-      mobile: "+91 98200 40003",
-    },
-    {
-      id: "t4",
-      name: "Dr. Aparna Raut",
-      designation: "Assistant Professor",
-      education: "M.D. (Panchakarma)",
-      year: "Since 2014",
-      photo: P[7],
-      mobile: "+91 98200 40004",
+      teacherCode: "TCH002",
+      dob: "20/08/1980",
+      registrationNumber: "NCISM-67890",
+      qualification: "M.D. (Samhita Siddhanta)",
+      dateOfJoining: "15/07/2012",
+      email: "dineshwar.daware@rajashriayurvedic.edu.in",
+      experience: "12 years",
     },
   ],
 };

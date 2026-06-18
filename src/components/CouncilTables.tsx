@@ -7,7 +7,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useCouncil, type CouncilKey, COUNCIL_GROUPS } from "@/lib/councilStore";
-import councilPic from "@/assets/gallery-1.jpg";
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
@@ -26,7 +25,7 @@ function YearTag({ children }: { children: React.ReactNode }) {
   );
 }
 
-function CouncilTable({ slug, title, year }: { slug: CouncilKey; title: string; year?: string }) {
+function CouncilTable({ slug,  }: { slug: CouncilKey; title: string; year?: string }) {
   const rows = useCouncil(slug);
   
   return (
@@ -99,7 +98,6 @@ function CouncilTable({ slug, title, year }: { slug: CouncilKey; title: string; 
                 <TableHead className="font-semibold">Name</TableHead>
                 <TableHead className="font-semibold">Designation</TableHead>
                 <TableHead className="font-semibold">Position</TableHead>
-                <TableHead className="font-semibold">Mobile No.</TableHead>
                 <TableHead className="font-semibold">Email ID</TableHead>
               </TableRow>
             </TableHeader>
@@ -118,15 +116,7 @@ function CouncilTable({ slug, title, year }: { slug: CouncilKey; title: string; 
                       <span className="text-muted-foreground">—</span>
                     )}
                   </TableCell>
-                  <TableCell>
-                    {r.phone ? (
-                      <a href={`tel:${r.phone}`} className="text-brand hover:underline font-medium">
-                        {r.phone}
-                      </a>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
-                    )}
-                  </TableCell>
+             
                   <TableCell>
                     {r.email ? (
                       <a href={`mailto:${r.email}`} className="text-brand hover:underline break-all">

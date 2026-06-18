@@ -105,9 +105,15 @@ function SlugPage() {
                       className="font-semibold text-brand hover:underline break-all" 
                       href="mailto:rajshreeayurvedic@gmail.com"
                     >
-                      rajshreeayurvedic@gmail.com
+                      rajshreeayurvedic@gmail.com   <br/>
+
+                       2024rajashriayu0870@gmail.com
                     </a>
+                
                   </div>
+
+                 
+               
                 </div>
               </div>
             </div>

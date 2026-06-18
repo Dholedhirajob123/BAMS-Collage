@@ -20,13 +20,7 @@ const DEFAULTS: Photo[] = [
   { id: "d3", src: g3, caption: "Panchakarma Therapy Room" },
   { id: "d4", src: g4, caption: "Research Laboratory" },
   { id: "d5", src: g5, caption: "Cultural Festival" },
-  { id: "d6", src: g6, caption: "Annual Sports Day" },
-  { id: "d7", src: g7, caption: "220-Bed Hospital Ward" },
-  { id: "d8", src: g8, caption: "Convocation Ceremony" },
-  { id: "d9", src: campus1, caption: "College Building" },
-  { id: "d10", src: campus2, caption: "Hospital Block" },
-  { id: "d11", src: campus3, caption: "Teaching Pharmacy" },
-  { id: "d12", src: campus4, caption: "Graduating Batch" },
+
 ];
 
 const KEY = "ssam-gallery-v1";

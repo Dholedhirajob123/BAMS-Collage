@@ -1,3 +1,4 @@
+// lib/pages.ts
 export type PageDef = {
   slug: string;
   title: string;
@@ -22,8 +23,8 @@ const p = (slug: string, title: string, category: string, body?: string): PageDe
 export const PAGES: PageDef[] = [
 
   p("news-events", "News & Events", "News", "Latest news and events at the college."),
-p("notices", "Notices & Announcements", "News", "Important notices and announcements."),
-p("press-releases", "Press Releases", "News", "Official press releases and media coverage."),
+  p("notices", "Notices & Announcements", "News", "Important notices and announcements."),
+  p("press-releases", "Press Releases", "News", "Official press releases and media coverage."),
   // Top nav
   p(
     "about-us",
@@ -41,7 +42,7 @@ p("press-releases", "Press Releases", "News", "Official press releases and media
     "Hospital",
     "220-bed hospital with 3 operation theatres, ICU, Sonography and X-Ray facilities.",
   ),
-   p("opd-services", "OPD Services", "Hospital", "Outpatient department services and guidelines."),
+  p("opd-services", "OPD Services", "Hospital", "Outpatient department services and guidelines."),
   p("ipd-services", "IPD Services", "Hospital", "Inpatient department services and admission procedures."),
   p("hospital-departments", "Hospital Departments", "Hospital", "Various hospital departments and their services."),
   p("operation-theatre", "Operation Theatre", "Hospital", "Surgical facilities and OT protocols."),
@@ -54,7 +55,6 @@ p("press-releases", "Press Releases", "News", "Official press releases and media
   p("facility-canteen", "Canteen", "Facilities"),
   p("facility-transport", "Transport", "Facilities"),
   p("facility-sports", "Sports", "Facilities"),
-  p("staff-college", "College Staff", "Staff"),
   p("download", "Downloads", "Resources"),
   p("important-links", "Important Links", "Resources"),
   p("photo-gallery", "Photo Gallery", "Media"),
@@ -73,19 +73,19 @@ p("press-releases", "Press Releases", "News", "Official press releases and media
   p("innovation-ecosystem", "Innovation Ecosystem", "Innovation"),
 
   // Council / Committee
-  p("iqac", "Internal Quality Assurance Cell for AY 2024-25", "Council"),
-  p("college-council-curriculum", "College Council Committee for the AY 2024-2025", "Council"),
+  p("iqac", "Internal Quality Assurance Cell", "Council"),
+  p("college-council-curriculum", "College Council Committee", "Council"),
   p("grievances-cell", "Student Grievances and Redressal Committee", "Council"),
-  p("anti-ragging-cell", "Anti-Ragging Committee 2024-25", "Council"),
+  p("anti-ragging-cell", "Anti-Ragging Committee", "Council"),
   p("internal-grievances-vishakha", "Committee Against Sexual Harassment", "Council"),
-  p("reservation-cell", "Human Resources Development Cell for the AY 2024-25", "Council"),
+  p("reservation-cell", "Human Resources Development Cell", "Council"),
   p("student-council", "Student Council", "Council"),
   p("rti-committee", "RTI Committee & Act", "Council"),
   p(
     "academic-council-committee-2023-2024",
-    "Academic Council Committee for the AY 2023-2024",
+    "Academic Council Committee",
     "Council",
-    "Academic Council Committee details for AY 2023-2024.",
+    "Academic Council Committee details.",
   ),
   p(
     "co-curricular-extra-curricular-activity-cell",
@@ -156,6 +156,7 @@ p("press-releases", "Press Releases", "News", "Official press releases and media
   p("muhs-mandate-notifications", "MUHS Mandate — Notifications", "Resources"),
   p("azadi-ka-amrut-mahosav", "Azadi ka Amrut Mahosav", "Events"),
   p("affiliated-university", "Details of Affiliated University : MUHS", "Notices"),
+  
 ];
 
 export const PAGE_MAP: Record<string, PageDef> = Object.fromEntries(
@@ -163,9 +164,6 @@ export const PAGE_MAP: Record<string, PageDef> = Object.fromEntries(
 );
 
 export const TOP_NAV: NavItem[] = [
-
-
- 
   { label: "Home", to: "/" },
   {
     label: "About Us",
@@ -181,10 +179,10 @@ export const TOP_NAV: NavItem[] = [
     label: "Hospital",
     children: [
       { label: "Overview", slug: "hospital" },
-      { label: "OPD Services", slug: "opd-services" },        // Changed from hospital-opd
-      { label: "IPD Services", slug: "ipd-services" },        // Changed from hospital-ipd
+      { label: "OPD Services", slug: "opd-services" },
+      { label: "IPD Services", slug: "ipd-services" },
       { label: "Departments", slug: "hospital-departments" },
-      { label: "Operation Theatre", slug: "operation-theatre" }, // Changed from hospital-operation-theatre
+      { label: "Operation Theatre", slug: "operation-theatre" },
     ],
   },
   {
@@ -200,11 +198,10 @@ export const TOP_NAV: NavItem[] = [
     label: "Staff",
     children: [
       { label: "Hospital Staff", slug: "staff-hospital" },
-      { label: "College Staff", slug: "staff-college" },
       { label: "Non-Teaching", slug: "staff-non-teaching" },
     ],
   },
-   {
+  {
     label: "Admission",
     children: [
       { label: "Admission", slug: "programs-admission" },
@@ -216,8 +213,6 @@ export const TOP_NAV: NavItem[] = [
     label: "Faculty",
     children: [{ label: "Teaching Staff", slug: "faculty-teaching-staff" }],
   },
-
-
   { label: "Download", slug: "download" },
   { label: "Important Links", slug: "important-links" },
   { label: "Photo Gallery", slug: "photo-gallery" },
@@ -229,7 +224,6 @@ export const TOP_NAV: NavItem[] = [
       { label: "Press Releases", slug: "press-releases" },
     ],
   },
-
   { label: "Contact", slug: "contact" },
   {
     label: "NAAC",
@@ -249,22 +243,22 @@ export const SIDE_NAV: NavItem[] = [
     label: "Council / Committee",
     children: [
       {
-        label: "Academic Council Committee for the AY 2023-2024",
+        label: "Academic Council Committee",
         slug: "academic-council-committee-2023-2024",
       },
-      { label: "Internal Quality Assurance Cell for AY 2024-25", slug: "iqac" },
+      { label: "Internal Quality Assurance Cell", slug: "iqac" },
       {
-        label: "College Council Committee for the AY 2024-2025",
+        label: "College Council Committee",
         slug: "college-council-curriculum",
       },
       { label: "Student Grievances and Redressal Committee", slug: "grievances-cell" },
-      { label: "Anti-Ragging Committee 2024-25", slug: "anti-ragging-cell" },
+      { label: "Anti-Ragging Committee", slug: "anti-ragging-cell" },
       {
         label: "Co-Curricular & Extra-Curricular Activity Cell",
         slug: "co-curricular-extra-curricular-activity-cell",
       },
       { label: "Committee Against Sexual Harassment", slug: "internal-grievances-vishakha" },
-      { label: "Human Resources Development Cell for the AY 2024-25", slug: "reservation-cell" },
+      { label: "Human Resources Development Cell", slug: "reservation-cell" },
       {
         label: "Research Innovation and Entrepreneurship Cell",
         slug: "research-innovation-entrepreneurship-cell",
@@ -333,7 +327,6 @@ export const SIDE_NAV: NavItem[] = [
     children: [{ label: "UG", slug: "timetable-ug" }],
   },
   { label: "Academic Syllabus UG ", slug: "academic-syllabus" },
-
   { label: "Research and Publications", slug: "research-publications" },
   {
     label: "Activities",

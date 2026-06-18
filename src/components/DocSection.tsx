@@ -1,7 +1,59 @@
+// components/DocSection.tsx
 import { useDocSection } from "@/lib/docsStore";
+import { useState } from "react";
 
 export function DocSection({ slug }: { slug: string }) {
   const { info, files } = useDocSection(slug);
+  const [selectedFile, setSelectedFile] = useState<{ name: string; dataUrl: string } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleView = (dataUrl: string, name: string) => {
+    setIsLoading(true);
+    // Open in new tab
+    const win = window.open('', '_blank');
+    if (win) {
+      win.document.write(`
+        <html>
+          <head>
+            <title>${name}</title>
+            <style>
+              body { margin: 0; padding: 0; height: 100vh; overflow: hidden; background: #f5f5f5; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+              .container { width: 100%; height: 100vh; display: flex; flex-direction: column; }
+              .header { padding: 10px 20px; background: #fff; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+              .header h3 { margin: 0; font-size: 14px; color: #333; }
+              .header a { background: #8B4513; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 12px; }
+              .header a:hover { opacity: 0.8; }
+              .pdf-container { flex: 1; width: 100%; }
+              .pdf-container embed { width: 100%; height: 100%; }
+              .error-msg { text-align: center; padding: 40px; color: #666; }
+              .error-msg a { color: #8B4513; text-decoration: underline; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h3>📄 ${name}</h3>
+                <div>
+                  <a href="${dataUrl}" download="${name}">⬇️ Download</a>
+                  <button onclick="window.close()" style="margin-left:10px;padding:6px 12px;border:none;background:#dc3545;color:white;border-radius:4px;cursor:pointer;font-size:12px;">✕ Close</button>
+                </div>
+              </div>
+              <div class="pdf-container">
+                <embed src="${dataUrl}" type="application/pdf" width="100%" height="100%" />
+              </div>
+            </div>
+          </body>
+        </html>
+      `);
+      win.document.close();
+    }
+    setIsLoading(false);
+  };
+
+  const closeViewer = () => {
+    setSelectedFile(null);
+  };
+
   return (
     <div className="space-y-5">
       {info && (
@@ -36,13 +88,22 @@ export function DocSection({ slug }: { slug: string }) {
                     )}
                   </div>
                 </div>
-                <a
-                  href={f.dataUrl}
-                  download={f.name}
-                  className="text-xs bg-brand text-white px-3 py-1.5 rounded hover:opacity-90 shrink-0 ml-3"
-                >
-                  Download PDF
-                </a>
+                <div className="flex gap-2 shrink-0">
+                  <button
+                    onClick={() => handleView(f.dataUrl, f.name)}
+                    disabled={isLoading}
+                    className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 transition-colors flex items-center gap-1 disabled:opacity-50"
+                  >
+                    <span>👁️</span> View
+                  </button>
+                  <a
+                    href={f.dataUrl}
+                    download={f.name}
+                    className="text-xs bg-brand text-white px-3 py-1.5 rounded hover:opacity-90 transition-colors flex items-center gap-1"
+                  >
+                    <span>⬇️</span> Download
+                  </a>
+                </div>
               </li>
             ))}
           </ul>

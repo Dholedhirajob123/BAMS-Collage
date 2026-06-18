@@ -423,7 +423,7 @@ function CouncilManager({ setSavedMsg }: { setSavedMsg: (msg: string) => void })
   const addRow = () =>
     setMembers([
       ...members,
-      { id: newCouncilId(), name: "", designation: "", position: "", phone: "", email: "" },
+      { id: newCouncilId(), name: "", designation: "", position: "", email: "" },
     ]);
 
   const resetAll = () => {
@@ -483,9 +483,7 @@ function CouncilManager({ setSavedMsg }: { setSavedMsg: (msg: string) => void })
               <th className="p-2 text-left">Name</th>
               <th className="p-2 text-left">Designation</th>
               <th className="p-2 text-left">Position</th>
-              <th className="p-2 text-left">Mobile No.</th>
               <th className="p-2 text-left">Email ID</th>
-              <th className="p-2"></th>
             </tr>
           </thead>
           <tbody>
@@ -501,9 +499,7 @@ function CouncilManager({ setSavedMsg }: { setSavedMsg: (msg: string) => void })
                 <td className="p-2">
                   <Input value={m.position ?? ""} onChange={(e) => updateRow(m.id, { position: e.target.value })} />
                 </td>
-                <td className="p-2">
-                  <Input value={m.phone} onChange={(e) => updateRow(m.id, { phone: e.target.value })} />
-                </td>
+           
                 <td className="p-2">
                   <Input value={m.email} onChange={(e) => updateRow(m.id, { email: e.target.value })} />
                 </td>
@@ -644,9 +640,11 @@ function DepartmentManager({ setSavedMsg }: { setSavedMsg: (msg: string) => void
   );
 }
 
+// routes/admin.tsx - Update the StaffManager component
+
 function StaffManager({ setSavedMsg }: { setSavedMsg: (msg: string) => void }) {
-  const [group, setGroup] = useState<StaffGroupKey>("hospital");
-  const [members, setMembers] = useState<StaffMember[]>(() => getStaff("hospital"));
+  const [group, setGroup] = useState<StaffGroupKey>("teaching");
+  const [members, setMembers] = useState<StaffMember[]>(() => getStaff("teaching"));
   const [isSaving, setIsSaving] = useState(false);
 
   const reload = (g: StaffGroupKey) => {
@@ -654,20 +652,43 @@ function StaffManager({ setSavedMsg }: { setSavedMsg: (msg: string) => void }) {
     setMembers(getStaff(g));
   };
 
+  const commit = (next: StaffMember[]) => {
+    setMembers(next);
+    setStaff(group, next);
+  };
+
   const updateRow = (id: string, patch: Partial<StaffMember>) =>
-    setMembers(members.map((m) => (m.id === id ? { ...m, ...patch } : m)));
+    commit(members.map((m) => (m.id === id ? { ...m, ...patch } : m)));
 
   const removeRow = (id: string) => {
     if (!confirm("Remove this staff member?")) return;
-    setMembers(members.filter((m) => m.id !== id));
+    commit(members.filter((m) => m.id !== id));
   };
 
   const addRow = () =>
-    setMembers([...members, { id: newId(), name: "", designation: "", education: "", year: "", photo: "" }]);
+    commit([
+      ...members,
+      { 
+        id: newId(), 
+        name: "", 
+        designation: "", 
+        education: "", 
+        year: "", 
+        photo: "",
+        teacherCode: "",
+        dob: "",
+        registrationNumber: "",
+        qualification: "",
+        dateOfJoining: "",
+        email: "",
+        mobile: "",
+        experience: ""
+      },
+    ]);
 
   const resetAll = () => {
     if (!confirm(`Delete ALL ${members.length} staff members from this group? This cannot be undone.`)) return;
-    setMembers([]);
+    commit([]);
   };
 
   const saveChanges = () => {
@@ -687,6 +708,8 @@ function StaffManager({ setSavedMsg }: { setSavedMsg: (msg: string) => void }) {
     reader.onload = () => updateRow(id, { photo: reader.result as string });
     reader.readAsDataURL(file);
   };
+
+  const isTeaching = group === "teaching";
 
   return (
     <div className="border border-border rounded-md p-5 bg-card">
@@ -729,8 +752,16 @@ function StaffManager({ setSavedMsg }: { setSavedMsg: (msg: string) => void }) {
               <th className="p-2 text-left">Photo</th>
               <th className="p-2 text-left">Name</th>
               <th className="p-2 text-left">Designation</th>
-              <th className="p-2 text-left">Education</th>
-              <th className="p-2 text-left">Year</th>
+              {isTeaching && (
+                <>
+                  <th className="p-2 text-left">Date of Birth</th>
+                  <th className="p-2 text-left">Teacher Code</th>
+                  <th className="p-2 text-left">Registration Number</th>
+                  <th className="p-2 text-left">Qualification</th>
+                  <th className="p-2 text-left">Experience</th>
+                  <th className="p-2 text-left">Email ID</th>
+                </>
+              )}
               <th className="p-2"></th>
             </tr>
           </thead>
@@ -758,12 +789,28 @@ function StaffManager({ setSavedMsg }: { setSavedMsg: (msg: string) => void }) {
                 <td className="p-2">
                   <Input value={m.designation} onChange={(e) => updateRow(m.id, { designation: e.target.value })} />
                 </td>
-                <td className="p-2">
-                  <Input value={m.education} onChange={(e) => updateRow(m.id, { education: e.target.value })} />
-                </td>
-                <td className="p-2">
-                  <Input value={m.year} onChange={(e) => updateRow(m.id, { year: e.target.value })} />
-                </td>
+                {isTeaching && (
+                  <>
+                    <td className="p-2">
+                      <Input value={m.dob || ""} onChange={(e) => updateRow(m.id, { dob: e.target.value })} placeholder="DD/MM/YYYY" />
+                    </td>
+                    <td className="p-2">
+                      <Input value={m.teacherCode || ""} onChange={(e) => updateRow(m.id, { teacherCode: e.target.value })} placeholder="e.g. TCH001" />
+                    </td>
+                    <td className="p-2">
+                      <Input value={m.registrationNumber || ""} onChange={(e) => updateRow(m.id, { registrationNumber: e.target.value })} placeholder="Reg. No." />
+                    </td>
+                    <td className="p-2">
+                      <Input value={m.qualification || m.education || ""} onChange={(e) => updateRow(m.id, { qualification: e.target.value, education: e.target.value })} placeholder="Qualification" />
+                    </td>
+                    <td className="p-2">
+                      <Input value={m.experience || ""} onChange={(e) => updateRow(m.id, { experience: e.target.value })} placeholder="e.g. 10 years" />
+                    </td>
+                    <td className="p-2">
+                      <Input value={m.email || ""} onChange={(e) => updateRow(m.id, { email: e.target.value })} placeholder="email@example.com" />
+                    </td>
+                  </>
+                )}
                 <td className="p-2">
                   <Button size="sm" variant="destructive" className="h-7 text-xs" onClick={() => removeRow(m.id)}>
                     Delete

@@ -60,14 +60,12 @@ function Index() {
               
               <p className="text-sm text-foreground leading-relaxed text-justify">
                 The college is affiliated to Maharashtra University of Health Sciences (MUHS), Nashik and recognized 
-                by the National Commission for Indian System of Medicine (NCISM), New Delhi. With NAAC B++ 
-                accreditation, the institution maintains the highest standards of quality education and continuous 
+                by the National Commission for Indian System of Medicine (NCISM), New Delhi. The institution maintains the highest standards of quality education and continuous 
                 improvement in all its academic and clinical activities.
               </p>
               
               <p className="text-sm text-foreground leading-relaxed text-justify">
-                The sprawling campus features state-of-the-art college buildings with spacious lecture halls, 
-                well-equipped laboratories for each pre-clinical and para-clinical department, departmental museums, 
+                The sprawling campus well-equipped laboratories for each pre-clinical and para-clinical department, departmental museums, 
                 and a central seminar hall. The infrastructure is designed to facilitate immersive learning 
                 experiences and practical training for BAMS students as per NCISM standards.
               </p>
@@ -75,8 +73,7 @@ function Index() {
               <p className="text-sm text-foreground leading-relaxed text-justify">
                 The institution takes pride in its digital library, stocked with classical Ayurvedic Samhitas, 
                 modern medical textbooks, reference journals, and research publications. The library offers access 
-                to e-journals and online databases, with separate reading halls for UG students, faculty, and 
-                visitors, all equipped with Wi-Fi connectivity throughout the campus.
+                to e-journals and online databases, all equipped with Wi-Fi connectivity throughout the campus.
               </p>
               
               <p className="text-sm text-foreground leading-relaxed text-justify">
@@ -125,7 +122,6 @@ function Index() {
             </header>
             <div className="bg-mission/90 text-white p-5">
               <ol className="text-sm space-y-1 list-decimal list-inside">
-                <li>To provide State of the art infrastructure in the Institute.</li>
                 <li>
                   To produce Highly Reputed Ayurveda Professionals contributing for Global Health
                   Developments.

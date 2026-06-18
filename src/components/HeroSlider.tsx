@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import campus1 from "@/assets/campus-1.jpg";
-import campus2 from "@/assets/campus-2.jpg";
+import campus1 from "@/assets/front view.jpg";
+import campus2 from "@/assets/front view2.jpg";
 import campus3 from "@/assets/campus-3.jpg";
 import campus4 from "@/assets/campus-4.jpg";
 
@@ -12,8 +12,8 @@ const SLIDES = [
   },
   {
     img: campus2,
-    title: "Modern Ayurveda Hospital with 100+ Beds",
-    sub: "3 Operation Theatres • ICU • OPD & IPD Services • 24/7 Emergency Care",
+    title: "Modern Ayurveda Hospital with 60 Beds",
+    sub: "Operation Theatres • ICU • OPD & IPD Services • 24/7 Emergency Care",
   },
   {
     img: campus3,

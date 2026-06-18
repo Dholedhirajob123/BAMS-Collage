@@ -32,8 +32,8 @@ export function Footer() {
               Codes
             </h3>
             <div className="space-y-2 text-white/80 text-sm">
-              <p>🏛️ Institution: NCISM-AYU 0181</p>
-              <p>📚 MUHS: 123302 · MH CET: 3126</p>
+              <p>🏛️ Institution: NCISM-AYU0870</p>
+              <p>📚 MUHS: 125131 · MH CET: 03292</p>
             </div>
           </div>
           

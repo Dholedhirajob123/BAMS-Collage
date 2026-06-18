@@ -5,7 +5,7 @@ export const MAX_ADMINS = 10;
 export type Admin = { id: string; phone: string; password: string; name?: string };
 
 const DEFAULTS: Admin[] = [
-  { id: "root", phone: "0000000000", password: "admin123", name: "Super Admin" },
+  { id: "root", phone: "0000000000", password: "admin123" },
 ];
 
 export function newId() {
