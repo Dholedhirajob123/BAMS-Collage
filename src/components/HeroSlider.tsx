@@ -1,3 +1,4 @@
+// components/HeroSlider.tsx
 import { useEffect, useState } from "react";
 import campus1 from "@/assets/front view.jpg";
 import campus2 from "@/assets/front view2.jpg";
@@ -36,8 +37,8 @@ export function HeroSlider() {
   }, []);
 
   return (
-    <section className="relative w-full overflow-hidden rounded-xl shadow-xl border border-border bg-brand-dark mb-6 group">
-      <div className="relative aspect-[16/9] md:aspect-[16/7] lg:aspect-[21/8]">
+    <section className="relative w-full overflow-hidden rounded-xl shadow-xl border border-border bg-brand-dark mb-4 md:mb-6 group">
+      <div className="relative aspect-[4/3] sm:aspect-[16/9] md:aspect-[16/7] lg:aspect-[21/8]">
         {SLIDES.map((s, idx) => (
           <div
             key={idx}
@@ -57,58 +58,56 @@ export function HeroSlider() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
             
             <div className="absolute inset-0 flex items-center">
-              <div className="px-6 md:px-12 max-w-3xl">
-                <span className="inline-block bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-3 shadow-lg">
+              <div className="px-4 sm:px-6 md:px-10 lg:px-12 max-w-xs sm:max-w-md md:max-w-2xl lg:max-w-3xl">
+                <span className="inline-block bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[8px] sm:text-[10px] md:text-xs font-bold uppercase tracking-wider px-2 sm:px-3 py-0.5 sm:py-1 rounded-full mb-1.5 sm:mb-2 md:mb-3 shadow-lg">
                   BAMS College — Rajashri Ayurvedic Mehkar
                 </span>
-                <h2 className="text-white font-bold text-2xl md:text-4xl lg:text-5xl leading-tight drop-shadow-lg">
+                <h2 className="text-white font-bold text-sm sm:text-xl md:text-3xl lg:text-4xl xl:text-5xl leading-tight drop-shadow-lg line-clamp-3 sm:line-clamp-2">
                   {s.title}
                 </h2>
-                <p className="mt-3 text-white/95 text-sm md:text-lg max-w-2xl drop-shadow">
+                <p className="mt-1 sm:mt-2 md:mt-3 text-white/95 text-[10px] sm:text-xs md:text-base lg:text-lg max-w-2xl drop-shadow line-clamp-2 sm:line-clamp-3">
                   {s.sub}
                 </p>
-                
-    
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Arrows */}
+      {/* Arrows - Hidden on mobile, visible on larger screens */}
       <button
         aria-label="Previous slide"
         onClick={() => setI((p) => (p - 1 + SLIDES.length) % SLIDES.length)}
-        className="absolute left-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-black/30 hover:bg-amber-500 text-white backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition focus:opacity-100"
+        className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 rounded-full bg-black/30 hover:bg-amber-500 text-white backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition focus:opacity-100 text-sm sm:text-base md:text-lg lg:text-xl"
       >
         ‹
       </button>
       <button
         aria-label="Next slide"
         onClick={() => setI((p) => (p + 1) % SLIDES.length)}
-        className="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-black/30 hover:bg-amber-500 text-white backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition focus:opacity-100"
+        className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 rounded-full bg-black/30 hover:bg-amber-500 text-white backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition focus:opacity-100 text-sm sm:text-base md:text-lg lg:text-xl"
       >
         ›
       </button>
 
       {/* Dots */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+      <div className="absolute bottom-2 sm:bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 flex gap-1 sm:gap-1.5 md:gap-2 z-10">
         {SLIDES.map((_, idx) => (
           <button
             key={idx}
             aria-label={`Go to slide ${idx + 1}`}
             onClick={() => setI(idx)}
-            className={`h-2 rounded-full transition-all duration-300 ${
+            className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
               idx === i 
-                ? "w-8 bg-gradient-to-r from-amber-500 to-orange-500" 
-                : "w-2 bg-white/60 hover:bg-white/90"
+                ? "w-4 sm:w-6 md:w-8 bg-gradient-to-r from-amber-500 to-orange-500" 
+                : "w-1.5 sm:w-2 bg-white/60 hover:bg-white/90"
             }`}
           />
         ))}
       </div>
 
-      {/* Slide Counter */}
-      <div className="absolute bottom-4 right-4 bg-black/50 backdrop-blur rounded-full px-3 py-1 text-xs text-white">
+      {/* Slide Counter - Hide on mobile */}
+      <div className="absolute bottom-2 sm:bottom-3 md:bottom-4 right-2 sm:right-3 md:right-4 bg-black/50 backdrop-blur rounded-full px-1.5 sm:px-2 md:px-3 py-0.5 sm:py-1 text-[8px] sm:text-[10px] md:text-xs text-white">
         {i + 1} / {SLIDES.length}
       </div>
     </section>

@@ -219,11 +219,29 @@ export const DEPT_MAP: Record<string, DeptInfo> = Object.fromEntries(
   DEPARTMENTS.map((d) => [d.slug, d]),
 );
 
+// components/DepartmentContent.tsx - Update FacultiesCard function
+
 function FacultiesCard({ Faculties, index }: { Faculties: DeptInfo["faculties"][0]; index: number }) {
+  const getInitials = (name: string) => {
+    if (!name) return "?";
+    return name.split(" ").map(n => n[0]).slice(0, 2).join("");
+  };
+
   return (
     <div className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/50 dark:to-gray-800/50 border border-border hover:shadow-lg transition-all hover:-translate-y-1">
-      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-lg">
-        {index + 1}
+      {/* Photo instead of number */}
+      <div className="flex-shrink-0">
+        {Faculties.photo ? (
+          <img
+            src={Faculties.photo}
+            alt={Faculties.name}
+            className="w-14 h-14 rounded-full object-cover border-2 border-brand"
+          />
+        ) : (
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-lg">
+            {getInitials(Faculties.name)}
+          </div>
+        )}
       </div>
       <div>
         <h4 className="font-semibold text-foreground">{Faculties.name}</h4>

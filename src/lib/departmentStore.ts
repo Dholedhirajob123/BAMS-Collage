@@ -1,3 +1,4 @@
+// lib/departmentStore.ts
 import { useEffect, useState } from "react";
 
 export type FacultyMember = {
@@ -5,6 +6,7 @@ export type FacultyMember = {
   name: string;
   designation: string;
   qualification: string;
+  photo?: string; // Added photo field
 };
 
 export type FacultyMemberInput = Omit<FacultyMember, "id"> & { id?: string };
@@ -17,6 +19,7 @@ function ensureFacultyIds(slug: string, items: FacultyMemberInput[]) {
   return items.map((item, index) => ({
     ...item,
     id: item.id ?? `${slug}-${index}`,
+    photo: item.photo || "",
   }));
 }
 

@@ -17,13 +17,13 @@ export type StaffMember = {
   year: string;
   photo: string;
   mobile?: string;
+  email?: string;
   // Teaching staff fields
   teacherCode?: string;
   dob?: string;
   registrationNumber?: string;
   qualification?: string;
   dateOfJoining?: string;
-  email?: string;
   experience?: string;
 };
 

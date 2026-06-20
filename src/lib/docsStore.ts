@@ -47,7 +47,7 @@ export const DOC_SECTIONS: { key: string; label: string }[] = [
   { key: "alumni-association", label: "Alumni Association" },
   { key: "research-publications", label: "Research and Publications" },
   { key: "download", label: "Downloads" },
-  { key: "important-links", label: "Important Links" },
+  // { key: "important-links", label: "Important Links" },
   
   // MUHS Mandate
   { key: "muhs-mandate", label: "MUHS Mandate — Overview" },
@@ -88,10 +88,10 @@ export const DOC_SECTIONS: { key: string; label: string }[] = [
   { key: "departments", label: "Departments Overview" },
   
   // Staff related
-  { key: "staff-college", label: "College Staff" },
-  { key: "staff-hospital", label: "Hospital Staff" },
-  { key: "staff-non-teaching", label: "Non Teaching Staff" },
-  { key: "faculty-teaching-staff", label: "Teaching Staff" },
+  // { key: "staff-college", label: "College Staff" },
+  // { key: "staff-hospital", label: "Hospital Staff" },
+  // { key: "staff-non-teaching", label: "Non Teaching Staff" },
+  // { key: "faculty-teaching-staff", label: "Teaching Staff" },
   
   // Council / Committee
   { key: "iqac", label: "IQAC" },
