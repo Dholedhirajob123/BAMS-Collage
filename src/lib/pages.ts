@@ -311,7 +311,6 @@ export const SIDE_NAV: NavItem[] = [
   {
     label: "FRA Fee Structure",
     children: [
-      { label: "Overview", slug: "fra-fee-structure" },
       { label: "UG", slug: "fra-ug" },
     ],
   },
@@ -341,7 +340,6 @@ export const SIDE_NAV: NavItem[] = [
   {
     label: "MUHS Mandate Information",
     children: [
-      { label: "Overview", slug: "muhs-mandate" },
       { label: "Circulars", slug: "muhs-mandate-circulars" },
       { label: "Notifications", slug: "muhs-mandate-notifications" },
     ],

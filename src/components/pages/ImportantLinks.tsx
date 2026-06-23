@@ -23,7 +23,7 @@ const IMPORTANT_LINKS = [
   },
   {
     title: "Directorate of Medical Education & Research",
-    url: "https://www.dmer.org/",
+    url: "https://www.mahafra.org/",
     external: true,
     icon: "📚",
   },
@@ -35,19 +35,19 @@ const IMPORTANT_LINKS = [
   },
   {
     title: "MCIM, Mumbai",
-    url: "https://www.mcim.org.in/",
+    url: "https://mcimindia.co.in/",
     external: true,
     icon: "⚕️",
   },
   {
     title: "Fees Regulating Authority",
-    url: "https://www.fra.org.in/",
+    url: "https://www.mahafra.org/",
     external: true,
     icon: "💰",
   },
   {
     title: "Pravesh Niyantran Samiti",
-    url: "https://www.pns.org.in/",
+    url: "https://www.mahafra.org/",
     external: true,
     icon: "📝",
   },

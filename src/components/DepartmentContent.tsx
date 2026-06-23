@@ -12,10 +12,8 @@ export type DeptInfo = {
   about: string[];
   aim: string[];
   faculties: FacultyMemberInput[];
-  image: string;
+  image?: string; // Made optional since we're removing images
 };
-
-const img = (q: string) => `https://images.unsplash.com/${q}?auto=format&fit=crop&w=1200&q=70`;
 
 export const DEPARTMENTS: DeptInfo[] = [
   {
@@ -35,12 +33,11 @@ export const DEPARTMENTS: DeptInfo[] = [
       "To produce scholars who can interpret and apply classical knowledge in clinical practice."
     ],
     faculties: [
-      { name: "Dr. R. S. Deshmukh", designation: "Professor & Head", qualification: "MD (Samhita), PhD" },
-      { name: "Dr. S. M. Joshi", designation: "Associate Professor", qualification: "MD (Samhita)" },
-      { name: "Dr. P. V. Kulkarni", designation: "Assistant Professor", qualification: "MD (Sanskrit)" },
-      { name: "Dr. A. S. Bhalerao", designation: "Lecturer", qualification: "MD (Samhita)" },
+      { name: "Dr. Nikhil A. Baxi", designation: "Professor" },
+      { name: "Dr. Shital U. Temkar", designation: "Assistant Professor" },
+      { name: "Dr. Reshma S. Gadekar", designation: "Assistant Professor" },
+      { name: "Ms. Shridevi V. Langute", designation: "Assistant Professor (Sanskrit)" },
     ],
-    image: img("photo-1532619675605-1ede6c2ed2b0"),
   },
   {
     slug: "dept-sharir-rachana",
@@ -59,13 +56,9 @@ export const DEPARTMENTS: DeptInfo[] = [
       "To promote research in anatomical variations and their clinical correlations."
     ],
     faculties: [
-      { name: "Dr. P. K. Joshi", designation: "Professor & Head", qualification: "MD (Sharir Rachana)" },
-      { name: "Dr. N. M. Patil", designation: "Professor", qualification: "MD (Sharir Rachana), PhD" },
-      { name: "Dr. S. R. Khedkar", designation: "Associate Professor", qualification: "MD (Sharir Rachana)" },
-      { name: "Dr. A. B. More", designation: "Assistant Professor", qualification: "MS (Anatomy)" },
-      { name: "Dr. V. S. Shinde", designation: "Tutor", qualification: "MD (Sharir Rachana)" },
+      { name: "Dr. Ashish N. Jaiswal", designation: "Associate Professor & HOD" },
+      { name: "Dr. Ram B. Kakade", designation: "Assistant Professor" },
     ],
-    image: img("photo-1576091160550-2173dba999ef"),
   },
   {
     slug: "dept-sharir-kriya",
@@ -84,12 +77,9 @@ export const DEPARTMENTS: DeptInfo[] = [
       "To promote research on the physiological basis of Ayurvedic principles."
     ],
     faculties: [
-      { name: "Dr. S. M. Patil", designation: "Professor & Head", qualification: "MD (Sharir Kriya)" },
-      { name: "Dr. V. R. Pawar", designation: "Professor", qualification: "MD (Sharir Kriya), PhD" },
-      { name: "Dr. K. S. Chavan", designation: "Associate Professor", qualification: "MD (Sharir Kriya)" },
-      { name: "Dr. M. N. Jadhav", designation: "Assistant Professor", qualification: "MD (Physiology)" },
+      { name: "Dr. Vidya D. Khot", designation: "Associate Professor & HOD" },
+      { name: "Dr. Rohini P. Chimankar", designation: "Assistant Professor" },
     ],
-    image: img("photo-1559757148-5c350d0d3c56"),
   },
   {
     slug: "dept-dravyaguna-vidnyan",
@@ -108,13 +98,9 @@ export const DEPARTMENTS: DeptInfo[] = [
       "To conduct research on standardization and validation of herbal drugs."
     ],
     faculties: [
-      { name: "Dr. A. V. Kale", designation: "Professor & Head", qualification: "MD (Dravyaguna)" },
-      { name: "Dr. S. B. Gaikwad", designation: "Professor", qualification: "MD (Dravyaguna), PhD" },
-      { name: "Dr. P. D. Mahajan", designation: "Associate Professor", qualification: "MD (Dravyaguna)" },
-      { name: "Dr. R. M. Kulkarni", designation: "Assistant Professor", qualification: "M.Pharm (Pharmacognosy)" },
-      { name: "Dr. S. V. Deshpande", designation: "Lecturer", qualification: "MD (Dravyaguna)" },
+      { name: "Dr. Sonal M. Rathi", designation: "Professor & HOD" },
+      { name: "Dr. Prajakta A. Pasarkar", designation: "Assistant Professor" },
     ],
-    image: img("photo-1466692476868-aef1dfb1e735"),
   },
   {
     slug: "dept-agad-tantra",
@@ -133,11 +119,9 @@ export const DEPARTMENTS: DeptInfo[] = [
       "To promote research in clinical toxicology and antidote development."
     ],
     faculties: [
-      { name: "Dr. M. S. Bhosale", designation: "Professor & Head", qualification: "MD (Agad Tantra)" },
-      { name: "Dr. S. R. Nimbalkar", designation: "Associate Professor", qualification: "MD (Agad Tantra)" },
-      { name: "Dr. A. P. Khot", designation: "Assistant Professor", qualification: "MD (Toxicology)" },
+      { name: "Dr. Kailas B. Mahajan", designation: "Associate Professor & HOD" },
+      { name: "Dr. Dhananjay W. Deshmukh", designation: "Assistant Professor" },
     ],
-    image: img("photo-1530026405186-ed1f139313f8"),
   },
   {
     slug: "dept-ras-shastra",
@@ -156,13 +140,9 @@ export const DEPARTMENTS: DeptInfo[] = [
       "To promote understanding of safety protocols in metal and mineral preparations."
     ],
     faculties: [
-      { name: "Dr. V. R. Sonawane", designation: "Professor & Head", qualification: "MD (Ras Shastra)" },
-      { name: "Dr. K. P. More", designation: "Professor", qualification: "MD (Ras Shastra), PhD" },
-      { name: "Dr. S. N. Desai", designation: "Associate Professor", qualification: "MD (Ras Shastra)" },
-      { name: "Dr. A. V. Patwardhan", designation: "Assistant Professor", qualification: "M.Pharm" },
-      { name: "Dr. M. R. Kulkarni", designation: "Lecturer", qualification: "MD (Ras Shastra)" },
+      { name: "Dr. Tushar V. Gawande", designation: "Associate Professor & HOD" },
+      { name: "Dr. Ankeeta S. Pawar", designation: "Assistant Professor" },
     ],
-    image: img("photo-1471864190281-a93a3070b6de"),
   },
   {
     slug: "dept-rog-nidan",
@@ -181,12 +161,9 @@ export const DEPARTMENTS: DeptInfo[] = [
       "To create awareness about preventive healthcare and early diagnosis."
     ],
     faculties: [
-      { name: "Dr. N. B. Ahire", designation: "Professor & Head", qualification: "MD (Rog Nidan)" },
-      { name: "Dr. S. V. Ingle", designation: "Professor", qualification: "MD (Pathology)" },
-      { name: "Dr. P. R. Wagh", designation: "Associate Professor", qualification: "MD (Rog Nidan)" },
-      { name: "Dr. A. S. Birajdar", designation: "Assistant Professor", qualification: "MD (Microbiology)" },
+      { name: "Dr. Sonali C. Meshram", designation: "Associate Professor & HOD" },
+      { name: "Dr. Rahul R. Lad", designation: "Assistant Professor" },
     ],
-    image: img("photo-1576091160399-112ba8d25d1d"),
   },
   {
     slug: "dept-swasthavritta",
@@ -205,13 +182,9 @@ export const DEPARTMENTS: DeptInfo[] = [
       "To create healthcare professionals committed to community service."
     ],
     faculties: [
-      { name: "Dr. K. T. Pawar", designation: "Professor & Head", qualification: "MD (Swasthavritta)" },
-      { name: "Dr. S. G. Bansode", designation: "Professor", qualification: "MD (Swasthavritta), PhD" },
-      { name: "Dr. V. S. Mohite", designation: "Associate Professor", qualification: "MD (Yoga)" },
-      { name: "Dr. A. D. Shinde", designation: "Assistant Professor", qualification: "MD (Community Medicine)" },
-      { name: "Dr. S. R. Chavan", designation: "Yoga Instructor", qualification: "PG Diploma in Yoga" },
+      { name: "Dr. Mahesh M. Rathod", designation: "Professor & HOD" },
+      { name: "Dr. Pallavi S. Shendge", designation: "Assistant Professor" },
     ],
-    image: img("photo-1545205597-3d9d02c29597"),
   },
 ];
 
@@ -246,7 +219,6 @@ function FacultiesCard({ Faculties, index }: { Faculties: DeptInfo["faculties"][
       <div>
         <h4 className="font-semibold text-foreground">{Faculties.name}</h4>
         <p className="text-sm text-amber-600 dark:text-amber-400">{Faculties.designation}</p>
-        <p className="text-xs text-muted-foreground">{Faculties.qualification}</p>
       </div>
     </div>
   );
@@ -259,72 +231,44 @@ export function DepartmentPage({ slug }: { slug: string }) {
   
   return (
     <div className="space-y-8 animate-fade-in">
-
-
-      {/* About Section - Left Info and Right Round Image */}
-      <div className="grid lg:grid-cols-2 gap-8 items-start">
-        {/* Left Side - About Information Paragraphs */}
-        <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-2xl p-6 border border-amber-100 dark:border-amber-800">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900 flex items-center justify-center">
-              <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h2 className="text-xl font-bold">About the Department</h2>
+      {/* About Section - Full Width without Image */}
+      <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-2xl p-6 border border-amber-100 dark:border-amber-800">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900 flex items-center justify-center">
+            <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
-          <div className="space-y-4">
-            {d.about.map((paragraph, idx) => (
-              <p key={idx} className="text-muted-foreground leading-relaxed">
-                {paragraph}
-              </p>
-            ))}
-          </div>
+          <h2 className="text-xl font-bold">About the Department</h2>
         </div>
+        <div className="space-y-4">
+          {d.about.map((paragraph, idx) => (
+            <p key={idx} className="text-muted-foreground leading-relaxed">
+              {paragraph}
+            </p>
+          ))}
+        </div>
+      </div>
 
-        {/* Right Side - Round Image with Quick Info */}
-        <div className="space-y-6">
-          {/* Round Image */}
-          <div className="flex justify-center lg:justify-end">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 blur-2xl opacity-20 animate-pulse"></div>
-              <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden shadow-2xl ring-4 ring-amber-500/30 group">
-                <img
-                  src={d.image}
-                  alt={d.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </div>
-         
-            </div>
+      {/* AIM Section */}
+      <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
+            <span className="text-purple-600 text-lg">🎯</span>
           </div>
-          
-          {/* Quick Info Badges */}
-       
-
-          {/* AIM Section - Below Quick Info Badges */}
-          <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800 mt-4">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
-                <span className="text-purple-600 text-lg">🎯</span>
+          <h2 className="text-xl font-bold">Aim & Objectives</h2>
+        </div>
+        <div className="space-y-3">
+          {d.aim.map((item, idx) => (
+            <div key={idx} className="flex items-start gap-3">
+              <div className="w-5 h-5 rounded-full bg-purple-200 dark:bg-purple-800 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-purple-600 dark:text-purple-400 text-xs">{idx + 1}</span>
               </div>
-              <h2 className="text-xl font-bold">Aim & Objectives</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {item}
+              </p>
             </div>
-            <div className="space-y-3">
-              {d.aim.map((item, idx) => (
-                <div key={idx} className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-purple-200 dark:bg-purple-800 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-purple-600 dark:text-purple-400 text-xs">{idx + 1}</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {item}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 

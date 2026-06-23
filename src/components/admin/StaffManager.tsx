@@ -60,6 +60,12 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
       qualification: "",
       dateOfJoining: "",
       experience: "",
+      // New fields for non-teaching & hospital staff
+      fatherName: "",
+      dateOfAppointment: "",
+      natureOfAppointment: "",
+      workingDepartment: "",
+      payScale: "",
     };
     commit([...members, newMember]);
     setEditingId(newMember.id);
@@ -119,6 +125,8 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
   };
 
   const isTeaching = group === "teaching";
+  const isNonTeaching = group === "non-teaching";
+  const isHospital = group === "hospital";
 
   return (
     <div className="border border-border rounded-md p-5 bg-card">
@@ -232,12 +240,36 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                   </div>
                 </>
               ) : (
-                <div className="text-xs">
-                  <p className="text-muted-foreground">Education</p>
-                  <p className="font-medium">{m.education || "—"}</p>
-                  <p className="text-muted-foreground mt-2">Year</p>
-                  <p className="font-medium">{m.year || "—"}</p>
-                </div>
+                <>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <p className="text-muted-foreground">Father's Name</p>
+                      <p className="font-medium truncate">{m.fatherName || "—"}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Qualification</p>
+                      <p className="font-medium truncate">{m.qualification || m.education || "—"}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Date of Appointment</p>
+                      <p className="font-medium truncate">{m.dateOfAppointment || "—"}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Nature of Appointment</p>
+                      <p className="font-medium truncate">{m.natureOfAppointment || "—"}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between text-xs pt-2 border-t border-border">
+                    <div>
+                      <p className="text-muted-foreground">Department</p>
+                      <p className="font-medium">{m.workingDepartment || "—"}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Pay Scale</p>
+                      <p className="font-medium">{m.payScale || "—"}</p>
+                    </div>
+                  </div>
+                </>
               )}
             </div>
           </div>
@@ -309,6 +341,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
 
               {/* Form Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Common Fields */}
                 <div>
                   <Label className="text-xs">Full Name *</Label>
                   <Input
@@ -404,6 +437,69 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                         onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                         className="mt-1 text-sm"
                         placeholder="email@example.com"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {(isNonTeaching || isHospital) && (
+                  <>
+                    <div className="col-span-2">
+                      <Label className="text-xs">Father's Name</Label>
+                      <Input
+                        value={editForm.fatherName || ""}
+                        onChange={(e) => setEditForm({ ...editForm, fatherName: e.target.value })}
+                        className="mt-1 text-sm"
+                        placeholder="Father's full name"
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <Label className="text-xs">Qualification</Label>
+                      <Input
+                        value={editForm.qualification || editForm.education || ""}
+                        onChange={(e) => setEditForm({ 
+                          ...editForm, 
+                          qualification: e.target.value,
+                          education: e.target.value 
+                        })}
+                        className="mt-1 text-sm"
+                        placeholder="e.g. M.A., B.Sc."
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Date of Appointment</Label>
+                      <Input
+                        value={editForm.dateOfAppointment || ""}
+                        onChange={(e) => setEditForm({ ...editForm, dateOfAppointment: e.target.value })}
+                        className="mt-1 text-sm"
+                        placeholder="DD/MM/YYYY"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Nature of Appointment</Label>
+                      <Input
+                        value={editForm.natureOfAppointment || ""}
+                        onChange={(e) => setEditForm({ ...editForm, natureOfAppointment: e.target.value })}
+                        className="mt-1 text-sm"
+                        placeholder="e.g. Permanent, Contract, Ad-hoc"
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <Label className="text-xs">Working Department</Label>
+                      <Input
+                        value={editForm.workingDepartment || ""}
+                        onChange={(e) => setEditForm({ ...editForm, workingDepartment: e.target.value })}
+                        className="mt-1 text-sm"
+                        placeholder="e.g. Administration, Accounts"
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <Label className="text-xs">Pay Scale</Label>
+                      <Input
+                        value={editForm.payScale || ""}
+                        onChange={(e) => setEditForm({ ...editForm, payScale: e.target.value })}
+                        className="mt-1 text-sm"
+                        placeholder="e.g. Level 7 ₹44,900-1,42,400"
                       />
                     </div>
                   </>
