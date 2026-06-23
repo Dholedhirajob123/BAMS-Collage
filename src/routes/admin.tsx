@@ -11,15 +11,11 @@ import {
   StaffManager,
   GalleryManager,
 } from "@/components/admin";
-import {
-  loadAdmins,
-  addAdmin,
-  updateAdmin,
-  removeAdmin,
-  verifyLogin,
-  MAX_ADMINS,
-  type Admin,
-} from "@/lib/adminStore";
+import { API_BASE_URL } from "@/lib/config";
+
+// Remove adminStore imports that are not needed for login
+// We'll keep the rest if they are used elsewhere
+// import { loadAdmins, addAdmin, updateAdmin, removeAdmin, verifyLogin, MAX_ADMINS, type Admin } from "@/lib/adminStore";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin Panel" }] }),
@@ -31,27 +27,48 @@ function AdminPage() {
   const [phone, setPhone] = useState("");
   const [pwInput, setPwInput] = useState("");
   const [err, setErr] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setErr("");
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, password: pwInput }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const errorMsg = data.error || "Login failed. Please check your credentials.";
+        throw new Error(errorMsg);
+      }
+
+      const data = await res.json();
+      if (data.role === "ADMIN") {
+        setAuthed(true);
+        setErr("");
+      } else {
+        setErr("Access denied. Only administrators can log in.");
+      }
+    } catch (error) {
+      setErr(error instanceof Error ? error.message : "An error occurred during login.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!authed) {
     return (
       <div className="mx-auto max-w-sm p-8 mt-10 border border-border rounded-md bg-card">
         <h1 className="text-2xl font-semibold text-brand mb-1">Admin Login</h1>
         <p className="text-xs text-muted-foreground mb-4">
-          Default: phone <code className="bg-secondary px-1 rounded">0000000000</code> · password{" "}
-          <code className="bg-secondary px-1 rounded">admin123</code>
+          Enter your admin credentials.
         </p>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (verifyLogin(phone, pwInput)) {
-              setAuthed(true);
-              setErr("");
-            } else {
-              setErr("Invalid phone or password");
-            }
-          }}
-          className="space-y-3"
-        >
+        <form onSubmit={handleLogin} className="space-y-3">
           <Label htmlFor="phone">Phone Number</Label>
           <Input
             id="phone"
@@ -59,6 +76,7 @@ function AdminPage() {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             autoFocus
+            disabled={loading}
           />
           <Label htmlFor="pw">Password</Label>
           <Input
@@ -66,10 +84,11 @@ function AdminPage() {
             type="password"
             value={pwInput}
             onChange={(e) => setPwInput(e.target.value)}
+            disabled={loading}
           />
           {err && <p className="text-sm text-destructive">{err}</p>}
-          <Button type="submit" className="w-full">
-            Sign In
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Logging in..." : "Sign In"}
           </Button>
         </form>
         <p className="text-xs text-muted-foreground mt-4 text-center">

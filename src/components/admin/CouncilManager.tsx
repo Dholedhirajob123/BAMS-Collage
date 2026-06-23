@@ -1,69 +1,203 @@
-// components/admin/CouncilManager.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  COUNCIL_GROUPS,
-  getCouncil,
-  setCouncil,
-  resetCouncil,
-  newCouncilId,
-  type CouncilKey,
-  type CouncilMember,
-} from "@/lib/councilStore";
+  getCouncilGroups,
+  getCouncilMembers,
+  createCouncilMember,
+  updateCouncilMember,
+  deleteCouncilMember,
+} from "@/lib/apis";
+
+export type CouncilMember = {
+  id?: number;
+  name: string;
+  designation: string;
+  position: string;
+  email: string;
+  groupKey: string;
+  tempId?: string; // temporary unique identifier for new rows
+};
+
+type CouncilGroup = {
+  key: string;
+  label: string;
+};
 
 interface CouncilManagerProps {
   setSavedMsg: (msg: string) => void;
 }
 
 export function CouncilManager({ setSavedMsg }: CouncilManagerProps) {
-  const [group, setGroup] = useState<CouncilKey>("iqac");
-  const [members, setMembers] = useState<CouncilMember[]>(() => getCouncil("iqac"));
+  const [group, setGroup] = useState("");
+  const [groups, setGroups] = useState<CouncilGroup[]>([]);
+  const [members, setMembers] = useState<CouncilMember[]>([]);
   const [isSaving, setIsSaving] = useState(false);
 
-  const reload = (g: CouncilKey) => {
-    setGroup(g);
-    setMembers(getCouncil(g));
+  useEffect(() => {
+    loadGroups();
+  }, []);
+
+  const loadGroups = async () => {
+    try {
+      const data = await getCouncilGroups();
+      const mappedGroups = data.map((item: any) => ({
+        key: item.groupKey,
+        label: item.displayName,
+      }));
+      setGroups(mappedGroups);
+
+      if (mappedGroups.length > 0) {
+        const first = mappedGroups[0].key;
+        setGroup(first);
+        await loadMembers(first);
+      }
+    } catch (err) {
+      console.error(err);
+      setSavedMsg("Failed to load committees.");
+      setTimeout(() => setSavedMsg(""), 3000);
+    }
   };
 
-  const updateRow = (id: string, patch: Partial<CouncilMember>) =>
-    setMembers(members.map((m) => (m.id === id ? { ...m, ...patch } : m)));
-
-  const removeRow = (id: string) => {
-    if (!confirm("Remove this member?")) return;
-    setMembers(members.filter((m) => m.id !== id));
+  const loadMembers = async (groupKey: string) => {
+    try {
+      setGroup(groupKey);
+      if (!groupKey) {
+        setMembers([]);
+        return;
+      }
+      const data = await getCouncilMembers(groupKey);
+      // Ensure each member from backend has no tempId
+      setMembers(data.map((m: any) => ({ ...m, tempId: undefined })));
+    } catch (err) {
+      console.error(err);
+      setSavedMsg("Failed to load members.");
+      setTimeout(() => setSavedMsg(""), 3000);
+    }
   };
 
-  const addRow = () =>
-    setMembers([
-      ...members,
-      { id: newCouncilId(), name: "", designation: "", position: "", email: "" },
+  const updateRow = (index: number, patch: Partial<CouncilMember>) => {
+    setMembers((prev) =>
+      prev.map((m, i) => (i === index ? { ...m, ...patch } : m))
+    );
+  };
+
+  const addRow = () => {
+    if (!group) {
+      alert("Please select a committee first.");
+      return;
+    }
+
+    // Generate a unique temporary ID
+    const tempId = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
+
+    setMembers((prev) => [
+      ...prev,
+      {
+        name: "",
+        designation: "",
+        position: "",
+        email: "",
+        groupKey: group,
+        tempId,
+      },
     ]);
-
-  const resetAll = () => {
-    if (!confirm("Delete ALL members from this committee? This cannot be undone.")) return;
-    setMembers([]);
   };
 
-  const saveChanges = () => {
+  const removeRow = async (member: CouncilMember) => {
+    if (!confirm("Remove this member?")) return;
+
+    try {
+      if (member.id) {
+        await deleteCouncilMember(member.id);
+      }
+
+      setMembers((prev) => prev.filter((m) => m !== member));
+
+      setSavedMsg("✓ Member deleted.");
+      setTimeout(() => setSavedMsg(""), 2000);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const resetAll = async () => {
+    if (
+      !confirm(
+        "Delete ALL members from this committee? This cannot be undone."
+      )
+    )
+      return;
+
+    try {
+      for (const member of members) {
+        if (member.id) {
+          await deleteCouncilMember(member.id);
+        }
+      }
+      setMembers([]);
+      setSavedMsg("✓ All members deleted.");
+      setTimeout(() => setSavedMsg(""), 2000);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const saveChanges = async () => {
+    if (!group) {
+      alert("Please select a committee first.");
+      return;
+    }
+
     setIsSaving(true);
-    setCouncil(group, members);
-    setTimeout(() => {
-      setIsSaving(false);
+
+    try {
+      for (const member of members) {
+        // Prepare payload: exclude tempId
+        const { tempId, ...payload } = {
+          ...member,
+          email: member.email?.trim() || null,
+          groupKey: group,
+        };
+
+        if (member.id) {
+          await updateCouncilMember(member.id, payload);
+        } else {
+          await createCouncilMember(payload);
+        }
+      }
+
+      await loadMembers(group);
+
       setSavedMsg("✓ Council members saved successfully.");
       setTimeout(() => setSavedMsg(""), 2000);
-    }, 500);
+    } catch (err) {
+      console.error(err);
+      setSavedMsg("Error saving members.");
+      setTimeout(() => setSavedMsg(""), 3000);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <div className="border border-border rounded-md p-5 bg-card">
       <div className="flex justify-between items-center mb-4">
         <div>
-          <h2 className="font-semibold text-lg mb-1">Council / Committee Members</h2>
-          <p className="text-xs text-muted-foreground">Edit member list. Click Save to apply changes.</p>
+          <h2 className="font-semibold text-lg mb-1">
+            Council / Committee Members
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Select a committee and manage members.
+          </p>
         </div>
-        <Button onClick={saveChanges} disabled={isSaving} className="bg-green-600 hover:bg-green-700">
+
+        <Button
+          onClick={saveChanges}
+          disabled={isSaving}
+          className="bg-green-600 hover:bg-green-700"
+        >
           {isSaving ? "Saving..." : "💾 Save Changes"}
         </Button>
       </div>
@@ -74,17 +208,24 @@ export function CouncilManager({ setSavedMsg }: CouncilManagerProps) {
           <select
             className="w-full mt-1 border border-border rounded-md p-2 bg-background text-sm"
             value={group}
-            onChange={(e) => reload(e.target.value as CouncilKey)}
+            onChange={(e) => loadMembers(e.target.value)}
           >
-            {COUNCIL_GROUPS.map((g) => (
+            <option value="">Select Committee</option>
+            {groups.map((g) => (
               <option key={g.key} value={g.key}>
                 {g.label}
               </option>
             ))}
           </select>
         </div>
+
         {members.length > 0 && (
-          <Button size="sm" variant="destructive" className="mt-5" onClick={resetAll}>
+          <Button
+            size="sm"
+            variant="destructive"
+            className="mt-5"
+            onClick={resetAll}
+          >
             Delete All Members
           </Button>
         )}
@@ -102,24 +243,55 @@ export function CouncilManager({ setSavedMsg }: CouncilManagerProps) {
               <th className="p-2"></th>
             </tr>
           </thead>
+
           <tbody>
             {members.map((m, i) => (
-              <tr key={m.id} className="border-t border-border">
-                <td className="p-2 text-muted-foreground">{i + 1}</td>
+              <tr key={m.id ?? m.tempId ?? i} className="border-t border-border">
+                <td className="p-2">{i + 1}</td>
+
                 <td className="p-2">
-                  <Input value={m.name} onChange={(e) => updateRow(m.id, { name: e.target.value })} />
+                  <Input
+                    value={m.name}
+                    onChange={(e) =>
+                      updateRow(i, { name: e.target.value })
+                    }
+                  />
                 </td>
+
                 <td className="p-2">
-                  <Input value={m.designation} onChange={(e) => updateRow(m.id, { designation: e.target.value })} />
+                  <Input
+                    value={m.designation}
+                    onChange={(e) =>
+                      updateRow(i, { designation: e.target.value })
+                    }
+                  />
                 </td>
+
                 <td className="p-2">
-                  <Input value={m.position ?? ""} onChange={(e) => updateRow(m.id, { position: e.target.value })} />
+                  <Input
+                    value={m.position}
+                    onChange={(e) =>
+                      updateRow(i, { position: e.target.value })
+                    }
+                  />
                 </td>
+
                 <td className="p-2">
-                  <Input value={m.email} onChange={(e) => updateRow(m.id, { email: e.target.value })} />
+                  <Input
+                    value={m.email}
+                    onChange={(e) =>
+                      updateRow(i, { email: e.target.value })
+                    }
+                  />
                 </td>
+
                 <td className="p-2">
-                  <Button size="sm" variant="destructive" className="h-7 text-xs" onClick={() => removeRow(m.id)}>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    className="h-7 text-xs"
+                    onClick={() => removeRow(m)}
+                  >
                     Delete
                   </Button>
                 </td>
@@ -130,7 +302,9 @@ export function CouncilManager({ setSavedMsg }: CouncilManagerProps) {
       </div>
 
       <div className="flex gap-2 mt-3">
-        <Button size="sm" onClick={addRow}>+ Add Member</Button>
+        <Button size="sm" onClick={addRow}>
+          + Add Member
+        </Button>
       </div>
     </div>
   );

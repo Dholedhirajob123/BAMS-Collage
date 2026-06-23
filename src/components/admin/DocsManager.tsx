@@ -1,145 +1,307 @@
 // components/admin/DocsManager.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  DOC_SECTIONS,
-  getSection,
-  setSection,
-  resetSection,
-  newDocId,
-  type DocSection as DocSectionT,
-} from "@/lib/docsStore";
+  getDocuments,
+  uploadDocument,
+  deleteDocument,
+  getSectionInfo,
+  updateSectionInfo,
+  getSections,
+} from "@/lib/apis";
+import { API_BASE_URL } from "@/lib/config";
+
+// Shadcn combobox components
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+
+import { cn } from "@/lib/utils"; // ensure you have this utility
 
 interface DocsManagerProps {
   setSavedMsg: (msg: string) => void;
 }
 
+interface DocFile {
+  id: string;
+  name: string;
+  dataUrl: string;
+  size: number;
+  addedAt: number;
+  batch?: string;
+}
+
+// Pending file (not yet uploaded)
+interface PendingFile {
+  file: File;
+  batch: string;
+  name: string;
+}
+
 export function DocsManager({ setSavedMsg }: DocsManagerProps) {
-  const [key, setKey] = useState<string>(DOC_SECTIONS[0]?.key || DOC_SECTIONS[0].key);
-  const [section, setSectionState] = useState<DocSectionT>(() => getSection(DOC_SECTIONS[0]?.key || DOC_SECTIONS[0].key));
-  const [searchTerm, setSearchTerm] = useState("");
+  const [sections, setSections] = useState<any[]>([]);
+  const [selectedKey, setSelectedKey] = useState("");
+  const [localInfo, setLocalInfo] = useState("");
+  const [files, setFiles] = useState<DocFile[]>([]);
+  const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [batch, setBatch] = useState("");
 
-  const reload = (k: string) => {
+  // Combobox state
+  const [open, setOpen] = useState(false);
+
+  // Load all section keys on mount
+  useEffect(() => {
+    loadSections();
+  }, []);
+
+  const loadSections = async () => {
+    try {
+      const data = await getSections();
+      setSections(data);
+      if (data.length > 0) {
+        setSelectedKey(data[0].sectionKey);
+        await loadSectionData(data[0].sectionKey);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // Load both info and files for a given section
+  const loadSectionData = async (key: string) => {
     setIsLoading(true);
-    setKey(k);
-    const loadedSection = getSection(k);
-    setSectionState(loadedSection);
-    setIsLoading(false);
+    setSelectedKey(key);
+    // Clear pending uploads when switching sections
+    setPendingFiles([]);
+    setBatch("");
+    try {
+      const [docs, infoRes] = await Promise.all([
+        getDocuments(key),
+        getSectionInfo(key),
+      ]);
+      setLocalInfo(infoRes?.info || "");
+      setFiles(
+        docs.map((d: any) => ({
+          id: d.id,
+          name: d.name,
+          dataUrl: d.url,
+          size: d.size,
+          addedAt: new Date(d.addedAt).getTime(),
+          batch: d.batch,
+        }))
+      );
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const commit = (next: DocSectionT) => {
-    setSectionState(next);
+  // Refresh only the file list (used after upload/delete)
+  const refreshFiles = async (key: string) => {
+    try {
+      const docs = await getDocuments(key);
+      setFiles(
+        docs.map((d: any) => ({
+          id: d.id,
+          name: d.name,
+          dataUrl: d.url,
+          size: d.size,
+          addedAt: new Date(d.addedAt).getTime(),
+          batch: d.batch,
+        }))
+      );
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const saveChanges = () => {
+  // Save: update info + upload pending files
+  const saveChanges = async () => {
     setIsSaving(true);
-    setSection(key, section);
-    setTimeout(() => {
-      setIsSaving(false);
-      setSavedMsg(`✓ "${DOC_SECTIONS.find(s => s.key === key)?.label}" saved successfully.`);
+    try {
+      // 1. Update the description
+      await updateSectionInfo(selectedKey, { info: localInfo });
+
+      // 2. Upload all pending files
+      for (const p of pendingFiles) {
+        const formData = new FormData();
+        formData.append("sectionKey", selectedKey);
+        formData.append("name", p.name);
+        formData.append("batch", p.batch);
+        formData.append("file", p.file);
+        await uploadDocument(formData);
+      }
+
+      // 3. Clear pending files
+      setPendingFiles([]);
+      setBatch("");
+
+      // 4. Refresh the file list to show newly uploaded files
+      await refreshFiles(selectedKey);
+
+      const currentSection = sections.find((s) => s.sectionKey === selectedKey);
+      setSavedMsg(
+        `✓ "${currentSection?.sectionKey}" saved with ${pendingFiles.length} new PDF(s).`
+      );
+      setTimeout(() => setSavedMsg(""), 3000);
+    } catch (e) {
+      console.error(e);
+      setSavedMsg("✗ Failed to save changes.");
       setTimeout(() => setSavedMsg(""), 2000);
-      reload(key);
-    }, 500);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const flash = (t: string) => {
-    setSavedMsg(t);
+  const flash = (msg: string) => {
+    setSavedMsg(msg);
     setTimeout(() => setSavedMsg(""), 2000);
   };
 
-  const [batch, setBatch] = useState<string>("");
+  // Stage a PDF file (add to pending list)
+  const stagePdf = (file: File) => {
+    if (
+      file.type !== "application/pdf" &&
+      !file.name.toLowerCase().endsWith(".pdf")
+    ) {
+      alert("Please upload a PDF file.");
+      return;
+    }
 
-  const onPdf = (file: File) => {
-    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf"))
-      return alert("Please upload a PDF file.");
-    if (file.size > 4 * 1024 * 1024) return alert("PDF must be under 4MB.");
-    const reader = new FileReader();
-    reader.onload = () => {
-      const newFiles = [
-        ...section.files,
-        {
-          id: newDocId(),
-          name: file.name,
-          dataUrl: reader.result as string,
-          size: file.size,
-          addedAt: Date.now(),
-          batch: batch.trim() || undefined,
-        },
-      ];
-      commit({ ...section, files: newFiles });
-      flash(`✓ "${file.name}" added. Click Save to confirm.`);
-      setBatch("");
-    };
-    reader.readAsDataURL(file);
+    if (pendingFiles.some((p) => p.name === file.name)) {
+      alert(`"${file.name}" is already in the pending upload list.`);
+      return;
+    }
+
+    setPendingFiles((prev) => [
+      ...prev,
+      { file, batch: batch.trim() || "Uncategorized", name: file.name },
+    ]);
+    flash(`📎 "${file.name}" staged for upload.`);
   };
 
-  const removeFile = (id: string, fileName: string) => {
+  // Remove a file from pending list
+  const removePending = (name: string) => {
+    setPendingFiles((prev) => prev.filter((p) => p.name !== name));
+    flash(`⛔ Removed "${name}" from pending uploads.`);
+  };
+
+  // Remove a single file (immediate delete)
+  const removeFile = async (id: string, fileName: string) => {
     if (!confirm(`Remove "${fileName}"?`)) return;
-    commit({ ...section, files: section.files.filter((f) => f.id !== id) });
-    flash(`✓ "${fileName}" removed. Click Save to confirm.`);
+    try {
+      await deleteDocument(Number(id));
+      flash(`✓ "${fileName}" removed`);
+      await refreshFiles(selectedKey);
+    } catch (e) {
+      console.error(e);
+      flash(`✗ Failed to remove "${fileName}"`);
+    }
   };
 
+  // Reset all files (UI only, does not delete from server)
   const resetAllFiles = () => {
-    if (!confirm(`Delete ALL ${section.files.length} PDFs from this section? This cannot be undone.`)) return;
-    commit({ ...section, files: [] });
-    flash("✓ All PDFs removed. Click Save to confirm.");
+    if (
+      !confirm(
+        `Delete ALL ${files.length} PDFs from this section? This cannot be undone.`
+      )
+    )
+      return;
+    setFiles([]);
+    flash("✓ All PDFs removed from view. Use individual delete to remove from server.");
   };
 
-  const filteredSections = DOC_SECTIONS.filter(s =>
-    s.label.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Format section key for display
+  const formatSectionKey = (key: string) => key.replaceAll("-", " ");
 
-  const getCategory = (key: string): string => {
-    if (key.includes("attendance")) return "📊 Attendance";
-    if (key.includes("fra")) return "💰 Fee Structure";
-    if (key.includes("naac")) return "⭐ NAAC";
-    if (key.includes("opd") || key.includes("ipd") || key.includes("operation") || key.includes("hospital-departments")) return "🏥 Hospital Services";
-    if (key === "innovation-ecosystem") return "💡 Innovation";
-    if (key === "departments") return "📚 Academics";
-    if (key.includes("muhs")) return "📋 MUHS Mandate";
-    return "📄 Other Documents";
-  };
+  // Get the currently selected section display name
+  const selectedSectionDisplay = selectedKey
+    ? formatSectionKey(selectedKey)
+    : "Select a section...";
 
   return (
     <div className="border border-border rounded-md p-5 bg-card">
       <div className="flex justify-between items-center mb-4">
         <div>
-          <h2 className="font-semibold text-lg mb-1">Page Information & PDF Documents</h2>
-          <p className="text-xs text-muted-foreground">Edit information and upload PDFs. Click Save to apply changes.</p>
+          <h2 className="font-semibold text-lg mb-1">
+            Page Information & PDF Documents
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Edit the description and stage PDFs. Click <strong>Save Changes</strong> to apply everything.
+          </p>
         </div>
-        <Button onClick={saveChanges} disabled={isSaving} className="bg-green-600 hover:bg-green-700">
+        <Button
+          onClick={saveChanges}
+          disabled={isSaving}
+          className="bg-green-600 hover:bg-green-700"
+        >
           {isSaving ? "Saving..." : "💾 Save Changes"}
         </Button>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4 mb-4">
-        <div>
-          <Label className="text-xs">Search Section</Label>
-          <Input
-            placeholder="Search by section name..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="mt-1"
-          />
-        </div>
-        <div>
-          <Label className="text-xs">Select Section</Label>
-          <select
-            className="w-full mt-1 border border-border rounded-md p-2 bg-background text-sm"
-            value={key}
-            onChange={(e) => reload(e.target.value)}
-          >
-            {filteredSections.map((s) => (
-              <option key={s.key} value={s.key}>
-                {getCategory(s.key)} - {s.label}
-              </option>
-            ))}
-          </select>
-        </div>
+      {/* Combobox - replaces search input + select */}
+      <div className="mb-4">
+        <Label className="text-xs">Select Section</Label>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="w-full justify-between mt-1"
+            >
+              {selectedSectionDisplay}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-full min-w-[300px] p-0">
+            <Command>
+              <CommandInput placeholder="Search sections..." />
+              <CommandList>
+                <CommandEmpty>No section found.</CommandEmpty>
+                <CommandGroup>
+                  {sections.map((s) => (
+                    <CommandItem
+                      key={s.id}
+                      value={s.sectionKey}
+                      onSelect={(currentValue) => {
+                        setSelectedKey(currentValue);
+                        setOpen(false);
+                        loadSectionData(currentValue);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          selectedKey === s.sectionKey
+                            ? "opacity-100"
+                            : "opacity-0"
+                        )}
+                      />
+                      {formatSectionKey(s.sectionKey)}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
       </div>
 
       {isLoading ? (
@@ -152,8 +314,8 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
             <Label className="text-xs">Information / Description</Label>
             <textarea
               className="w-full mt-1 border border-border rounded-md p-2 bg-background text-sm min-h-[100px]"
-              value={section.info}
-              onChange={(e) => commit({ ...section, info: e.target.value })}
+              value={localInfo}
+              onChange={(e) => setLocalInfo(e.target.value)}
               placeholder="Enter information text shown above the PDF list..."
             />
           </div>
@@ -169,35 +331,95 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
               />
             </div>
             <div>
-              <Label className="text-xs">Upload New PDF</Label>
+              <Label className="text-xs">Select PDF to Stage</Label>
               <Input
                 type="file"
                 accept="application/pdf"
                 className="mt-1"
                 onChange={(e) => {
                   const f = e.target.files?.[0];
-                  if (f) onPdf(f);
+                  if (f) stagePdf(f);
                   e.target.value = "";
                 }}
               />
             </div>
           </div>
 
+          {/* Pending uploads list */}
+          {pendingFiles.length > 0 && (
+            <div className="mb-4 border border-yellow-300 bg-yellow-50 dark:bg-yellow-950/20 rounded-md p-3">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">
+                  ⏳ Pending Uploads ({pendingFiles.length})
+                </span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-6 text-xs"
+                  onClick={() => {
+                    if (confirm("Clear all pending uploads?")) {
+                      setPendingFiles([]);
+                      flash("Pending uploads cleared.");
+                    }
+                  }}
+                >
+                  Clear All
+                </Button>
+              </div>
+              <ul className="divide-y divide-yellow-200 dark:divide-yellow-800">
+                {pendingFiles.map((p) => (
+                  <li
+                    key={p.name}
+                    className="flex items-center justify-between py-2 text-sm"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-yellow-600">📄</span>
+                      <span>{p.name}</span>
+                      <span className="text-xs text-muted-foreground">
+                        (batch: {p.batch})
+                      </span>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-6 text-xs text-red-500 hover:text-red-700"
+                      onClick={() => removePending(p.name)}
+                    >
+                      Remove
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <div className="border border-border rounded-md">
             <div className="bg-secondary px-3 py-2 border-b border-border flex justify-between items-center">
-              <span className="text-xs font-semibold">Uploaded Documents ({section.files.length})</span>
-              {section.files.length > 0 && (
-                <Button size="sm" variant="destructive" className="h-6 text-xs" onClick={resetAllFiles}>
-                  Delete All
+              <span className="text-xs font-semibold">
+                Uploaded Documents ({files.length})
+              </span>
+              {files.length > 0 && (
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  className="h-6 text-xs"
+                  onClick={resetAllFiles}
+                >
+                  Delete All (UI only)
                 </Button>
               )}
             </div>
-            {section.files.length === 0 ? (
-              <p className="p-3 text-xs text-muted-foreground italic">No PDFs uploaded for this section.</p>
+            {files.length === 0 ? (
+              <p className="p-3 text-xs text-muted-foreground italic">
+                No PDFs uploaded for this section.
+              </p>
             ) : (
               <ul className="divide-y divide-border">
-                {section.files.map((f) => (
-                  <li key={f.id} className="flex items-center justify-between p-3 text-xs hover:bg-secondary/30">
+                {files.map((f) => (
+                  <li
+                    key={f.id}
+                    className="flex items-center justify-between p-3 text-xs hover:bg-secondary/30"
+                  >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="text-red-500">📄</span>
@@ -205,13 +427,17 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
                       </div>
                       <div className="flex flex-wrap gap-3 mt-1 text-[10px] text-muted-foreground">
                         <span>{(f.size / 1024).toFixed(0)} KB</span>
-                        <span>Added {new Date(f.addedAt).toLocaleDateString()}</span>
-                        {f.batch && <span className="text-brand">🏷️ {f.batch}</span>}
+                        <span>
+                          Added {new Date(f.addedAt).toLocaleDateString()}
+                        </span>
+                        {f.batch && (
+                          <span className="text-brand">🏷️ {f.batch}</span>
+                        )}
                       </div>
                     </div>
                     <div className="flex gap-2 ml-2">
                       <a
-                        href={f.dataUrl}
+                        href={`${API_BASE_URL}${f.dataUrl}`}
                         download={f.name}
                         target="_blank"
                         rel="noopener noreferrer"

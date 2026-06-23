@@ -5,7 +5,6 @@ export type CouncilMember = {
   name: string;
   designation: string;
   position: string;
-  phone: string;
   email: string;
 };
 
@@ -58,7 +57,6 @@ const mk = (
   name,
   designation,
   position,
-  phone,
   email,
 });
 
