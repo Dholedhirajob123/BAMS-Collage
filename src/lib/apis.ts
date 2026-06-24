@@ -457,3 +457,22 @@ export const getCouncilGroups = async () => {
 
   return response.json();
 };
+// ================= COUNCIL GROUPS (continued) =================
+
+export const getCouncilGroupByKey = async (groupKey: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/council-groups/${groupKey}`);
+  if (!response.ok) {
+    throw new Error('Council group not found');
+  }
+  return response.json();
+};
+
+// ================= STAFF GROUPS =================
+
+export const getStaffGroups = async () => {
+  const response = await fetch(`${API_BASE_URL}/api/staff-groups`);
+  if (!response.ok) {
+    throw new Error('Failed to load staff groups');
+  }
+  return response.json();
+};
