@@ -19,6 +19,22 @@ interface GalleryManagerProps {
   setSavedMsg: (msg: string) => void;
 }
 
+// Helper to convert raw Base64 to a data URL
+const getImageSrc = (src: string): string => {
+  if (!src) return '';
+  // Already a data URL or absolute URL – return as is
+  if (src.startsWith('data:') || src.startsWith('http://') || src.startsWith('https://')) {
+    return src;
+  }
+  // Detect common Base64 image signatures
+  if (src.startsWith('/9j/')) return `data:image/jpeg;base64,${src}`;
+  if (src.startsWith('iVBORw0KGgo')) return `data:image/png;base64,${src}`;
+  if (src.startsWith('R0lGODdh')) return `data:image/gif;base64,${src}`;
+  if (src.startsWith('UklGR')) return `data:image/webp;base64,${src}`;
+  // Fallback – assume JPEG (adjust if your backend uses a different default)
+  return `data:image/jpeg;base64,${src}`;
+};
+
 export function GalleryManager({ setSavedMsg }: GalleryManagerProps) {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [categories, setCategories] = useState<PhotoCategory[]>([]);
@@ -292,8 +308,8 @@ export function GalleryManager({ setSavedMsg }: GalleryManagerProps) {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {filteredPhotos.map((photo) => {
             const defaultPhoto = isDefault(photo);
-            // Build full image URL: API_BASE_URL + src
-            const imageUrl = photo.src ? `${API_BASE_URL}${photo.src}` : '';
+            // Use the helper to get a displayable image source
+            const imageUrl = getImageSrc(photo.src || '');
 
             return (
               <div

@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
 
-import { cn } from "@/lib/utils"; // ensure you have this utility
+import { cn } from "@/lib/utils";
 
 interface DocsManagerProps {
   setSavedMsg: (msg: string) => void;
@@ -38,13 +38,12 @@ interface DocsManagerProps {
 interface DocFile {
   id: string;
   name: string;
-  dataUrl: string;
+  dataUrl: string;      // will be a full data:application/pdf;base64,...
   size: number;
   addedAt: number;
   batch?: string;
 }
 
-// Pending file (not yet uploaded)
 interface PendingFile {
   file: File;
   batch: string;
@@ -61,10 +60,32 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [batch, setBatch] = useState("");
 
-  // Combobox state
   const [open, setOpen] = useState(false);
 
-  // Load all section keys on mount
+  // Helper to build a PDF data URL from a Base64 string
+  const buildPdfDataUrl = (base64: string): string => {
+    if (!base64) return "";
+    // If it already starts with data:application/pdf, return as is
+    if (base64.startsWith("data:application/pdf")) return base64;
+    // If it's a raw Base64 string (no prefix), add the prefix
+    return `data:application/pdf;base64,${base64}`;
+  };
+
+  // Transform the backend document object into our frontend DocFile
+  const mapDocument = (doc: any): DocFile => {
+    // The backend returns { id, name, pdfData, size, batch, addedAt, ... }
+    // We need to build the dataUrl from pdfData
+    const pdfData = doc.pdfData || doc.url || ""; // fallback
+    return {
+      id: String(doc.id),
+      name: doc.name,
+      dataUrl: buildPdfDataUrl(pdfData),
+      size: doc.size,
+      addedAt: doc.addedAt ? new Date(doc.addedAt).getTime() : Date.now(),
+      batch: doc.batch,
+    };
+  };
+
   useEffect(() => {
     loadSections();
   }, []);
@@ -82,11 +103,9 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
     }
   };
 
-  // Load both info and files for a given section
   const loadSectionData = async (key: string) => {
     setIsLoading(true);
     setSelectedKey(key);
-    // Clear pending uploads when switching sections
     setPendingFiles([]);
     setBatch("");
     try {
@@ -95,16 +114,7 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
         getSectionInfo(key),
       ]);
       setLocalInfo(infoRes?.info || "");
-      setFiles(
-        docs.map((d: any) => ({
-          id: d.id,
-          name: d.name,
-          dataUrl: d.url,
-          size: d.size,
-          addedAt: new Date(d.addedAt).getTime(),
-          batch: d.batch,
-        }))
-      );
+      setFiles(docs.map(mapDocument));
     } catch (e) {
       console.error(e);
     } finally {
@@ -112,33 +122,20 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
     }
   };
 
-  // Refresh only the file list (used after upload/delete)
   const refreshFiles = async (key: string) => {
     try {
       const docs = await getDocuments(key);
-      setFiles(
-        docs.map((d: any) => ({
-          id: d.id,
-          name: d.name,
-          dataUrl: d.url,
-          size: d.size,
-          addedAt: new Date(d.addedAt).getTime(),
-          batch: d.batch,
-        }))
-      );
+      setFiles(docs.map(mapDocument));
     } catch (e) {
       console.error(e);
     }
   };
 
-  // Save: update info + upload pending files
   const saveChanges = async () => {
     setIsSaving(true);
     try {
-      // 1. Update the description
       await updateSectionInfo(selectedKey, { info: localInfo });
 
-      // 2. Upload all pending files
       for (const p of pendingFiles) {
         const formData = new FormData();
         formData.append("sectionKey", selectedKey);
@@ -148,11 +145,9 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
         await uploadDocument(formData);
       }
 
-      // 3. Clear pending files
       setPendingFiles([]);
       setBatch("");
 
-      // 4. Refresh the file list to show newly uploaded files
       await refreshFiles(selectedKey);
 
       const currentSection = sections.find((s) => s.sectionKey === selectedKey);
@@ -174,7 +169,6 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
     setTimeout(() => setSavedMsg(""), 2000);
   };
 
-  // Stage a PDF file (add to pending list)
   const stagePdf = (file: File) => {
     if (
       file.type !== "application/pdf" &&
@@ -196,13 +190,11 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
     flash(`📎 "${file.name}" staged for upload.`);
   };
 
-  // Remove a file from pending list
   const removePending = (name: string) => {
     setPendingFiles((prev) => prev.filter((p) => p.name !== name));
     flash(`⛔ Removed "${name}" from pending uploads.`);
   };
 
-  // Remove a single file (immediate delete)
   const removeFile = async (id: string, fileName: string) => {
     if (!confirm(`Remove "${fileName}"?`)) return;
     try {
@@ -215,7 +207,6 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
     }
   };
 
-  // Reset all files (UI only, does not delete from server)
   const resetAllFiles = () => {
     if (
       !confirm(
@@ -227,10 +218,8 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
     flash("✓ All PDFs removed from view. Use individual delete to remove from server.");
   };
 
-  // Format section key for display
   const formatSectionKey = (key: string) => key.replaceAll("-", " ");
 
-  // Get the currently selected section display name
   const selectedSectionDisplay = selectedKey
     ? formatSectionKey(selectedKey)
     : "Select a section...";
@@ -255,7 +244,6 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
         </Button>
       </div>
 
-      {/* Combobox - replaces search input + select */}
       <div className="mb-4">
         <Label className="text-xs">Select Section</Label>
         <Popover open={open} onOpenChange={setOpen}>
@@ -345,7 +333,6 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
             </div>
           </div>
 
-          {/* Pending uploads list */}
           {pendingFiles.length > 0 && (
             <div className="mb-4 border border-yellow-300 bg-yellow-50 dark:bg-yellow-950/20 rounded-md p-3">
               <div className="flex justify-between items-center mb-2">
@@ -437,7 +424,7 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
                     </div>
                     <div className="flex gap-2 ml-2">
                       <a
-                        href={`${API_BASE_URL}${f.dataUrl}`}
+                        href={f.dataUrl} // direct data URL
                         download={f.name}
                         target="_blank"
                         rel="noopener noreferrer"

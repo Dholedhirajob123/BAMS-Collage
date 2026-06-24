@@ -5,20 +5,33 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { STAFF_GROUPS, type StaffGroupKey, type StaffMember } from "@/lib/staffStore";
 import { API_BASE_URL } from '@/lib/config';
+
 interface StaffManagerProps {
   setSavedMsg: (msg: string) => void;
 }
 
 const API_BASE = `${API_BASE_URL}/api/staff`;
 
+// Helper to convert raw Base64 to a displayable data URL
+const getImageSrc = (src: string): string => {
+  if (!src) return '';
+  if (src.startsWith('data:') || src.startsWith('http://') || src.startsWith('https://')) {
+    return src;
+  }
+  if (src.startsWith('/9j/')) return `data:image/jpeg;base64,${src}`;
+  if (src.startsWith('iVBORw0KGgo')) return `data:image/png;base64,${src}`;
+  if (src.startsWith('R0lGODdh')) return `data:image/gif;base64,${src}`;
+  if (src.startsWith('UklGR')) return `data:image/webp;base64,${src}`;
+  return `data:image/jpeg;base64,${src}`;
+};
+
 export function StaffManager({ setSavedMsg }: StaffManagerProps) {
   const [group, setGroup] = useState<StaffGroupKey>("teaching");
   const [members, setMembers] = useState<StaffMember[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null); // "new" for new member, or actual id as string
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<StaffMember>>({});
 
-  // Fetch staff by group
   const fetchMembers = async (groupKey: StaffGroupKey) => {
     setIsLoading(true);
     try {
@@ -35,12 +48,10 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
     }
   };
 
-  // Reload when group changes
   useEffect(() => {
     fetchMembers(group);
   }, [group]);
 
-  // API: create new member
   const createMember = async (member: StaffMember) => {
     const res = await fetch(API_BASE, {
       method: "POST",
@@ -51,7 +62,6 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
     return res.json();
   };
 
-  // API: update member
   const updateMember = async (id: number | string, member: StaffMember) => {
     const res = await fetch(`${API_BASE}/${id}`, {
       method: "PUT",
@@ -62,13 +72,11 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
     return res.json();
   };
 
-  // API: delete member
   const deleteMember = async (id: number | string) => {
     const res = await fetch(`${API_BASE}/${id}`, { method: "DELETE" });
     if (!res.ok) throw new Error("Failed to delete staff member");
   };
 
-  // Add new member – open modal with empty form
   const addRow = () => {
     const emptyMember: Partial<StaffMember> = {
       name: "",
@@ -94,19 +102,16 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
     setEditForm(emptyMember);
   };
 
-  // Start editing existing member
   const startEdit = (member: StaffMember) => {
     setEditingId(String(member.id));
     setEditForm({ ...member });
   };
 
-  // Cancel editing
   const cancelEdit = () => {
     setEditingId(null);
     setEditForm({});
   };
 
-  // Save (create or update)
   const saveEdit = async () => {
     if (!editForm.name || !editForm.designation) {
       setSavedMsg("⚠️ Name and designation are required.");
@@ -114,22 +119,25 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
       return;
     }
 
+    // Validate mobile: if provided, must be digits only
+    if (editForm.mobile && !/^\d+$/.test(editForm.mobile)) {
+      setSavedMsg("⚠️ Mobile number must contain only digits.");
+      setTimeout(() => setSavedMsg(""), 2000);
+      return;
+    }
+
     try {
-      // Ensure groupKey is included
       const payload = { ...editForm, groupKey: group } as StaffMember;
 
       if (editingId === "new") {
-        // Create new
         await createMember(payload);
         setSavedMsg("✅ Staff member created successfully.");
       } else {
-        // Update existing – convert id to number
         const id = Number(editingId);
         await updateMember(id, payload);
         setSavedMsg("✅ Staff member updated successfully.");
       }
 
-      // Refresh list and close modal
       await fetchMembers(group);
       cancelEdit();
       setTimeout(() => setSavedMsg(""), 2000);
@@ -140,7 +148,6 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
     }
   };
 
-  // Delete single member
   const removeRow = async (id: number) => {
     if (!confirm("Remove this staff member?")) return;
     try {
@@ -156,11 +163,9 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
     }
   };
 
-  // Delete all members in current group
   const resetAll = async () => {
     if (!confirm(`Delete ALL ${members.length} staff members from this group? This cannot be undone.`)) return;
     try {
-      // Delete each member sequentially (or use Promise.all)
       for (const m of members) {
         await deleteMember(m.id);
       }
@@ -174,7 +179,6 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
     }
   };
 
-  // Handle photo upload
   const onPhoto = (file: File) => {
     if (!file.type.startsWith("image/")) {
       alert("Please choose an image file.");
@@ -191,7 +195,6 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
     reader.readAsDataURL(file);
   };
 
-  // Helper: get initials for avatar
   const getInitials = (name: string) => {
     if (!name) return "?";
     return name
@@ -199,6 +202,20 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
       .map((n) => n[0])
       .slice(0, 2)
       .join("");
+  };
+
+  // Helper to ensure date fields are in YYYY-MM-DD format for type="date"
+  const formatDateForInput = (date?: string): string => {
+    if (!date) return "";
+    // If already in YYYY-MM-DD, return as is
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) return date;
+    // If in DD/MM/YYYY format, convert to YYYY-MM-DD
+    const parts = date.split('/');
+    if (parts.length === 3) {
+      const [day, month, year] = parts;
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+    return date; // fallback
   };
 
   const isTeaching = group === "teaching";
@@ -267,12 +284,11 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
               key={m.id}
               className="border border-border rounded-lg overflow-hidden bg-card hover:shadow-lg transition-all"
             >
-              {/* Card Header with Photo */}
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 p-4 flex items-center gap-4">
                 <div className="flex-shrink-0">
                   {m.photo ? (
                     <img
-                      src={m.photo}
+                      src={getImageSrc(m.photo)}
                       alt={m.name}
                       className="h-16 w-16 rounded-lg object-cover border-2 border-brand"
                     />
@@ -299,7 +315,6 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                 </button>
               </div>
 
-              {/* Card Body - Quick Info */}
               <div className="p-4 space-y-2">
                 {isTeaching ? (
                   <>
@@ -387,7 +402,6 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
             className="bg-white dark:bg-gray-900 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header */}
             <div className="sticky top-0 bg-white dark:bg-gray-900 z-10 p-4 border-b border-border flex justify-between items-center rounded-t-2xl">
               <h3 className="text-xl font-bold text-brand">
                 {editingId === "new" ? "Add Staff Member" : `Edit ${editForm.name || "Staff"}`}
@@ -400,14 +414,13 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
               </button>
             </div>
 
-            {/* Modal Body */}
             <div className="p-6">
               {/* Photo Upload */}
               <div className="flex items-center gap-6 mb-6">
                 <div>
                   {editForm.photo ? (
                     <img
-                      src={editForm.photo}
+                      src={getImageSrc(editForm.photo)}
                       alt="Profile"
                       className="h-24 w-24 rounded-lg object-cover border-2 border-brand"
                     />
@@ -460,19 +473,19 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                     <div>
                       <Label className="text-xs">Date of Birth</Label>
                       <Input
-                        value={editForm.dob || ""}
+                        type="date"
+                        value={formatDateForInput(editForm.dob)}
                         onChange={(e) => setEditForm({ ...editForm, dob: e.target.value })}
                         className="mt-1 text-sm"
-                        placeholder="DD/MM/YYYY"
                       />
                     </div>
                     <div>
                       <Label className="text-xs">Date of Joining</Label>
                       <Input
-                        value={editForm.dateOfJoining || ""}
+                        type="date"
+                        value={formatDateForInput(editForm.dateOfJoining)}
                         onChange={(e) => setEditForm({ ...editForm, dateOfJoining: e.target.value })}
                         className="mt-1 text-sm"
-                        placeholder="DD/MM/YYYY"
                       />
                     </div>
                     <div>
@@ -521,9 +534,13 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                       <Label className="text-xs">Mobile Number</Label>
                       <Input
                         value={editForm.mobile || ""}
-                        onChange={(e) => setEditForm({ ...editForm, mobile: e.target.value })}
+                        onChange={(e) => {
+                          // Only allow digits
+                          const val = e.target.value.replace(/\D/g, "");
+                          setEditForm({ ...editForm, mobile: val });
+                        }}
                         className="mt-1 text-sm"
-                        placeholder="Mobile number"
+                        placeholder="Mobile number (digits only)"
                       />
                     </div>
                     <div className="col-span-2">
@@ -567,10 +584,10 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                     <div>
                       <Label className="text-xs">Date of Appointment</Label>
                       <Input
-                        value={editForm.dateOfAppointment || ""}
+                        type="date"
+                        value={formatDateForInput(editForm.dateOfAppointment)}
                         onChange={(e) => setEditForm({ ...editForm, dateOfAppointment: e.target.value })}
                         className="mt-1 text-sm"
-                        placeholder="DD/MM/YYYY"
                       />
                     </div>
                     <div>
@@ -604,7 +621,6 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                 )}
               </div>
 
-              {/* Modal Actions */}
               <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-border">
                 <Button variant="outline" onClick={() => cancelEdit()}>
                   Cancel
