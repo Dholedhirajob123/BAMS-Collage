@@ -252,8 +252,8 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
             onChange={(e) => setGroup(e.target.value as StaffGroupKey)}
           >
             {STAFF_GROUPS.map((item) => (
-              <option key={item.key} value={item.key}>
-                {item.label}
+              <option key={item} value={item}>
+                {item}
               </option>
             ))}
           </select>

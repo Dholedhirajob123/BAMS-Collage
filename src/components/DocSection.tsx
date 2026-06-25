@@ -2,31 +2,34 @@
 import { useDocSection } from "@/lib/docsStore";
 import { useState } from "react";
 
-export function DocSection({ slug }: { slug: string }) {
-  const { info, files } = useDocSection(slug);
+interface DocSectionProps {
+  slug: string;
+  showUpload?: boolean; // optionally enable upload for admin
+}
+
+export function DocSection({ slug, showUpload = false }: DocSectionProps) {
+  const { info, files, isLoading, error, refetch, addDocument, deleteDocument } =
+    useDocSection(slug);
   const [selectedFile, setSelectedFile] = useState<{ name: string; dataUrl: string } | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const handleView = (dataUrl: string, name: string) => {
-    setIsLoading(true);
-    // Open in new tab
-    const win = window.open('', '_blank');
+    const win = window.open("", "_blank");
     if (win) {
       win.document.write(`
         <html>
           <head>
             <title>${name}</title>
             <style>
-              body { margin: 0; padding: 0; height: 100vh; overflow: hidden; background: #f5f5f5; display: flex; justify-content: center; align-items: center; flex-direction: column; }
-              .container { width: 100%; height: 100vh; display: flex; flex-direction: column; }
-              .header { padding: 10px 20px; background: #fff; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
-              .header h3 { margin: 0; font-size: 14px; color: #333; }
-              .header a { background: #8B4513; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 12px; }
-              .header a:hover { opacity: 0.8; }
-              .pdf-container { flex: 1; width: 100%; }
-              .pdf-container embed { width: 100%; height: 100%; }
-              .error-msg { text-align: center; padding: 40px; color: #666; }
-              .error-msg a { color: #8B4513; text-decoration: underline; }
+              body { margin:0; padding:0; height:100vh; overflow:hidden; background:#f5f5f5; display:flex; justify-content:center; align-items:center; flex-direction:column; }
+              .container { width:100%; height:100vh; display:flex; flex-direction:column; }
+              .header { padding:10px 20px; background:#fff; border-bottom:1px solid #ddd; display:flex; justify-content:space-between; align-items:center; }
+              .header h3 { margin:0; font-size:14px; color:#333; }
+              .header a { background:#8B4513; color:white; padding:6px 12px; text-decoration:none; border-radius:4px; font-size:12px; }
+              .header a:hover { opacity:0.8; }
+              .pdf-container { flex:1; width:100%; }
+              .pdf-container embed { width:100%; height:100%; }
             </style>
           </head>
           <body>
@@ -47,18 +50,63 @@ export function DocSection({ slug }: { slug: string }) {
       `);
       win.document.close();
     }
-    setIsLoading(false);
   };
 
-  const closeViewer = () => {
-    setSelectedFile(null);
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setUploadError(null);
+    try {
+      // Optional: ask for batch
+      const batch = prompt("Enter batch (e.g., 2022) or leave empty:", "");
+      await addDocument(file, batch || undefined);
+      e.target.value = ""; // reset input
+    } catch (err: any) {
+      setUploadError(err.message);
+    } finally {
+      setUploading(false);
+    }
   };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this document?")) return;
+    try {
+      await deleteDocument(id);
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
+  if (isLoading) {
+    return <div className="p-4 text-sm text-muted-foreground">Loading documents...</div>;
+  }
+
+  if (error) {
+    return <div className="p-4 text-sm text-red-500">Error: {error}</div>;
+  }
 
   return (
     <div className="space-y-5">
       {info && (
         <div className="border-l-4 border-brand bg-secondary/40 p-4 rounded-r-md">
           <p className="text-foreground leading-relaxed whitespace-pre-line">{info}</p>
+        </div>
+      )}
+
+      {showUpload && (
+        <div className="flex items-center gap-4">
+          <label className="cursor-pointer bg-brand text-white px-4 py-2 rounded-md text-sm hover:bg-brand/80 transition-colors">
+            {uploading ? "Uploading..." : "Upload Document"}
+            <input
+              type="file"
+              accept=".pdf"
+              className="hidden"
+              onChange={handleUpload}
+              disabled={uploading}
+            />
+          </label>
+          {uploadError && <span className="text-sm text-red-500">{uploadError}</span>}
         </div>
       )}
 
@@ -91,8 +139,7 @@ export function DocSection({ slug }: { slug: string }) {
                 <div className="flex gap-2 shrink-0">
                   <button
                     onClick={() => handleView(f.dataUrl, f.name)}
-                    disabled={isLoading}
-                    className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 transition-colors flex items-center gap-1 disabled:opacity-50"
+                    className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 transition-colors flex items-center gap-1"
                   >
                     <span>👁️</span> View
                   </button>
@@ -103,6 +150,14 @@ export function DocSection({ slug }: { slug: string }) {
                   >
                     <span>⬇️</span> Download
                   </a>
+                  {showUpload && (
+                    <button
+                      onClick={() => handleDelete(Number(f.id))}
+                      className="text-xs bg-red-600 text-white px-3 py-1.5 rounded hover:bg-red-700 transition-colors"
+                    >
+                      🗑️ Delete
+                    </button>
+                  )}
                 </div>
               </li>
             ))}

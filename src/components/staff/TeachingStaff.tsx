@@ -1,6 +1,6 @@
 // components/staff/TeachingStaff.tsx
 import { useState } from "react";
-import { useStaff, type StaffMember } from "@/lib/staffStore";
+import { useStaff, useStaffStatus, type StaffMember } from "@/lib/staffStore";
 import {
   Table,
   TableBody,
@@ -16,6 +16,7 @@ interface TeachingStaffProps {
 
 export function TeachingStaff({ slug = "faculty-teaching-staff" }: TeachingStaffProps) {
   const members = useStaff("teaching");
+  const { loading, error } = useStaffStatus("teaching");
   const [active, setActive] = useState<number | null>(null);
 
   const getInitials = (name: string) => {
@@ -23,19 +24,60 @@ export function TeachingStaff({ slug = "faculty-teaching-staff" }: TeachingStaff
     return name.split(" ").map(n => n[0]).slice(0, 2).join("");
   };
 
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-indigo-500 rounded-full" />
+          <h2 className="text-xl font-bold text-brand">Teaching Staff</h2>
+        </div>
+        <div className="text-center py-12 bg-secondary/30 rounded-lg">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent" />
+          <p className="mt-2 text-sm text-muted-foreground">Loading faculty…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    function refetchStaff(section: string): void {
+      if (section !== "teaching") return;
+      if (typeof window !== "undefined") {
+        window.location.reload();
+      }
+    }
+
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-indigo-500 rounded-full" />
+          <h2 className="text-xl font-bold text-brand">Teaching Staff</h2>
+        </div>
+        <div className="text-center py-12 bg-red-50 dark:bg-red-950/20 rounded-lg">
+          <p className="text-sm text-red-600 dark:text-red-400">Failed to load faculty: {error}</p>
+          <button
+            onClick={() => refetchStaff("teaching")}
+            className="mt-2 px-4 py-2 bg-brand text-white rounded-lg text-sm"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      {/* Header Section */}
+      {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-indigo-500 rounded-full"></div>
+        <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-indigo-500 rounded-full" />
         <div>
           <h2 className="text-xl font-bold text-brand">Teaching Staff</h2>
           <p className="text-xs text-muted-foreground">Faculty members of Rajashri Ayurvedic Medical College</p>
         </div>
       </div>
 
-
-      {/* Table Section */}
+      {/* Table */}
       <div className="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <Table>
@@ -53,75 +95,75 @@ export function TeachingStaff({ slug = "faculty-teaching-staff" }: TeachingStaff
               </TableRow>
             </TableHeader>
             <TableBody>
-              {members.map((m, i) => (
-                <TableRow key={m.id} className="hover:bg-secondary/50 transition-colors">
-                  <TableCell className="font-medium text-center">{i + 1}</TableCell>
-                  <TableCell>
-                    {m.photo ? (
-                      <button onClick={() => setActive(i)} className="block">
-                        <img
-                          src={m.photo}
-                          alt={m.name}
-                          className="h-10 w-10 rounded-md object-cover border-2 border-brand hover:scale-110 transition-transform"
-                        />
-                      </button>
-                    ) : (
-                      <div 
-                        onClick={() => setActive(i)} 
-                        className="h-10 w-10 rounded-md bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center text-sm font-bold text-brand cursor-pointer hover:scale-110 transition-transform"
-                      >
-                        {getInitials(m.name)}
-                      </div>
-                    )}
-                  </TableCell>
-                  <TableCell className="font-semibold text-brand">{m.name}</TableCell>
-                  <TableCell>{m.designation}</TableCell>
-                  <TableCell>{m.dateOfJoining || "—"}</TableCell>
-                  <TableCell>
-                    {m.teacherCode ? (
-                      <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 text-xs rounded-full whitespace-nowrap">
-                        {m.teacherCode}
-                      </span>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-xs">{m.registrationNumber || "—"}</TableCell>
-                  <TableCell className="text-xs">{m.qualification || "—"}</TableCell>
-                  <TableCell>
-                    {m.email ? (
-                      <a href={`mailto:${m.email}`} className="text-brand hover:underline break-all text-xs">
-                        {m.email}
-                      </a>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-              {members.length === 0 && (
+              {members.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={12} className="text-center text-muted-foreground py-12">
+                  <TableCell colSpan={9} className="text-center text-muted-foreground py-12">
                     No teaching staff members yet.
                   </TableCell>
                 </TableRow>
+              ) : (
+                members.map((m, i) => (
+                  <TableRow
+                    key={m.id}
+                    className="hover:bg-secondary/50 transition-colors cursor-pointer"
+                    onClick={() => setActive(i)}
+                  >
+                    <TableCell className="font-medium text-center">{i + 1}</TableCell>
+                    <TableCell>
+                      {m.photo ? (
+                        <img
+                          src={m.photo}
+                          alt={m.name}
+                          className="h-10 w-10 rounded-md object-cover border-2 border-brand"
+                        />
+                      ) : (
+                        <div className="h-10 w-10 rounded-md bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center text-sm font-bold text-brand">
+                          {getInitials(m.name)}
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell className="font-semibold text-brand">{m.name}</TableCell>
+                    <TableCell>{m.designation}</TableCell>
+                    <TableCell>{m.dateOfJoining || "—"}</TableCell>
+                    <TableCell>
+                      {m.teacherCode ? (
+                        <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 text-xs rounded-full whitespace-nowrap">
+                          {m.teacherCode}
+                        </span>
+                      ) : (
+                        "—"
+                      )}
+                    </TableCell>
+                    <TableCell className="text-xs">{m.registrationNumber || "—"}</TableCell>
+                    <TableCell className="text-xs">{m.qualification || "—"}</TableCell>
+                    <TableCell>
+                      {m.email ? (
+                        <a href={`mailto:${m.email}`} className="text-brand hover:underline break-all text-xs">
+                          {m.email}
+                        </a>
+                      ) : (
+                        "—"
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
               )}
             </TableBody>
           </Table>
         </div>
       </div>
 
-      {/* Enhanced Profile Dialog with Large Left Photo */}
+      {/* Profile Modal (copied from your original) */}
       {active !== null && members[active] && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-fade-in"
+          className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4"
           onClick={() => setActive(null)}
         >
-          <div 
+          <div
             className="bg-white dark:bg-gray-900 rounded-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-white/20"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button */}
+            {/* Close */}
             <div className="sticky top-0 bg-white dark:bg-gray-900 z-10 p-4 border-b border-border flex justify-between items-center rounded-t-2xl">
               <h3 className="text-xl font-bold text-brand">Faculty Profile</h3>
               <button
@@ -131,13 +173,10 @@ export function TeachingStaff({ slug = "faculty-teaching-staff" }: TeachingStaff
                 ✕
               </button>
             </div>
-
-            {/* Profile Content - Left Photo, Right Info */}
             <div className="p-6">
               <div className="grid md:grid-cols-2 gap-8">
-                {/* Left Side - Large Photo and Basic Info */}
+                {/* Left: Photo */}
                 <div className="space-y-6">
-                  {/* Large Photo */}
                   <div className="flex justify-center">
                     {members[active].photo ? (
                       <img
@@ -151,8 +190,6 @@ export function TeachingStaff({ slug = "faculty-teaching-staff" }: TeachingStaff
                       </div>
                     )}
                   </div>
-
-                  {/* Basic Information */}
                   <div className="text-center">
                     <h2 className="text-2xl font-bold text-brand">{members[active].name}</h2>
                     <p className="text-lg text-blue-600 dark:text-blue-400">{members[active].designation}</p>
@@ -169,10 +206,7 @@ export function TeachingStaff({ slug = "faculty-teaching-staff" }: TeachingStaff
                       )}
                     </div>
                   </div>
-
-                  {/* Quick Info Cards */}
                   <div className="grid grid-cols-2 gap-3">
-                   
                     <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-xl p-3 text-center border border-purple-100 dark:border-purple-800">
                       <p className="text-xs text-muted-foreground">Date of Birth</p>
                       <p className="font-semibold text-sm">{members[active].dob || "—"}</p>
@@ -182,14 +216,10 @@ export function TeachingStaff({ slug = "faculty-teaching-staff" }: TeachingStaff
                       <p className="font-semibold text-sm">{members[active].registrationNumber || "—"}</p>
                     </div>
                   </div>
-
-             
                 </div>
-
-                {/* Right Side - Detailed Information */}
+                {/* Right: Details */}
                 <div className="space-y-6">
                   <h3 className="text-lg font-semibold border-b border-border pb-2">Profile Details</h3>
-                  
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 gap-3">
                       <div>
@@ -246,8 +276,6 @@ export function TeachingStaff({ slug = "faculty-teaching-staff" }: TeachingStaff
                       </div>
                     </div>
                   </div>
-
-                
                 </div>
               </div>
             </div>

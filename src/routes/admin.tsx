@@ -73,8 +73,14 @@ function AdminPage() {
           <Input
             id="phone"
             inputMode="numeric"
+            maxLength={10}
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value.replace(/\D/g, ""); // allow only digits
+              if (value.length <= 10) {
+                setPhone(value);
+              }
+            }}
             autoFocus
             disabled={loading}
           />
@@ -141,11 +147,10 @@ function Editor({ onLogout }: { onLogout: () => void }) {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${
-              activeTab === tab.id
+            className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${activeTab === tab.id
                 ? "bg-brand text-white"
                 : "bg-secondary text-muted-foreground hover:bg-secondary/70"
-            }`}
+              }`}
           >
             {tab.label}
           </button>

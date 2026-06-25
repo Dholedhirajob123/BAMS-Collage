@@ -1,80 +1,136 @@
 // lib/departmentStore.ts
-import { useEffect, useState } from "react";
+import { create } from "zustand";
+import { getDepartments, getFacultyMembers, type Department, type FacultyMember } from "./apis";
+import React from "react";
 
-export type FacultyMember = {
-  id: string;
-  name: string;
-  designation: string;
-  qualification: string;
-  photo?: string; // Added photo field
-};
-
-export type FacultyMemberInput = Omit<FacultyMember, "id"> & { id?: string };
-
-const KEY = "ssam-dept-faculties-v1";
-
-type Store = Record<string, FacultyMember[]>;
-
-function ensureFacultyIds(slug: string, items: FacultyMemberInput[]) {
-  return items.map((item, index) => ({
-    ...item,
-    id: item.id ?? `${slug}-${index}`,
-    photo: item.photo || "",
-  }));
+interface DepartmentData {
+  department: Department | null;
+  faculties: FacultyMember[];
+  loading: boolean;
+  error: string | null;
+  hasLoaded: boolean;
 }
 
-function load(): Store {
-  if (typeof window === "undefined") return {};
-  try {
-    return JSON.parse(localStorage.getItem(KEY) || "{}") as Store;
-  } catch {
-    return {};
+interface DepartmentStore {
+  data: Record<string, DepartmentData>;
+  fetchDepartmentData: (slug: string) => Promise<void>;
+  refetchDepartment: (slug: string) => Promise<void>;
+}
+
+export const useDepartmentStore = create<DepartmentStore>((set, get) => ({
+  data: {},
+
+  fetchDepartmentData: async (slug: string) => {
+    console.log(`[store] fetchDepartmentData called for slug: ${slug}`);
+    const existing = get().data[slug];
+    if (existing && existing.hasLoaded) {
+      console.log(`[store] Already loaded for ${slug}, skipping.`);
+      return;
+    }
+    if (existing && existing.loading) {
+      console.log(`[store] Already loading for ${slug}, skipping.`);
+      return;
+    }
+
+    // Set loading state
+    console.log(`[store] Setting loading state for ${slug}`);
+    set((state) => ({
+      data: {
+        ...state.data,
+        [slug]: {
+          department: existing?.department ?? null,
+          faculties: existing?.faculties ?? [],
+          loading: true,
+          error: null,
+          hasLoaded: false,
+        },
+      },
+    }));
+
+    try {
+      // Fetch both in parallel
+      console.log(`[store] Fetching departments and faculties for ${slug}...`);
+      const [departments, faculties] = await Promise.all([
+        getDepartments(),
+        getFacultyMembers(slug),
+      ]);
+      console.log(`[store] Received departments:`, departments);
+      console.log(`[store] Received faculties for ${slug}:`, faculties);
+      const department = departments.find((d) => d.slug === slug) ?? null;
+      set((state) => ({
+        data: {
+          ...state.data,
+          [slug]: {
+            department,
+            faculties,
+            loading: false,
+            error: null,
+            hasLoaded: true,
+          },
+        },
+      }));
+      console.log(`[store] Successfully loaded ${slug}`);
+    } catch (error: any) {
+      console.error(`[store] Error loading ${slug}:`, error);
+      set((state) => ({
+        data: {
+          ...state.data,
+          [slug]: {
+            ...state.data[slug],
+            loading: false,
+            error: error.message || "Failed to load department data",
+            hasLoaded: true,
+          },
+        },
+      }));
+    }
+  },
+
+  refetchDepartment: async (slug: string) => {
+    console.log(`[store] Refetching ${slug}`);
+    // Reset the state for this slug
+    set((state) => ({
+      data: {
+        ...state.data,
+        [slug]: {
+          department: state.data[slug]?.department ?? null,
+          faculties: state.data[slug]?.faculties ?? [],
+          loading: false,
+          error: null,
+          hasLoaded: false,
+        },
+      },
+    }));
+    await get().fetchDepartmentData(slug);
+  },
+}));
+
+// ---- React hook ----
+export const useDepartmentData = (slug: string) => {
+  console.log(`[hook] useDepartmentData called with slug: "${slug}"`);
+  const data = useDepartmentStore((state) => state.data[slug]);
+  const fetch = useDepartmentStore((state) => state.fetchDepartmentData);
+  const hasTriggered = React.useRef(false);
+
+  // 🛠️ Reset the trigger when the slug changes
+  React.useEffect(() => {
+    hasTriggered.current = false;
+    console.log(`[hook] Reset hasTriggered for new slug: "${slug}"`);
+  }, [slug]);
+
+  React.useEffect(() => {
+    console.log(`[hook] useEffect for slug: "${slug}", hasTriggered: ${hasTriggered.current}`);
+    if (!hasTriggered.current) {
+      hasTriggered.current = true;
+      console.log(`[hook] Triggering fetch for slug: "${slug}"`);
+      fetch(slug);
+    }
+  }, [slug, fetch]);
+
+  // If data doesn't exist yet, return a loading state
+  if (!data) {
+    console.log(`[hook] No data yet for ${slug}, returning default loading.`);
+    return { department: null, faculties: [], loading: true, error: null, hasLoaded: false };
   }
-}
-
-function save(store: Store) {
-  localStorage.setItem(KEY, JSON.stringify(store));
-  window.dispatchEvent(new Event("department-faculties-changed"));
-}
-
-export function getDepartmentFaculties(
-  slug: string,
-  defaults: FacultyMemberInput[],
-): FacultyMember[] {
-  const store = load();
-  if (store[slug]) return ensureFacultyIds(slug, store[slug]);
-  return ensureFacultyIds(slug, defaults);
-}
-
-export function setDepartmentFaculties(slug: string, faculties: FacultyMember[]): void {
-  const store = load();
-  store[slug] = ensureFacultyIds(slug, faculties);
-  save(store);
-}
-
-export function resetDepartmentFaculties(slug: string) {
-  const store = load();
-  delete store[slug];
-  save(store);
-}
-
-export function useDepartmentFaculties(slug: string, defaults: FacultyMemberInput[]) {
-  const [faculties, setFaculties] = useState<FacultyMember[]>(() => getDepartmentFaculties(slug, defaults));
-
-  useEffect(() => {
-    const update = () => setFaculties(getDepartmentFaculties(slug, defaults));
-    update();
-    window.addEventListener("department-faculties-changed", update);
-    window.addEventListener("storage", update);
-    return () => {
-      window.removeEventListener("department-faculties-changed", update);
-      window.removeEventListener("storage", update);
-    };
-  }, [slug, defaults]);
-
-  return faculties;
-}
-
-export function newFacultyId() {
-  return `f-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-}
+  return data;
+};

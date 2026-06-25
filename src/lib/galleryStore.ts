@@ -1,135 +1,131 @@
-import { useEffect, useState } from "react";
-import g1 from "@/assets/gallery-1.jpg";
-import g2 from "@/assets/gallery-2.jpg";
-import g3 from "@/assets/gallery-3.jpg";
-import g4 from "@/assets/gallery-4.jpg";
-import g5 from "@/assets/gallery-5.jpg";
-import g6 from "@/assets/gallery-6.jpg";
-import g7 from "@/assets/gallery-7.jpg";
-import g8 from "@/assets/gallery-8.jpg";
-import campus1 from "@/assets/campus-1.jpg";
-import campus2 from "@/assets/campus-2.jpg";
-import campus3 from "@/assets/campus-3.jpg";
-import campus4 from "@/assets/campus-4.jpg";
+// lib/galleryStore.ts
+import { useEffect, useState, useCallback } from "react";
+import {
+  getPhotos,
+  uploadPhoto,
+  updatePhoto,
+  deletePhoto,
+  getPhotoCategories,
+  PhotoCategory,
+} from "./apis";
 
-export type Photo = { id: string; src: string; caption: string; date?: string; place?: string };
+export interface Photo {
+  id?: number;
+  src: string;          // will always be a full data URL after mapping
+  caption?: string;
+  date?: string;
+  categoryId?: string;
+  place?: string;
+  isDefault?: boolean;
+  hidden?: boolean;
+  createdAt?: string;
+}
 
-const DEFAULTS: Photo[] = [
-  { id: "d1", src: g1, caption: "Digital Library" },
-  { id: "d2", src: g2, caption: "Medicinal Herbal Garden" },
-  { id: "d3", src: g3, caption: "Panchakarma Therapy Room" },
-  { id: "d4", src: g4, caption: "Research Laboratory" },
-  { id: "d5", src: g5, caption: "Cultural Festival" },
+export interface GalleryState {
+  photos: Photo[];
+  categories: PhotoCategory[];
+  isLoading: boolean;
+  error: string | null;
+  refetch: () => Promise<void>;
+  addPhoto: (file: File, data: Partial<Photo>) => Promise<void>;
+  editPhoto: (id: number, data: Partial<Photo>) => Promise<void>;
+  removePhoto: (id: number) => Promise<void>;
+}
 
-];
-
-const KEY = "ssam-gallery-v1";
-type State = { removed: string[]; custom: Photo[]; updated: Photo[] };
-
-function load(): State {
-  if (typeof window === "undefined") return { removed: [], custom: [], updated: [] };
-  try {
-    return {
-      removed: [],
-      custom: [],
-      updated: [],
-      ...JSON.parse(localStorage.getItem(KEY) || "{}"),
-    };
-  } catch {
-    return { removed: [], custom: [], updated: [] };
+// Helper to convert raw Base64 to a data URL
+function toDataUrl(base64: string): string {
+  if (!base64) return "";
+  if (base64.startsWith("data:")) return base64; // already a data URL
+  // Detect PNG signature: iVBORw0KGgo
+  if (base64.startsWith("iVBORw0KGgo")) {
+    return `data:image/png;base64,${base64}`;
   }
+  // Default to JPEG
+  return `data:image/jpeg;base64,${base64}`;
 }
 
-function save(s: State) {
-  localStorage.setItem(KEY, JSON.stringify(s));
-  window.dispatchEvent(new Event("gallery-changed"));
-}
+export function useGallery(): GalleryState {
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [categories, setCategories] = useState<PhotoCategory[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-const applyUpdate = (photo: Photo, update?: Photo): Photo =>
-  update ? { ...photo, ...update } : photo;
-
-export function getGallery(): Photo[] {
-  const s = load();
-  const updatedById = new Map(s.updated.map((p) => [p.id, p]));
-  return [
-    ...DEFAULTS.filter((p) => !s.removed.includes(p.id)).map((p) =>
-      applyUpdate(p, updatedById.get(p.id)),
-    ),
-    ...s.custom,
-  ];
-}
-
-export function getAllForAdmin(): { photo: Photo; isDefault: boolean; hidden: boolean }[] {
-  const s = load();
-  const updatedById = new Map(s.updated.map((p) => [p.id, p]));
-  return [
-    ...DEFAULTS.map((p) => ({
-      photo: applyUpdate(p, updatedById.get(p.id)),
-      isDefault: true,
-      hidden: s.removed.includes(p.id),
-    })),
-    ...s.custom.map((p) => ({ photo: p, isDefault: false, hidden: false })),
-  ];
-}
-
-export function removePhoto(id: string) {
-  const s = load();
-  if (DEFAULTS.find((p) => p.id === id)) {
-    if (!s.removed.includes(id)) s.removed.push(id);
-  } else {
-    s.custom = s.custom.filter((p) => p.id !== id);
-  }
-  save(s);
-}
-
-export function restorePhoto(id: string) {
-  const s = load();
-  s.removed = s.removed.filter((x) => x !== id);
-  save(s);
-}
-
-export function addPhoto(src: string, caption: string, date?: string, place?: string) {
-  const s = load();
-  s.custom.push({
-    id: `c-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-    src,
-    caption,
-    date: date?.trim() || undefined,
-    place: place?.trim() || undefined,
-  });
-  save(s);
-}
-
-export function updatePhoto(id: string, patch: Partial<Pick<Photo, "caption" | "date" | "place">>) {
-  const s = load();
-  if (s.custom.some((photo) => photo.id === id)) {
-    s.custom = s.custom.map((photo) => (photo.id === id ? { ...photo, ...patch } : photo));
-  } else {
-    const existing = s.updated.find((photo) => photo.id === id);
-    if (existing) {
-      s.updated = s.updated.map((photo) => (photo.id === id ? { ...photo, ...patch } : photo));
-    } else {
-      const base = DEFAULTS.find((photo) => photo.id === id);
-      if (!base) return;
-      s.updated.push({ ...base, ...patch });
+  const fetchAll = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const [photosData, categoriesData] = await Promise.all([
+        getPhotos(),
+        getPhotoCategories(),
+      ]);
+      // Map photos to ensure src is a proper data URL
+      const mappedPhotos = photosData.map((p: any) => ({
+        ...p,
+        src: toDataUrl(p.src),
+      }));
+      setPhotos(mappedPhotos);
+      setCategories(categoriesData);
+    } catch (err: any) {
+      setError(err.message || "Failed to load gallery");
+    } finally {
+      setIsLoading(false);
     }
-  }
-  save(s);
-}
-
-export function useGallery() {
-  const [photos, setPhotos] = useState<Photo[]>(() =>
-    typeof window === "undefined" ? DEFAULTS : getGallery(),
-  );
-  useEffect(() => {
-    const update = () => setPhotos(getGallery());
-    update();
-    window.addEventListener("gallery-changed", update);
-    window.addEventListener("storage", update);
-    return () => {
-      window.removeEventListener("gallery-changed", update);
-      window.removeEventListener("storage", update);
-    };
   }, []);
-  return photos;
+
+  const addPhoto = useCallback(
+    async (file: File, data: Partial<Photo>) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      if (data.caption) formData.append("caption", data.caption);
+      if (data.categoryId) formData.append("categoryId", data.categoryId);
+      if (data.date) formData.append("date", data.date);
+      if (data.place) formData.append("place", data.place);
+      try {
+        await uploadPhoto(formData);
+        await fetchAll();
+      } catch (err: any) {
+        throw new Error(err.message || "Upload failed");
+      }
+    },
+    [fetchAll]
+  );
+
+  const editPhoto = useCallback(
+    async (id: number, data: Partial<Photo>) => {
+      try {
+        await updatePhoto(id, data);
+        await fetchAll();
+      } catch (err: any) {
+        throw new Error(err.message || "Update failed");
+      }
+    },
+    [fetchAll]
+  );
+
+  const removePhoto = useCallback(
+    async (id: number) => {
+      try {
+        await deletePhoto(id);
+        await fetchAll();
+      } catch (err: any) {
+        throw new Error(err.message || "Delete failed");
+      }
+    },
+    [fetchAll]
+  );
+
+  useEffect(() => {
+    fetchAll();
+  }, [fetchAll]);
+
+  return {
+    photos,
+    categories,
+    isLoading,
+    error,
+    refetch: fetchAll,
+    addPhoto,
+    editPhoto,
+    removePhoto,
+  };
 }

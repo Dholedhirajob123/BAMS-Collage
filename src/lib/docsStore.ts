@@ -1,21 +1,27 @@
 // lib/docsStore.ts
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { getDocuments, uploadDocument, deleteDocument } from "../lib/apis"; // your existing API functions
 
 export type DocFile = {
-  id: string;
+  id: string | number;
   name: string;
-  dataUrl: string;
+  dataUrl: string;       // full data URL (base64 with prefix)
   size: number;
-  addedAt: number;
+  addedAt: string | number; // backend returns LocalDateTime as string
   batch?: string;
 };
-export type DocSection = { info: string; files: DocFile[] };
 
-const KEY = "ssam-docs-v1";
+export type DocSection = {
+  info: string;
+  files: DocFile[];
+  isLoading: boolean;
+  error: string | null;
+  refetch: () => void;
+  addDocument: (file: File, batch?: string) => Promise<void>;
+  deleteDocument: (id: number) => Promise<void>;
+};
 
 export const DOC_SECTIONS: { key: string; label: string }[] = [
-
-
   // News & Events
   { key: "news-events", label: "📰 News & Events" },
   { key: "notices", label: "📢 Notices & Announcements" },
@@ -47,14 +53,13 @@ export const DOC_SECTIONS: { key: string; label: string }[] = [
   { key: "alumni-association", label: "Alumni Association" },
   { key: "research-publications", label: "Research and Publications" },
   { key: "download", label: "Downloads" },
-  // { key: "important-links", label: "Important Links" },
   
   // MUHS Mandate
   { key: "muhs-mandate", label: "MUHS Mandate — Overview" },
   { key: "muhs-mandate-circulars", label: "MUHS Mandate — Circulars" },
   { key: "muhs-mandate-notifications", label: "MUHS Mandate — Notifications" },
   
-  // Hospital Services - THESE KEYS MUST MATCH THE SLUGS
+  // Hospital Services
   { key: "opd-services", label: "🏥 OPD Services" },
   { key: "ipd-services", label: "🏥 IPD Services" },
   { key: "hospital-departments", label: "🏥 Hospital Departments" },
@@ -86,12 +91,6 @@ export const DOC_SECTIONS: { key: string; label: string }[] = [
   
   // Departments overview
   { key: "departments", label: "Departments Overview" },
-  
-  // Staff related
-  // { key: "staff-college", label: "College Staff" },
-  // { key: "staff-hospital", label: "Hospital Staff" },
-  // { key: "staff-non-teaching", label: "Non Teaching Staff" },
-  // { key: "faculty-teaching-staff", label: "Teaching Staff" },
   
   // Council / Committee
   { key: "iqac", label: "IQAC" },
@@ -183,54 +182,75 @@ const DEFAULT_INFO: Record<string, string> = {
   "facility-laboratory": "State-of-the-art laboratories for practical training.",
 };
 
-type Store = Record<string, DocSection>;
-
-function load(): Store {
-  if (typeof window === "undefined") return {};
-  try {
-    const raw = localStorage.getItem(KEY);
-    return raw ? (JSON.parse(raw) as Store) : {};
-  } catch {
-    return {};
-  }
-}
-
-function save(s: Store) {
-  localStorage.setItem(KEY, JSON.stringify(s));
-  window.dispatchEvent(new Event("docs-changed"));
-}
-
-export function getSection(key: string): DocSection {
-  const all = load();
-  return all[key] ?? { info: DEFAULT_INFO[key] ?? "", files: [] };
-}
-
-export function setSection(key: string, section: DocSection) {
-  const all = load();
-  all[key] = section;
-  save(all);
-}
-
-export function resetSection(key: string) {
-  const all = load();
-  delete all[key];
-  save(all);
-}
-
-export function newDocId() {
-  return Math.random().toString(36).slice(2, 10);
-}
+// Helper to convert API document to DocFile
+const mapApiDoc = (doc: any): DocFile => ({
+  id: doc.id,
+  name: doc.name,
+  dataUrl: `data:application/pdf;base64,${doc.pdfData}`, // backend returns raw base64
+  size: doc.size,
+  addedAt: doc.addedAt,
+  batch: doc.batch,
+});
 
 export function useDocSection(key: string): DocSection {
-  const [s, setS] = useState<DocSection>(() => getSection(key));
-  useEffect(() => {
-    const sync = () => setS(getSection(key));
-    window.addEventListener("docs-changed", sync);
-    window.addEventListener("storage", sync);
-    return () => {
-      window.removeEventListener("docs-changed", sync);
-      window.removeEventListener("storage", sync);
-    };
+  const [files, setFiles] = useState<DocFile[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const info = DEFAULT_INFO[key] ?? "";
+
+  const fetchDocs = useCallback(async () => {
+    if (!key) return;
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await getDocuments(key);
+      // data is array of documents from backend
+      const mapped = data.map(mapApiDoc);
+      setFiles(mapped);
+    } catch (err: any) {
+      setError(err.message || "Failed to load documents");
+      setFiles([]);
+    } finally {
+      setIsLoading(false);
+    }
   }, [key]);
-  return s;
+
+  const addDocument = useCallback(async (file: File, batch?: string) => {
+    const formData = new FormData();
+    formData.append("sectionKey", key);   // backend expects sectionKey
+    formData.append("file", file);
+    if (batch) formData.append("batch", batch);
+    try {
+      await uploadDocument(formData);
+      // Refetch after upload
+      await fetchDocs();
+    } catch (err: any) {
+      throw new Error(err.message || "Upload failed");
+    }
+  }, [key, fetchDocs]);
+
+  const removeDocument = useCallback(async (id: number) => {
+    try {
+      await deleteDocument(id);
+      await fetchDocs();
+    } catch (err: any) {
+      throw new Error(err.message || "Delete failed");
+    }
+  }, [fetchDocs]);
+
+  // Initial fetch and refetch on key change
+  useEffect(() => {
+    fetchDocs();
+  }, [fetchDocs]);
+
+  return {
+    info,
+    files,
+    isLoading,
+    error,
+    refetch: fetchDocs,
+    addDocument,
+    deleteDocument: removeDocument,
+  };
 }

@@ -1,3 +1,5 @@
+// components/CouncilTables.tsx
+import React from "react";
 import {
   Table,
   TableBody,
@@ -6,45 +8,84 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useCouncil, type CouncilKey, COUNCIL_GROUPS } from "@/lib/councilStore";
+import { useCouncilData, useCouncilStore, type CouncilKey } from "@/lib/councilStore";
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="text-2xl md:text-3xl font-bold text-brand mb-3 border-l-4 border-amber-500 pl-4">
-      {children}
-    </h2>
-  );
-}
+// ---- Static list of council slugs (for sidebar navigation) ----
+export const COUNCIL_GROUPS: { key: CouncilKey; label: string }[] = [
+  // This should match the slugs in PAGE_MAP and sidebar
+  // The labels here are fallback; display name from DB overrides.
+  { key: "iqac", label: "Internal Quality Assurance Cell" },
+  { key: "college-council-curriculum", label: "College Council Committee" },
+  { key: "grievances-cell", label: "Student Grievances and Redressal Committee" },
+  { key: "anti-ragging-cell", label: "Anti-Ragging Committee" },
+  { key: "internal-grievances-vishakha", label: "Committee Against Sexual Harassment" },
+  { key: "reservation-cell", label: "Human Resources Development Cell" },
+  { key: "academic-council-committee-2023-2024", label: "Academic Council Committee" },
+  { key: "co-curricular-extra-curricular-activity-cell", label: "Co-Curricular & Extra-Curricular Activity Cell" },
+  { key: "research-innovation-entrepreneurship-cell", label: "Research Innovation and Entrepreneurship Cell" },
+  { key: "student-support-career-guidance-placement-cell", label: "Student Support, Career Guidance and Placement Cell" },
+  { key: "student-council", label: "Student Council" },
+];
 
-function YearTag({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-center gap-2 mb-6">
-      <div className="w-12 h-0.5 bg-gradient-to-r from-amber-500 to-orange-500"></div>
-      <p className="text-sm text-muted-foreground">{children}</p>
-    </div>
-  );
-}
+// ---- Title overrides ----
+const FULL_TITLES: Partial<Record<CouncilKey, string>> = {
+  iqac: "IQAC – Internal Quality Assurance Cell",
+  "college-council-curriculum": "College Council",
+  "grievances-cell": "Grievance Redressal Cell",
+  "anti-ragging-cell": "Anti-Ragging Committee",
+  "internal-grievances-vishakha": "Internal Complaint Committee",
+  "reservation-cell": "Reservation Cell",
+  "student-council": "Student Council",
+};
 
-function CouncilTable({ slug,  }: { slug: CouncilKey; title: string; year?: string }) {
-  const rows = useCouncil(slug);
-  
+// ---- Council Table Component ----
+function CouncilTable({ groupKey, title }: { groupKey: CouncilKey; title?: string }) {
+  const { members, loading, error, group } = useCouncilData(groupKey);
+
+  // Determine display title: use prop, then DB group displayName, then fallback from static list
+  const displayTitle =
+    title ??
+    group?.displayName ??
+    COUNCIL_GROUPS.find((g) => g.key === groupKey)?.label ??
+    groupKey;
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center py-12 bg-secondary/30 rounded-lg">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent" />
+          <p className="mt-2 text-sm text-muted-foreground">Loading members…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center py-12 bg-red-50 dark:bg-red-950/20 rounded-lg">
+          <p className="text-sm text-red-600 dark:text-red-400">Failed to load: {error}</p>
+          <button
+            onClick={() => useCouncilStore.getState().refetchCouncil(groupKey)}
+            className="mt-3 px-4 py-2 bg-brand text-white rounded-lg text-sm hover:opacity-80"
+          >
+            Try again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-    
-
-    
-
-      {/* Table Section */}
+      {/* Table */}
       <div className="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
-        {/* Mobile View - Card Layout */}
         <div className="block md:hidden">
-          {rows.length === 0 ? (
-            <div className="text-center text-muted-foreground py-12">
-              No members yet.
-            </div>
+          {members.length === 0 ? (
+            <div className="text-center text-muted-foreground py-12">No members yet.</div>
           ) : (
             <div className="divide-y divide-border">
-              {rows.map((r, i) => (
+              {members.map((r, i) => (
                 <div key={r.id} className="p-4 space-y-2">
                   <div className="flex justify-between items-start">
                     <div>
@@ -61,16 +102,6 @@ function CouncilTable({ slug,  }: { slug: CouncilKey; title: string; year?: stri
                     <div>
                       <p className="text-xs text-muted-foreground">Designation</p>
                       <p className="font-medium">{r.designation || "—"}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">Mobile</p>
-                      {r.phone ? (
-                        <a href={`tel:${r.phone}`} className="text-brand hover:underline font-medium">
-                          {r.phone}
-                        </a>
-                      ) : (
-                        <span className="text-muted-foreground">—</span>
-                      )}
                     </div>
                     <div className="col-span-2">
                       <p className="text-xs text-muted-foreground">Email</p>
@@ -89,7 +120,6 @@ function CouncilTable({ slug,  }: { slug: CouncilKey; title: string; year?: stri
           )}
         </div>
 
-        {/* Desktop View - Table */}
         <div className="hidden md:block overflow-x-auto">
           <Table>
             <TableHeader>
@@ -102,7 +132,7 @@ function CouncilTable({ slug,  }: { slug: CouncilKey; title: string; year?: stri
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rows.map((r, i) => (
+              {members.map((r, i) => (
                 <TableRow key={r.id} className="hover:bg-secondary/50 transition-colors">
                   <TableCell className="font-medium">{i + 1}</TableCell>
                   <TableCell className="font-semibold text-brand">{r.name}</TableCell>
@@ -116,7 +146,6 @@ function CouncilTable({ slug,  }: { slug: CouncilKey; title: string; year?: stri
                       <span className="text-muted-foreground">—</span>
                     )}
                   </TableCell>
-             
                   <TableCell>
                     {r.email ? (
                       <a href={`mailto:${r.email}`} className="text-brand hover:underline break-all">
@@ -128,9 +157,9 @@ function CouncilTable({ slug,  }: { slug: CouncilKey; title: string; year?: stri
                   </TableCell>
                 </TableRow>
               ))}
-              {rows.length === 0 && (
+              {members.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-muted-foreground py-12">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-12">
                     No members yet.
                   </TableCell>
                 </TableRow>
@@ -143,23 +172,10 @@ function CouncilTable({ slug,  }: { slug: CouncilKey; title: string; year?: stri
   );
 }
 
-const TITLES: Record<CouncilKey, string> = Object.fromEntries(
-  COUNCIL_GROUPS.map((g) => [g.key, g.label]),
-) as Record<CouncilKey, string>;
-
-const FULL_TITLES: Partial<Record<CouncilKey, string>> = {
-  iqac: "IQAC – Internal Quality Assurance Cell",
-  "college-council-curriculum": "College Council",
-  "grievances-cell": "Grievance Redressal Cell",
-  "anti-ragging-cell": "Anti-Ragging Committee",
-  "internal-grievances-vishakha": "Internal Complaint Committee",
-  "reservation-cell": "Reservation Cell",
-  "student-council": "Student Council 2026-27",
-};
-
+// ---- Council Content Mapping ----
 export const COUNCIL_CONTENT: Record<string, React.FC> = Object.fromEntries(
   COUNCIL_GROUPS.map((g) => [
     g.key,
-    () => <CouncilTable slug={g.key} title={FULL_TITLES[g.key] ?? TITLES[g.key]} />,
+    () => <CouncilTable groupKey={g.key} title={FULL_TITLES[g.key] ?? g.label} />,
   ]),
 );

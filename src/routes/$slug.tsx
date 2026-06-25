@@ -1,15 +1,36 @@
+// src/routes/$slug.tsx
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { Sidebar } from "@/components/Sidebar";
 import { PAGE_MAP } from "@/lib/pages";
 import { COUNCIL_CONTENT } from "@/components/CouncilTables";
 import { PAGE_CONTENT } from "@/components/PageContent";
+import { DEPARTMENTS, DepartmentPage } from "@/components/DepartmentContent";
 
 export const Route = createFileRoute("/$slug")({
   loader: ({ params }) => {
-    const page = PAGE_MAP[params.slug];
+    const { slug } = params;
+
+    // ---- Check if it's a department slug ----
+    if (slug.startsWith("dept-")) {
+      const dept = DEPARTMENTS.find((d) => d.slug === slug);
+      if (!dept) throw notFound();
+      return {
+        page: {
+          title: dept.name,
+          category: "Academics",
+          body: dept.short,
+          slug: dept.slug,
+        },
+        isDepartment: true,
+      };
+    }
+
+    // ---- Regular page ----
+    const page = PAGE_MAP[slug];
     if (!page) throw notFound();
-    return { page };
+    return { page, isDepartment: false };
   },
+
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
@@ -23,7 +44,9 @@ export const Route = createFileRoute("/$slug")({
         ]
       : [],
   }),
+
   component: SlugPage,
+
   notFoundComponent: () => (
     <div className="mx-auto max-w-3xl p-10 text-center">
       <h1 className="text-3xl font-bold mb-2">Page not found</h1>
@@ -36,8 +59,37 @@ export const Route = createFileRoute("/$slug")({
 });
 
 function SlugPage() {
-  const { page } = Route.useLoaderData();
+  const { page, isDepartment } = Route.useLoaderData();
+  const { slug } = Route.useParams();
 
+  if (isDepartment) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-6">
+        <nav className="text-xs text-muted-foreground mb-4">
+          <Link to="/" className="hover:underline">Home</Link>
+          <span className="mx-2">›</span>
+          <span>Academics</span>
+          <span className="mx-2">›</span>
+          <span className="text-foreground">{page.title}</span>
+        </nav>
+        <div className="grid md:grid-cols-[260px_1fr] gap-6">
+          <Sidebar />
+          <article className="border border-border rounded-md bg-card">
+            <header className="bg-brand text-white px-5 py-4 rounded-t-md">
+              <h1 className="text-xl font-semibold">{page.title}</h1>
+              <p className="text-xs text-white/80 mt-1">Academics</p>
+            </header>
+            <div className="p-6">
+              {/* 🔑 Add key to force re‑mount when slug changes */}
+              <DepartmentPage key={slug} slug={slug} />
+            </div>
+          </article>
+        </div>
+      </div>
+    );
+  }
+
+  // ---- Render regular pages ----
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
       <nav className="text-xs text-muted-foreground mb-4">
@@ -79,7 +131,7 @@ function SlugPage() {
               </p>
             )}
 
-                 {/* Contact Information Card */}
+            {/* Contact Information Card */}
             <div className="mt-8 p-6 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-100 dark:border-amber-800">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900 flex items-center justify-center">
@@ -106,14 +158,9 @@ function SlugPage() {
                       href="mailto:rajshreeayurvedic@gmail.com"
                     >
                       rajshreeayurvedic@gmail.com   <br/>
-
                        2024rajashriayu0870@gmail.com
                     </a>
-                
                   </div>
-
-                 
-               
                 </div>
               </div>
             </div>

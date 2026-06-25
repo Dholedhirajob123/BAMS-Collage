@@ -228,16 +228,16 @@ export interface Department {
   id?: number;
   slug: string;
   name: string;
-  details: DepartmentDetails;
-  faculties?: any[]; // separate endpoints for faculty
+  shortDescription: string;   // ✅ changed from short_description
+  // details and faculties are not in the database, remove or leave optional
 }
-
 export interface FacultyMember {
   id?: number;
   name: string;
   designation: string;
   qualification: string;
-  departmentSlug?: string; // used when creating/updating
+  departmentSlug?: string;    // ✅ already matches backend
+  photo?: string;             // optional
 }
 export interface Photo {
   id?: number;
@@ -256,6 +256,9 @@ export interface Photo {
 
 export const getDepartments = async (): Promise<Department[]> => {
   const response = await fetch(`${API_BASE_URL}/api/departments`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch departments: ${response.status} ${response.statusText}`);
+  }
   return response.json();
 };
 
@@ -299,8 +302,12 @@ export const deleteDepartment = async (id: number): Promise<void> => {
 
 export const getFacultyMembers = async (departmentSlug: string): Promise<FacultyMember[]> => {
   const response = await fetch(`${API_BASE_URL}/api/faculty?departmentSlug=${departmentSlug}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch faculty: ${response.status} ${response.statusText}`);
+  }
   return response.json();
 };
+
 
 export const getFacultyMember = async (id: number): Promise<FacultyMember> => {
   const response = await fetch(`${API_BASE_URL}/api/faculty/${id}`);
@@ -457,7 +464,6 @@ export const getCouncilGroups = async () => {
 
   return response.json();
 };
-// ================= COUNCIL GROUPS (continued) =================
 
 export const getCouncilGroupByKey = async (groupKey: string) => {
   const response = await fetch(`${API_BASE_URL}/api/council-groups/${groupKey}`);
