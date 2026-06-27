@@ -6,25 +6,7 @@ import campus4 from "@/assets/campus-4.jpg";
 export function History() {
   return (
     <div className="space-y-12">
-      {/* Hero Section */}
-      <div className="relative h-[300px] rounded-3xl overflow-hidden shadow-2xl group">
-        <img
-          src={campus1}
-          alt="History"
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-          <div className="max-w-2xl">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-10 h-0.5 bg-amber-400 rounded-full"></div>
-              <span className="text-sm text-amber-400 font-semibold tracking-wider">OUR JOURNEY</span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-3">History of Excellence</h1>
-            <p className="text-lg text-white/90">Tracing our roots from vision to reality</p>
-          </div>
-        </div>
-      </div>
+
 
       {/* Journey Timeline with Zigzag Layout */}
       <div className="relative py-8">

@@ -2,8 +2,8 @@
 import { Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { TOP_NAV, type NavItem } from "@/lib/pages";
-import logoAsset from "@/assets/logo.jpg";
-import Drlogo from "@/assets/Dr  logo.png";
+import logoAsset from "@/assets/mainlogo.png";
+import Drlogo from "@/assets/drlogo.png";
 
 function linkFor(item: NavItem) {
   if (item.to) return item.to;
@@ -91,13 +91,13 @@ export function Header() {
         </div>
       </div>
 
-      {/* Main Header */}
+      {/* Main Header - All content visible on all devices */}
       <div className="bg-white shadow-md">
         <div className="mx-auto max-w-7xl px-2 sm:px-4 py-2 sm:py-3">
           <div className="flex items-center justify-between gap-1 sm:gap-2 md:gap-4 lg:gap-6">
             {/* Left Logo */}
             <div className="flex-shrink-0">
-              <div className="h-10 w-10 xs:h-12 xs:w-12 sm:h-14 sm:w-14 md:h-20 md:w-20 lg:h-24 lg:w-24 flex items-center justify-center">
+              <div className="h-14 w-14 sm:h-20 sm:w-20 md:h-28 md:w-28 lg:h-36 lg:w-36 flex items-center justify-center">
                 <img
                   src={logoAsset}
                   alt="Rajashri Ayurvedic Medical College"
@@ -106,29 +106,29 @@ export function Header() {
               </div>
             </div>
 
-            {/* Center - Full College Name */}
-            <div className="flex-1 text-center px-1 xs:px-2">
-              <p className="text-brand font-semibold text-[7px] xs:text-[9px] sm:text-[11px] md:text-xs lg:text-sm mb-0.5 tracking-wide leading-tight">
+            {/* Center - Full College Name - Everything visible */}
+            <div className="flex-1 text-center px-1 sm:px-2">
+              <p className="text-brand font-semibold text-[7px] sm:text-[11px] md:text-xs lg:text-sm mb-0.5 tracking-wide leading-tight">
                 Dharmveer Diliprao Rahate Shikshan & Bahu-Uddeshiya Sanstha's
               </p>
-              <h1 className="text-brand font-extrabold text-[11px] xs:text-sm sm:text-lg md:text-2xl lg:text-3xl xl:text-4xl leading-tight tracking-tight">
+              <h1 className="text-brand font-extrabold text-[11px] sm:text-lg md:text-2xl lg:text-3xl xl:text-4xl leading-tight tracking-tight">
                 RAJASHRI AYURVEDIC
-                <br className="hidden xs:block sm:hidden" />
-                <span className="xs:hidden"> </span>
+                <br className="hidden sm:block md:hidden" />
+                <span> </span>
                 MEDICAL COLLEGE & HOSPITAL
               </h1>
               <div className="flex items-center justify-center gap-1 mt-0.5">
-                <div className="w-1.5 sm:w-3 h-px bg-gradient-to-r from-amber-400 to-transparent hidden xs:block"></div>
-                <p className="text-[6px] xs:text-[8px] sm:text-[10px] md:text-xs text-muted-foreground text-center leading-tight">
+                <div className="w-1.5 sm:w-3 h-px bg-gradient-to-r from-amber-400 to-transparent"></div>
+                <p className="text-[6px] sm:text-[10px] md:text-xs text-muted-foreground text-center leading-tight">
                   COTTON MARKET ROAD, MEHKAR, TQ. MEHKAR, DIST. BULDHANA, MAHARASHTRA
                 </p>
-                <div className="w-1.5 sm:w-3 h-px bg-gradient-to-l from-amber-400 to-transparent hidden xs:block"></div>
+                <div className="w-1.5 sm:w-3 h-px bg-gradient-to-l from-amber-400 to-transparent"></div>
               </div>
             </div>
 
             {/* Right Logo */}
             <div className="flex-shrink-0">
-              <div className="h-10 w-10 xs:h-12 xs:w-12 sm:h-14 sm:w-14 md:h-20 md:w-20 lg:h-24 lg:w-24 flex items-center justify-center">
+              <div className="h-14 w-14 sm:h-20 sm:w-20 md:h-28 md:w-28 lg:h-36 lg:w-36 flex items-center justify-center">
                 <img
                   src={Drlogo}
                   alt="Doctor Logo"
@@ -144,17 +144,17 @@ export function Header() {
       <nav className="bg-brand text-white relative">
         <div className="mx-auto max-w-7xl px-2 sm:px-4">
           <div className="flex items-center justify-between">
-            {/* Mobile Menu Button */}
+            {/* Menu Button - Shows on mobile AND tablet */}
             <button
-              className="md:hidden py-2 text-sm font-medium flex items-center gap-1.5"
+              className="lg:hidden py-2 text-sm font-medium flex items-center gap-1.5"
               onClick={() => setOpenMobile(!openMobile)}
             >
               <span className="text-lg">{openMobile ? "✕" : "☰"}</span>
               <span className="text-xs">{openMobile ? "Close" : "Menu"}</span>
             </button>
 
-            {/* Desktop Navigation */}
-            <ul className="hidden md:flex md:flex-row md:items-center md:gap-0">
+            {/* Desktop Navigation - Only shows on desktop */}
+            <ul className="hidden lg:flex lg:flex-row lg:items-center lg:gap-0">
               {TOP_NAV.map((item) => (
                 <li key={item.label} className="relative group">
                   {item.children ? (
@@ -196,13 +196,13 @@ export function Header() {
               ))}
             </ul>
 
-            {/* Mobile Navigation Overlay */}
+            {/* Mobile & Tablet Navigation Overlay */}
             <div
               ref={mobileMenuRef}
-              className={`fixed inset-0 top-[108px] bg-brand z-50 transform transition-transform duration-300 ease-in-out ${
+              className={`fixed inset-0 top-[100px] sm:top-[108px] bg-brand z-50 transform transition-transform duration-300 ease-in-out ${
                 openMobile ? "translate-x-0" : "translate-x-full"
-              } md:hidden overflow-y-auto`}
-              style={{ height: "calc(100vh - 108px)" }}
+              } lg:hidden overflow-y-auto`}
+              style={{ height: "calc(100vh - 100px)" }}
             >
               <div className="flex flex-col py-2">
                 {TOP_NAV.map((item) => (
@@ -258,7 +258,7 @@ export function Header() {
             </div>
 
             {/* Spacer for desktop */}
-            <div className="hidden md:block w-8"></div>
+            <div className="hidden lg:block w-8"></div>
           </div>
         </div>
       </nav>

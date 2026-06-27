@@ -119,7 +119,6 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
       return;
     }
 
-    // Validate mobile: if provided, must be digits only
     if (editForm.mobile && !/^\d+$/.test(editForm.mobile)) {
       setSavedMsg("⚠️ Mobile number must contain only digits.");
       setTimeout(() => setSavedMsg(""), 2000);
@@ -204,18 +203,15 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
       .join("");
   };
 
-  // Helper to ensure date fields are in YYYY-MM-DD format for type="date"
   const formatDateForInput = (date?: string): string => {
     if (!date) return "";
-    // If already in YYYY-MM-DD, return as is
     if (/^\d{4}-\d{2}-\d{2}$/.test(date)) return date;
-    // If in DD/MM/YYYY format, convert to YYYY-MM-DD
     const parts = date.split('/');
     if (parts.length === 3) {
       const [day, month, year] = parts;
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     }
-    return date; // fallback
+    return date;
   };
 
   const isTeaching = group === "teaching";
@@ -223,27 +219,27 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
   const isHospital = group === "hospital";
 
   return (
-    <div className="border border-border rounded-md p-5 bg-card">
-      <div className="flex justify-between items-center mb-4">
+    <div className="border border-border rounded-md p-3 sm:p-5 bg-card">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4">
         <div>
-          <h2 className="font-semibold text-lg mb-1">Staff Management</h2>
-          <p className="text-xs text-muted-foreground">
+          <h2 className="font-semibold text-base sm:text-lg mb-0.5 sm:mb-1">Staff Management</h2>
+          <p className="text-[10px] sm:text-xs text-muted-foreground">
             {isLoading ? "Loading..." : `${members.length} staff members in this group`}
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={() => fetchMembers(group)}
-            disabled={isLoading}
-            className="text-xs"
-          >
-            🔄 Refresh
-          </Button>
-        </div>
+        <Button
+          variant="outline"
+          onClick={() => fetchMembers(group)}
+          disabled={isLoading}
+          className="text-xs w-full sm:w-auto"
+        >
+          🔄 Refresh
+        </Button>
       </div>
 
-      <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
+      {/* Controls */}
+      <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mb-4">
         <div className="flex-1 min-w-[200px]">
           <Label className="text-xs">Select Staff Group</Label>
           <select
@@ -258,13 +254,13 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
             ))}
           </select>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           {members.length > 0 && (
-            <Button size="sm" variant="destructive" onClick={resetAll} disabled={isLoading}>
+            <Button size="sm" variant="destructive" onClick={resetAll} disabled={isLoading} className="flex-1 sm:flex-none text-xs">
               Delete All Staff
             </Button>
           )}
-          <Button size="sm" onClick={addRow} disabled={isLoading}>
+          <Button size="sm" onClick={addRow} disabled={isLoading} className="flex-1 sm:flex-none text-xs bg-brand hover:bg-brand-dark">
             + Add Staff Member
           </Button>
         </div>
@@ -278,47 +274,47 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
       )}
 
       {!isLoading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
           {members.map((m) => (
             <div
               key={m.id}
               className="border border-border rounded-lg overflow-hidden bg-card hover:shadow-lg transition-all"
             >
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 p-4 flex items-center gap-4">
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 p-3 sm:p-4 flex items-center gap-3 sm:gap-4">
                 <div className="flex-shrink-0">
                   {m.photo ? (
                     <img
                       src={getImageSrc(m.photo)}
                       alt={m.name}
-                      className="h-16 w-16 rounded-lg object-cover border-2 border-brand"
+                      className="h-14 w-14 sm:h-16 sm:w-16 rounded-lg object-cover border-2 border-brand"
                     />
                   ) : (
-                    <div className="h-16 w-16 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-xl">
+                    <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-lg sm:text-xl">
                       {getInitials(m.name)}
                     </div>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-brand truncate">{m.name || "No name"}</h3>
-                  <p className="text-sm text-muted-foreground truncate">{m.designation || "No designation"}</p>
+                  <h3 className="font-semibold text-brand text-sm sm:text-base truncate">{m.name || "No name"}</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground truncate">{m.designation || "No designation"}</p>
                   {isTeaching && m.teacherCode && (
-                    <span className="text-xs px-2 py-0.5 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 rounded-full">
+                    <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 rounded-full inline-block mt-0.5">
                       {m.teacherCode}
                     </span>
                   )}
                 </div>
                 <button
                   onClick={() => startEdit(m)}
-                  className="px-3 py-1.5 text-xs bg-brand text-white rounded-md hover:bg-brand/80 transition-colors"
+                  className="px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs bg-brand text-white rounded-md hover:bg-brand/80 transition-colors flex-shrink-0"
                 >
                   ✏️ Edit
                 </button>
               </div>
 
-              <div className="p-4 space-y-2">
+              <div className="p-3 sm:p-4 space-y-2">
                 {isTeaching ? (
                   <>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="grid grid-cols-2 gap-2 text-[10px] sm:text-xs">
                       <div>
                         <p className="text-muted-foreground">Qualification</p>
                         <p className="font-medium truncate">{m.qualification || "—"}</p>
@@ -336,7 +332,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                         <p className="font-medium truncate">{m.dateOfJoining || "—"}</p>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between text-xs pt-2 border-t border-border">
+                    <div className="flex items-center justify-between text-[10px] sm:text-xs pt-2 border-t border-border">
                       <div>
                         <p className="text-muted-foreground">Registration No.</p>
                         <p className="font-medium">{m.registrationNumber || "—"}</p>
@@ -349,7 +345,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                   </>
                 ) : (
                   <>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="grid grid-cols-2 gap-2 text-[10px] sm:text-xs">
                       <div>
                         <p className="text-muted-foreground">Father's Name</p>
                         <p className="font-medium truncate">{m.fatherName || "—"}</p>
@@ -367,7 +363,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                         <p className="font-medium truncate">{m.natureOfAppointment || "—"}</p>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between text-xs pt-2 border-t border-border">
+                    <div className="flex items-center justify-between text-[10px] sm:text-xs pt-2 border-t border-border">
                       <div>
                         <p className="text-muted-foreground">Department</p>
                         <p className="font-medium">{m.workingDepartment || "—"}</p>
@@ -387,56 +383,56 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
 
       {!isLoading && members.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
-          <p className="text-lg">👔 No staff members</p>
-          <p className="text-sm">Click "Add Staff Member" to get started</p>
+          <p className="text-base sm:text-lg">👔 No staff members</p>
+          <p className="text-xs sm:text-sm">Click "Add Staff Member" to get started</p>
         </div>
       )}
 
-      {/* Edit / Add Modal */}
+      {/* Edit / Add Modal - Mobile Responsive */}
       {editingId && editForm && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-2 sm:p-4 animate-fade-in"
           onClick={() => cancelEdit()}
         >
           <div
-            className="bg-white dark:bg-gray-900 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+            className="bg-white dark:bg-gray-900 rounded-t-2xl sm:rounded-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-white dark:bg-gray-900 z-10 p-4 border-b border-border flex justify-between items-center rounded-t-2xl">
-              <h3 className="text-xl font-bold text-brand">
+            <div className="sticky top-0 bg-white dark:bg-gray-900 z-10 p-3 sm:p-4 border-b border-border flex justify-between items-center rounded-t-2xl">
+              <h3 className="text-base sm:text-xl font-bold text-brand">
                 {editingId === "new" ? "Add Staff Member" : `Edit ${editForm.name || "Staff"}`}
               </h3>
               <button
                 onClick={() => cancelEdit()}
-                className="w-8 h-8 rounded-full bg-secondary hover:bg-secondary/70 flex items-center justify-center text-xl transition-colors"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-secondary hover:bg-secondary/70 flex items-center justify-center text-lg sm:text-xl transition-colors"
               >
                 ✕
               </button>
             </div>
 
-            <div className="p-6">
+            <div className="p-3 sm:p-6">
               {/* Photo Upload */}
-              <div className="flex items-center gap-6 mb-6">
+              <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 mb-6">
                 <div>
                   {editForm.photo ? (
                     <img
                       src={getImageSrc(editForm.photo)}
                       alt="Profile"
-                      className="h-24 w-24 rounded-lg object-cover border-2 border-brand"
+                      className="h-20 w-20 sm:h-24 sm:w-24 rounded-lg object-cover border-2 border-brand"
                     />
                   ) : (
-                    <div className="h-24 w-24 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-3xl">
+                    <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-2xl sm:text-3xl">
                       {editForm.name ? getInitials(editForm.name) : "?"}
                     </div>
                   )}
                 </div>
-                <div>
+                <div className="text-center sm:text-left">
                   <p className="text-sm font-medium">Profile Photo</p>
                   <p className="text-xs text-muted-foreground mb-2">Upload a photo (max 2MB)</p>
                   <input
                     type="file"
                     accept="image/*"
-                    className="text-xs"
+                    className="text-xs w-full sm:w-auto"
                     onChange={(e) => {
                       const f = e.target.files?.[0];
                       if (f) onPhoto(f);
@@ -447,7 +443,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
               </div>
 
               {/* Form Fields */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {/* Common Fields */}
                 <div>
                   <Label className="text-xs">Full Name *</Label>
@@ -506,7 +502,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                         placeholder="Registration No."
                       />
                     </div>
-                    <div className="col-span-2">
+                    <div className="sm:col-span-2">
                       <Label className="text-xs">Qualification</Label>
                       <Input
                         value={editForm.qualification || editForm.education || ""}
@@ -535,7 +531,6 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                       <Input
                         value={editForm.mobile || ""}
                         onChange={(e) => {
-                          // Only allow digits
                           const val = e.target.value.replace(/\D/g, "");
                           setEditForm({ ...editForm, mobile: val });
                         }}
@@ -543,7 +538,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                         placeholder="Mobile number (digits only)"
                       />
                     </div>
-                    <div className="col-span-2">
+                    <div className="sm:col-span-2">
                       <Label className="text-xs">Email ID</Label>
                       <Input
                         value={editForm.email || ""}
@@ -557,7 +552,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
 
                 {(isNonTeaching || isHospital) && (
                   <>
-                    <div className="col-span-2">
+                    <div className="sm:col-span-2">
                       <Label className="text-xs">Father's Name</Label>
                       <Input
                         value={editForm.fatherName || ""}
@@ -566,7 +561,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                         placeholder="Father's full name"
                       />
                     </div>
-                    <div className="col-span-2">
+                    <div className="sm:col-span-2">
                       <Label className="text-xs">Qualification</Label>
                       <Input
                         value={editForm.qualification || editForm.education || ""}
@@ -599,7 +594,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                         placeholder="e.g. Permanent, Contract, Ad-hoc"
                       />
                     </div>
-                    <div className="col-span-2">
+                    <div className="sm:col-span-2">
                       <Label className="text-xs">Working Department</Label>
                       <Input
                         value={editForm.workingDepartment || ""}
@@ -608,7 +603,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                         placeholder="e.g. Administration, Accounts"
                       />
                     </div>
-                    <div className="col-span-2">
+                    <div className="sm:col-span-2">
                       <Label className="text-xs">Pay Scale</Label>
                       <Input
                         value={editForm.payScale || ""}
@@ -621,8 +616,8 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                 )}
               </div>
 
-              <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-border">
-                <Button variant="outline" onClick={() => cancelEdit()}>
+              <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mt-6 pt-4 border-t border-border">
+                <Button variant="outline" onClick={() => cancelEdit()} className="w-full sm:w-auto order-2 sm:order-1">
                   Cancel
                 </Button>
                 {editingId !== "new" && (
@@ -631,11 +626,12 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                     onClick={() => {
                       if (editingId) removeRow(Number(editingId));
                     }}
+                    className="w-full sm:w-auto order-1 sm:order-2"
                   >
                     Delete
                   </Button>
                 )}
-                <Button className="bg-brand hover:bg-brand/80" onClick={saveEdit}>
+                <Button className="bg-brand hover:bg-brand/80 w-full sm:w-auto order-3" onClick={saveEdit}>
                   💾 {editingId === "new" ? "Create" : "Save"}
                 </Button>
               </div>

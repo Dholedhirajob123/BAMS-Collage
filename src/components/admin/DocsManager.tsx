@@ -38,7 +38,7 @@ interface DocsManagerProps {
 interface DocFile {
   id: string;
   name: string;
-  dataUrl: string;      // will be a full data:application/pdf;base64,...
+  dataUrl: string;
   size: number;
   addedAt: number;
   batch?: string;
@@ -62,20 +62,14 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
 
   const [open, setOpen] = useState(false);
 
-  // Helper to build a PDF data URL from a Base64 string
   const buildPdfDataUrl = (base64: string): string => {
     if (!base64) return "";
-    // If it already starts with data:application/pdf, return as is
     if (base64.startsWith("data:application/pdf")) return base64;
-    // If it's a raw Base64 string (no prefix), add the prefix
     return `data:application/pdf;base64,${base64}`;
   };
 
-  // Transform the backend document object into our frontend DocFile
   const mapDocument = (doc: any): DocFile => {
-    // The backend returns { id, name, pdfData, size, batch, addedAt, ... }
-    // We need to build the dataUrl from pdfData
-    const pdfData = doc.pdfData || doc.url || ""; // fallback
+    const pdfData = doc.pdfData || doc.url || "";
     return {
       id: String(doc.id),
       name: doc.name,
@@ -225,25 +219,27 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
     : "Select a section...";
 
   return (
-    <div className="border border-border rounded-md p-5 bg-card">
-      <div className="flex justify-between items-center mb-4">
+    <div className="border border-border rounded-md p-3 sm:p-5 bg-card">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4">
         <div>
-          <h2 className="font-semibold text-lg mb-1">
+          <h2 className="font-semibold text-base sm:text-lg mb-0.5 sm:mb-1">
             Page Information & PDF Documents
           </h2>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-[10px] sm:text-xs text-muted-foreground">
             Edit the description and stage PDFs. Click <strong>Save Changes</strong> to apply everything.
           </p>
         </div>
         <Button
           onClick={saveChanges}
           disabled={isSaving}
-          className="bg-green-600 hover:bg-green-700"
+          className="bg-green-600 hover:bg-green-700 w-full sm:w-auto text-sm"
         >
           {isSaving ? "Saving..." : "💾 Save Changes"}
         </Button>
       </div>
 
+      {/* Select Section */}
       <div className="mb-4">
         <Label className="text-xs">Select Section</Label>
         <Popover open={open} onOpenChange={setOpen}>
@@ -252,13 +248,13 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="w-full justify-between mt-1"
+              className="w-full justify-between mt-1 text-sm"
             >
               {selectedSectionDisplay}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-full min-w-[300px] p-0">
+          <PopoverContent className="w-full min-w-[280px] sm:min-w-[300px] p-0">
             <Command>
               <CommandInput placeholder="Search sections..." />
               <CommandList>
@@ -298,6 +294,7 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
         </div>
       ) : (
         <>
+          {/* Description */}
           <div className="mb-4">
             <Label className="text-xs">Information / Description</Label>
             <textarea
@@ -308,13 +305,14 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
             />
           </div>
 
-          <div className="mb-4 grid gap-3 md:grid-cols-2">
+          {/* Upload Controls */}
+          <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <Label className="text-xs">Batch/Year (optional)</Label>
               <Input
                 value={batch}
-                placeholder="e.g. BAMS 2025-26, Academic Year 2024-25"
-                className="mt-1"
+                placeholder="e.g. BAMS 2025-26"
+                className="mt-1 text-sm"
                 onChange={(e) => setBatch(e.target.value)}
               />
             </div>
@@ -323,7 +321,7 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
               <Input
                 type="file"
                 accept="application/pdf"
-                className="mt-1"
+                className="mt-1 text-sm"
                 onChange={(e) => {
                   const f = e.target.files?.[0];
                   if (f) stagePdf(f);
@@ -333,16 +331,17 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
             </div>
           </div>
 
+          {/* Pending Uploads */}
           {pendingFiles.length > 0 && (
             <div className="mb-4 border border-yellow-300 bg-yellow-50 dark:bg-yellow-950/20 rounded-md p-3">
-              <div className="flex justify-between items-center mb-2">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
                 <span className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">
                   ⏳ Pending Uploads ({pendingFiles.length})
                 </span>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="h-6 text-xs"
+                  className="h-6 text-xs w-full sm:w-auto"
                   onClick={() => {
                     if (confirm("Clear all pending uploads?")) {
                       setPendingFiles([]);
@@ -357,11 +356,11 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
                 {pendingFiles.map((p) => (
                   <li
                     key={p.name}
-                    className="flex items-center justify-between py-2 text-sm"
+                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-2 text-sm gap-2"
                   >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-yellow-600">📄</span>
-                      <span>{p.name}</span>
+                      <span className="break-all">{p.name}</span>
                       <span className="text-xs text-muted-foreground">
                         (batch: {p.batch})
                       </span>
@@ -369,7 +368,7 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="h-6 text-xs text-red-500 hover:text-red-700"
+                      className="h-6 text-xs text-red-500 hover:text-red-700 w-full sm:w-auto"
                       onClick={() => removePending(p.name)}
                     >
                       Remove
@@ -380,8 +379,9 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
             </div>
           )}
 
+          {/* Uploaded Documents */}
           <div className="border border-border rounded-md">
-            <div className="bg-secondary px-3 py-2 border-b border-border flex justify-between items-center">
+            <div className="bg-secondary px-3 py-2 border-b border-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
               <span className="text-xs font-semibold">
                 Uploaded Documents ({files.length})
               </span>
@@ -389,7 +389,7 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
                 <Button
                   size="sm"
                   variant="destructive"
-                  className="h-6 text-xs"
+                  className="h-6 text-xs w-full sm:w-auto"
                   onClick={resetAllFiles}
                 >
                   Delete All (UI only)
@@ -405,11 +405,11 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
                 {files.map((f) => (
                   <li
                     key={f.id}
-                    className="flex items-center justify-between p-3 text-xs hover:bg-secondary/30"
+                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 text-xs hover:bg-secondary/30 gap-2"
                   >
-                    <div className="min-w-0 flex-1">
+                    <div className="min-w-0 flex-1 w-full">
                       <div className="flex items-center gap-2">
-                        <span className="text-red-500">📄</span>
+                        <span className="text-red-500 flex-shrink-0">📄</span>
                         <p className="font-medium truncate">{f.name}</p>
                       </div>
                       <div className="flex flex-wrap gap-3 mt-1 text-[10px] text-muted-foreground">
@@ -422,20 +422,20 @@ export function DocsManager({ setSavedMsg }: DocsManagerProps) {
                         )}
                       </div>
                     </div>
-                    <div className="flex gap-2 ml-2">
+                    <div className="flex gap-2 w-full sm:w-auto">
                       <a
-                        href={f.dataUrl} // direct data URL
+                        href={f.dataUrl}
                         download={f.name}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-brand hover:underline text-xs px-2 py-1 bg-secondary/50 rounded"
+                        className="text-brand hover:underline text-xs px-2 py-1 bg-secondary/50 rounded text-center flex-1 sm:flex-none"
                       >
                         View
                       </a>
                       <Button
                         size="sm"
                         variant="destructive"
-                        className="h-7 text-xs"
+                        className="h-7 text-xs flex-1 sm:flex-none"
                         onClick={() => removeFile(f.id, f.name)}
                       >
                         Delete

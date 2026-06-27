@@ -7,7 +7,7 @@ import gPreview1 from "@/assets/gallery-1.jpg";
 import gPreview2 from "@/assets/gallery-2.jpg";
 import gPreview5 from "@/assets/gallery-5.jpg";
 import gPreview8 from "@/assets/gallery-8.jpg";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 
 // Import person images
@@ -32,6 +32,10 @@ function Index() {
   const displayedDocs = showAllDocs ? homeDocs.files : homeDocs.files.slice(0, 3);
   const displayedNotices = showAllNotices ? homeNotices.files : homeNotices.files.slice(0, 3);
   const displayedNews = showAllNews ? newsEvents.files : newsEvents.files.slice(0, 3);
+
+  // Get all news and events for scrolling
+  const allNewsAndEvents = [...newsEvents.files, ...notices.files]
+    .sort((a, b) => b.addedAt - a.addedAt);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
@@ -93,7 +97,7 @@ function Index() {
               slug="founder-chairman"
               imageUrl={founderImage}
             />
-            <NewsCard />
+            <NewsCard allNewsAndEvents={allNewsAndEvents} />
             <PersonCard 
               name="Mr. Rushikesh P. Jadhao" 
               role="Secretary" 
@@ -229,14 +233,83 @@ function PersonCard({
   );
 }
 
-function NewsCard() {
-  const newsEvents = useDocSection("news-events");
-  const notices = useDocSection("notices");
+function NewsCard({ allNewsAndEvents }: { allNewsAndEvents: any[] }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Get latest items for display
-  const latestNews = [...newsEvents.files, ...notices.files]
-    .sort((a, b) => b.addedAt - a.addedAt)
-    .slice(0, 5);
+  // Check if item is new (added within last 7 days)
+  const isNewItem = (addedAt: number) => {
+    const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    return addedAt > sevenDaysAgo;
+  };
+
+  // Start auto-scroll
+  useEffect(() => {
+    if (allNewsAndEvents.length === 0) return;
+    
+    const startScrolling = () => {
+      if (scrollIntervalRef.current) clearInterval(scrollIntervalRef.current);
+      
+      scrollIntervalRef.current = setInterval(() => {
+        setCurrentIndex((prevIndex) => 
+          prevIndex === allNewsAndEvents.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 3000); // Change every 3 seconds
+    };
+    
+    startScrolling();
+    
+    return () => {
+      if (scrollIntervalRef.current) {
+        clearInterval(scrollIntervalRef.current);
+      }
+    };
+  }, [allNewsAndEvents.length]);
+
+  // Pause on hover
+  useEffect(() => {
+    if (isHovered && scrollIntervalRef.current) {
+      clearInterval(scrollIntervalRef.current);
+    } else if (!isHovered && allNewsAndEvents.length > 0) {
+      // Restart scrolling
+      scrollIntervalRef.current = setInterval(() => {
+        setCurrentIndex((prevIndex) => 
+          prevIndex === allNewsAndEvents.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 3000);
+    }
+    
+    return () => {
+      if (scrollIntervalRef.current) {
+        clearInterval(scrollIntervalRef.current);
+      }
+    };
+  }, [isHovered, allNewsAndEvents.length]);
+
+  // Show at most 5 items in the scroll
+  const displayedItems = allNewsAndEvents.slice(0, 10);
+  
+  // Get the current item to display
+  const currentItem = displayedItems[currentIndex] || null;
+
+  if (allNewsAndEvents.length === 0) {
+    return (
+      <div className="border border-border rounded-md bg-card p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-semibold">News & Events</h3>
+          <Link
+            to="/$slug"
+            params={{ slug: "news-events" }}
+            className="text-xs text-brand hover:underline font-semibold"
+          >
+            View All →
+          </Link>
+        </div>
+        <p className="text-xs text-muted-foreground text-center py-4">No news yet. Check back soon!</p>
+      </div>
+    );
+  }
 
   return (
     <div className="border border-border rounded-md bg-card p-4">
@@ -250,40 +323,64 @@ function NewsCard() {
           View All →
         </Link>
       </div>
-      {latestNews.length === 0 ? (
-        <p className="text-xs text-muted-foreground text-center py-4">No news yet. Check back soon!</p>
-      ) : (
-        <div className="max-h-[320px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-          <ul className="space-y-2">
-            {latestNews.map((item, index) => (
-              <li
-                key={item.id}
-                className="flex items-center justify-between gap-2 text-sm bg-secondary/40 p-2 rounded hover:bg-secondary/60 transition-all duration-200 animate-slide-in"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="flex items-center gap-2 min-w-0 flex-1">
-                  <span className="text-lg shrink-0">📢</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium truncate">{item.name}</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">
-                      {new Date(item.addedAt).toLocaleDateString()}
-                    </p>
-                  </div>
+      
+      <div 
+        className="relative overflow-hidden"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {currentItem && (
+          <div className="bg-secondary/40 rounded p-3 transition-all duration-500 animate-fade-in">
+            <div className="flex items-start gap-3">
+              <span className="text-xl shrink-0 mt-0.5">📢</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="text-sm font-medium truncate">{currentItem.name}</p>
+                  {isNewItem(currentItem.addedAt) && (
+                    <span className="bg-red-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded uppercase animate-pulse shrink-0">
+                      NEW
+                    </span>
+                  )}
                 </div>
+                <p className="text-[10px] text-muted-foreground mt-1">
+                  {new Date(currentItem.addedAt).toLocaleDateString('en-IN', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                  })}
+                </p>
                 <a
-                  href={item.dataUrl}
-                  download={item.name}
+                  href={currentItem.dataUrl}
+                  download={currentItem.name}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-brand text-white text-xs px-2 py-1 rounded shrink-0 hover:bg-brand/80 transition-colors"
+                  className="inline-block bg-brand text-white text-xs px-3 py-1 rounded mt-2 hover:bg-brand/80 transition-colors"
                 >
                   Download
                 </a>
-              </li>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Progress dots */}
+        {displayedItems.length > 1 && (
+          <div className="flex justify-center gap-1.5 mt-3">
+            {displayedItems.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  index === currentIndex 
+                    ? 'w-4 bg-brand' 
+                    : 'w-1.5 bg-gray-300 hover:bg-gray-400'
+                }`}
+                aria-label={`Go to item ${index + 1}`}
+              />
             ))}
-          </ul>
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

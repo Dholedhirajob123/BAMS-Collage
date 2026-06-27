@@ -158,127 +158,171 @@ export function StaffSection({ title, group, slug }: StaffSectionProps) {
 
       <DocSection slug={slug} />
 
-      {/* Modal (same as your original) */}
+      {/* Mobile-First Dialog Box */}
       {active !== null && members[active] && (
         <div
-          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto"
+          className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-2 sm:p-4 overflow-y-auto"
           onClick={() => setActive(null)}
         >
-          <div className="max-w-2xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-xl" onClick={(e) => e.stopPropagation()}>
-            <div className="flex justify-end p-2">
+          <div 
+            className="w-full sm:max-w-2xl bg-white dark:bg-gray-900 rounded-t-2xl sm:rounded-xl shadow-xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto animate-slide-up sm:animate-none"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button - Floating */}
+            <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 rounded-t-2xl flex justify-between items-center p-2 border-b border-gray-100 dark:border-gray-800">
+              <div className="w-12 sm:w-16"></div>
               <button
                 onClick={() => setActive(null)}
-                className="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-lg"
+                className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-xl"
               >
-                ×
+                ✕
               </button>
-            </div>
-            <div className="flex items-center gap-4 px-5 pb-3 border-b border-gray-200 dark:border-gray-700">
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">{members[active].name}</h3>
-                <p className="text-sm text-amber-600 dark:text-amber-400 font-medium">{members[active].designation}</p>
-                {isTeaching && members[active].teacherCode && (
-                  <span className="inline-block mt-0.5 px-2 py-0.5 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 text-xs rounded-full">
-                    Code: {members[active].teacherCode}
-                  </span>
-                )}
+              <div className="w-12 sm:w-16 text-right">
+                <span className="text-xs text-gray-400">{active + 1}/{members.length}</span>
               </div>
             </div>
-            <div className="p-4">
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Employee Details</h4>
+
+            {/* Header with Name & Designation */}
+            <div className="px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-3 sm:gap-4">
+                {/* Avatar */}
+                <div className="flex-shrink-0">
+                  {members[active].photo ? (
+                    <img
+                      src={members[active].photo}
+                      alt={members[active].name}
+                      loading="lazy"
+                      className="h-12 w-12 sm:h-16 sm:w-16 rounded-full object-cover border-2 border-amber-500"
+                    />
+                  ) : (
+                    <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-lg sm:text-2xl">
+                      {members[active].name ? members[active].name.split(" ").map(n => n[0]).slice(0, 2).join("") : "?"}
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white truncate">
+                    {members[active].name}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-amber-600 dark:text-amber-400 font-medium truncate">
+                    {members[active].designation}
+                  </p>
+                  {isTeaching && members[active].teacherCode && (
+                    <span className="inline-block mt-1 px-2 py-0.5 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 text-[10px] sm:text-xs rounded-full">
+                      Code: {members[active].teacherCode}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Details Grid - Compact on Mobile */}
+            <div className="p-3 sm:p-4">
+              <h4 className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white mb-2 sm:mb-3">
+                Employee Details
+              </h4>
               {isTeaching ? (
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">S. No.</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium">{active + 1}</p>
+                <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-2.5 border border-gray-200 dark:border-gray-700">
+                    <p className="text-[8px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">S. No.</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium">{active + 1}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Designation</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].designation}</p>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-2.5 border border-gray-200 dark:border-gray-700">
+                    <p className="text-[8px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Designation</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].designation}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Qualification</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].qualification || "-"}</p>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-2.5 border border-gray-200 dark:border-gray-700">
+                    <p className="text-[8px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Qualification</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].qualification || "-"}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">DOB</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium">{members[active].dob || "-"}</p>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-2.5 border border-gray-200 dark:border-gray-700">
+                    <p className="text-[8px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">DOB</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium">{members[active].dob || "-"}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date of Joining</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium">{members[active].dateOfJoining || "-"}</p>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-2.5 border border-gray-200 dark:border-gray-700">
+                    <p className="text-[8px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Joining</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].dateOfJoining || "-"}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Experience</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium">{members[active].experience || "-"}</p>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-2.5 border border-gray-200 dark:border-gray-700">
+                    <p className="text-[8px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Experience</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium">{members[active].experience || "-"}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Reg. Number</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].registrationNumber || "-"}</p>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-2.5 border border-gray-200 dark:border-gray-700 col-span-2">
+                    <p className="text-[8px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Registration Number</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].registrationNumber || "-"}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Mobile</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium">{members[active].mobile || "-"}</p>
-                  </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700 col-span-2">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Email</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].email || "-"}</p>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-2.5 border border-gray-200 dark:border-gray-700 col-span-2">
+                    <p className="text-[8px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Contact</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium truncate">
+                      {members[active].mobile || members[active].email ? (
+                        <>
+                          {members[active].mobile && <span>{members[active].mobile}</span>}
+                          {members[active].mobile && members[active].email && <span className="hidden sm:inline"> | </span>}
+                          {members[active].email && <span className="block sm:inline text-xs sm:text-sm">{members[active].email}</span>}
+                        </>
+                      ) : "-"}
+                    </p>
                   </div>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">S. No.</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium">{active + 1}</p>
+                <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-2.5 border border-gray-200 dark:border-gray-700">
+                    <p className="text-[8px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">S. No.</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium">{active + 1}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Designation</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].designation}</p>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-2.5 border border-gray-200 dark:border-gray-700">
+                    <p className="text-[8px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Designation</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].designation}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Father's Name</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].fatherName || "-"}</p>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-2.5 border border-gray-200 dark:border-gray-700">
+                    <p className="text-[8px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Father's Name</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].fatherName || "-"}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Qualification</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].qualification || "-"}</p>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-2.5 border border-gray-200 dark:border-gray-700">
+                    <p className="text-[8px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Qualification</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].qualification || "-"}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date of Appointment</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium">{members[active].dateOfAppointment || "-"}</p>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-2.5 border border-gray-200 dark:border-gray-700">
+                    <p className="text-[8px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Appointment</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].dateOfAppointment || "-"}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nature of Appointment</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium capitalize truncate">
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-2.5 border border-gray-200 dark:border-gray-700">
+                    <p className="text-[8px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nature</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium capitalize truncate">
                       {members[active].natureOfAppointment || "-"}
                     </p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700 col-span-2">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Working Department</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].workingDepartment || "-"}</p>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-2.5 border border-gray-200 dark:border-gray-700 col-span-2">
+                    <p className="text-[8px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Working Department</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].workingDepartment || "-"}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2.5 border border-gray-200 dark:border-gray-700 col-span-2">
-                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Pay Scale</p>
-                    <p className="text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].payScale || "-"}</p>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-2.5 border border-gray-200 dark:border-gray-700 col-span-2">
+                    <p className="text-[8px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Pay Scale</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium truncate">{members[active].payScale || "-"}</p>
                   </div>
                 </div>
               )}
             </div>
-            <div className="flex items-center justify-between gap-3 px-5 py-3 border-t border-gray-200 dark:border-gray-700">
+
+            {/* Navigation Buttons - Compact on Mobile */}
+            <div className="flex items-center justify-between gap-2 px-3 sm:px-5 py-2.5 sm:py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 rounded-b-2xl sm:rounded-b-xl">
               <button
                 onClick={() => setActive((active - 1 + members.length) % members.length)}
-                className="px-4 py-1.5 bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200 dark:hover:bg-amber-900/50 text-amber-700 dark:text-amber-400 font-medium rounded-lg transition-colors text-xs flex items-center gap-1"
+                className="px-3 sm:px-4 py-1.5 sm:py-2 bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200 dark:hover:bg-amber-900/50 text-amber-700 dark:text-amber-400 font-medium rounded-lg transition-colors text-xs flex items-center gap-1"
               >
-                ‹ Previous
+                <span className="text-base sm:text-sm">‹</span>
+                <span className="hidden xs:inline">Prev</span>
               </button>
               <div className="text-gray-500 dark:text-gray-400 text-xs font-medium">
-                {active + 1} of {members.length}
+                <span className="sm:hidden">{active + 1}/{members.length}</span>
+                <span className="hidden sm:inline">Employee {active + 1} of {members.length}</span>
               </div>
               <button
                 onClick={() => setActive((active + 1) % members.length)}
-                className="px-4 py-1.5 bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200 dark:hover:bg-amber-900/50 text-amber-700 dark:text-amber-400 font-medium rounded-lg transition-colors text-xs flex items-center gap-1"
+                className="px-3 sm:px-4 py-1.5 sm:py-2 bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200 dark:hover:bg-amber-900/50 text-amber-700 dark:text-amber-400 font-medium rounded-lg transition-colors text-xs flex items-center gap-1"
               >
-                Next ›
+                <span className="hidden xs:inline">Next</span>
+                <span className="text-base sm:text-sm">›</span>
               </button>
             </div>
           </div>

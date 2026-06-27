@@ -1,6 +1,6 @@
 // components/pages/Contact.tsx
 import { useState } from "react";
-import campus1 from "@/assets/campus-1.jpg";
+import emailjs from "@emailjs/browser";
 
 export function Contact() {
   const [formData, setFormData] = useState({
@@ -20,21 +20,51 @@ export function Contact() {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus(null);
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setSubmitStatus({ type: 'success', message: 'Thank you! Your message has been sent successfully. We will get back to you soon.' });
-      setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
-    } catch (error) {
-      setSubmitStatus({ type: 'error', message: 'Something went wrong. Please try again later.' });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  setIsSubmitting(true);
+  setSubmitStatus(null);
+
+  try {
+    await emailjs.send(
+      "service_9u4f0ko",
+      "template_wqqhiax",
+      {
+        from_name: formData.name,
+        from_email: formData.email,
+        phone: formData.phone,
+        subject: formData.subject,
+        message: formData.message,
+      },
+      "XvIwjTzdEnLR1kmbW"
+    );
+
+    setSubmitStatus({
+      type: "success",
+      message:
+        "Thank you for contacting Rajashri Ayurvedic Medical College & Hospital. We have received your message and will contact you shortly.",
+    });
+
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: "",
+    });
+  } catch (error) {
+    console.error("EmailJS Error:", error);
+
+    setSubmitStatus({
+      type: "error",
+      message:
+        "Unable to send your message. Please try again later.",
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <div className="space-y-8">
@@ -74,15 +104,26 @@ export function Contact() {
                   <strong>Office:</strong> +91 - 8087203870 | 8087303870
                 </div>
               </li>
-              <li className="flex items-center gap-3">
-                <span className="text-brand">✉️</span>
-                <div>
-                  <strong>Email:</strong> 
-                  <a className="text-brand hover:underline block" href="mailto:rajshreeayurvedic@gmail.com">
-                    rajshreeayurvedic@gmail.com
-                  </a>
-                </div>
-              </li>
+          <li className="flex items-start gap-3">
+  <span className="text-brand">✉️</span>
+  <div className="break-all">
+    <strong>Email:</strong>
+
+    <a
+      href="mailto:rajshreeayurvedic@gmail.com"
+      className="block text-brand hover:underline"
+    >
+      rajshreeayurvedic@gmail.com
+    </a>
+
+    <a
+      href="mailto:2024rajashriayu0870@gmail.com"
+      className="block text-brand hover:underline"
+    >
+      2024rajashriayu0870@gmail.com
+    </a>
+  </div>
+</li>
             </ul>
           </div>
 
@@ -211,14 +252,16 @@ export function Contact() {
       </div>
 
       {/* Map Section */}
-      <div className="rounded-xl overflow-hidden border border-border shadow-sm">
-        <iframe
-          title="Mehkar location"
-          src="https://www.google.com/maps?q=Mehkar,Buldhana,Maharashtra&output=embed"
-          className="w-full h-80"
-          loading="lazy"
-        />
-      </div>
+     {/* Map Section */}
+<div className="rounded-xl overflow-hidden border border-border shadow-sm">
+  <iframe
+    title="Rajashri Ayurvedic Medical College & Hospital"
+    src="https://www.google.com/maps?q=20.140333,76.567278&z=16&output=embed"
+    className="w-full h-[250px] sm:h-[350px] md:h-[450px]"
+    loading="lazy"
+    allowFullScreen
+  />
+</div>
     </div>
   );
 }

@@ -68,7 +68,6 @@ export function CouncilManager({ setSavedMsg }: CouncilManagerProps) {
         return;
       }
       const data = await getCouncilMembers(groupKey);
-      // Ensure each member from backend has no tempId
       setMembers(data.map((m: any) => ({ ...m, tempId: undefined })));
     } catch (err) {
       console.error(err);
@@ -89,7 +88,6 @@ export function CouncilManager({ setSavedMsg }: CouncilManagerProps) {
       return;
     }
 
-    // Generate a unique temporary ID
     const tempId = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
 
     setMembers((prev) => [
@@ -154,7 +152,6 @@ export function CouncilManager({ setSavedMsg }: CouncilManagerProps) {
 
     try {
       for (const member of members) {
-        // Prepare payload: exclude tempId
         const { tempId, ...payload } = {
           ...member,
           email: member.email?.trim() || null,
@@ -182,13 +179,14 @@ export function CouncilManager({ setSavedMsg }: CouncilManagerProps) {
   };
 
   return (
-    <div className="border border-border rounded-md p-5 bg-card">
-      <div className="flex justify-between items-center mb-4">
+    <div className="border border-border rounded-md p-3 sm:p-5 bg-card">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4">
         <div>
-          <h2 className="font-semibold text-lg mb-1">
+          <h2 className="font-semibold text-base sm:text-lg mb-0.5 sm:mb-1">
             Council / Committee Members
           </h2>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-[10px] sm:text-xs text-muted-foreground">
             Select a committee and manage members.
           </p>
         </div>
@@ -196,14 +194,15 @@ export function CouncilManager({ setSavedMsg }: CouncilManagerProps) {
         <Button
           onClick={saveChanges}
           disabled={isSaving}
-          className="bg-green-600 hover:bg-green-700"
+          className="bg-green-600 hover:bg-green-700 w-full sm:w-auto text-sm"
         >
           {isSaving ? "Saving..." : "💾 Save Changes"}
         </Button>
       </div>
 
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex-1 mr-4">
+      {/* Controls */}
+      <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mb-4">
+        <div className="flex-1">
           <Label className="text-xs">Select Committee</Label>
           <select
             className="w-full mt-1 border border-border rounded-md p-2 bg-background text-sm"
@@ -223,7 +222,7 @@ export function CouncilManager({ setSavedMsg }: CouncilManagerProps) {
           <Button
             size="sm"
             variant="destructive"
-            className="mt-5"
+            className="w-full sm:w-auto mt-1 sm:mt-5"
             onClick={resetAll}
           >
             Delete All Members
@@ -231,16 +230,78 @@ export function CouncilManager({ setSavedMsg }: CouncilManagerProps) {
         )}
       </div>
 
-      <div className="overflow-x-auto border border-border rounded-md">
+      {/* Mobile Cards View */}
+      <div className="block sm:hidden space-y-3">
+        {members.map((m, i) => (
+          <div key={m.id ?? m.tempId ?? i} className="border border-border rounded-lg p-3 bg-white dark:bg-gray-900">
+            <div className="flex justify-between items-start mb-2">
+              <span className="text-xs text-muted-foreground">#{i + 1}</span>
+              <Button
+                size="sm"
+                variant="destructive"
+                className="h-7 text-xs"
+                onClick={() => removeRow(m)}
+              >
+                Delete
+              </Button>
+            </div>
+            
+            <div className="space-y-2">
+              <div>
+                <Label className="text-[10px] text-muted-foreground">Name</Label>
+                <Input
+                  value={m.name}
+                  onChange={(e) => updateRow(i, { name: e.target.value })}
+                  className="text-sm"
+                  placeholder="Enter name"
+                />
+              </div>
+              
+              <div>
+                <Label className="text-[10px] text-muted-foreground">Designation</Label>
+                <Input
+                  value={m.designation}
+                  onChange={(e) => updateRow(i, { designation: e.target.value })}
+                  className="text-sm"
+                  placeholder="Enter designation"
+                />
+              </div>
+              
+              <div>
+                <Label className="text-[10px] text-muted-foreground">Position</Label>
+                <Input
+                  value={m.position}
+                  onChange={(e) => updateRow(i, { position: e.target.value })}
+                  className="text-sm"
+                  placeholder="Enter position"
+                />
+              </div>
+              
+              <div>
+                <Label className="text-[10px] text-muted-foreground">Email ID</Label>
+                <Input
+                  value={m.email}
+                  onChange={(e) => updateRow(i, { email: e.target.value })}
+                  className="text-sm"
+                  placeholder="Enter email"
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop Table View */}
+      <div className="hidden sm:block overflow-x-auto border border-border rounded-md">
         <table className="w-full text-xs">
           <thead className="bg-secondary">
             <tr>
               <th className="p-2 text-left w-10">Sr.No</th>
-              <th className="p-2 text-left">Name</th>
-              <th className="p-2 text-left">Designation</th>
-              <th className="p-2 text-left">Position</th>
-              <th className="p-2 text-left">Email ID</th>
-              <th className="p-2"></th>
+              <th className="p-2 text-left min-w-[120px]">Name</th>
+              <th className="p-2 text-left min-w-[120px]">Designation</th>
+              <th className="p-2 text-left min-w-[100px]">Position</th>
+              <th className="p-2 text-left min-w-[150px]">Email ID</th>
+              <th className="p-2 w-16"></th>
             </tr>
           </thead>
 
@@ -252,36 +313,33 @@ export function CouncilManager({ setSavedMsg }: CouncilManagerProps) {
                 <td className="p-2">
                   <Input
                     value={m.name}
-                    onChange={(e) =>
-                      updateRow(i, { name: e.target.value })
-                    }
+                    onChange={(e) => updateRow(i, { name: e.target.value })}
+                    className="text-xs"
                   />
                 </td>
 
                 <td className="p-2">
                   <Input
                     value={m.designation}
-                    onChange={(e) =>
-                      updateRow(i, { designation: e.target.value })
-                    }
+                    onChange={(e) => updateRow(i, { designation: e.target.value })}
+                    className="text-xs"
                   />
                 </td>
 
                 <td className="p-2">
                   <Input
                     value={m.position}
-                    onChange={(e) =>
-                      updateRow(i, { position: e.target.value })
-                    }
+                    onChange={(e) => updateRow(i, { position: e.target.value })}
+                    className="text-xs"
                   />
                 </td>
 
                 <td className="p-2">
                   <Input
                     value={m.email}
-                    onChange={(e) =>
-                      updateRow(i, { email: e.target.value })
-                    }
+                    onChange={(e) => updateRow(i, { email: e.target.value })}
+                    className="text-xs"
+                    type="email"
                   />
                 </td>
 
@@ -289,7 +347,7 @@ export function CouncilManager({ setSavedMsg }: CouncilManagerProps) {
                   <Button
                     size="sm"
                     variant="destructive"
-                    className="h-7 text-xs"
+                    className="h-7 text-xs w-full"
                     onClick={() => removeRow(m)}
                   >
                     Delete
@@ -301,8 +359,9 @@ export function CouncilManager({ setSavedMsg }: CouncilManagerProps) {
         </table>
       </div>
 
+      {/* Add Member Button */}
       <div className="flex gap-2 mt-3">
-        <Button size="sm" onClick={addRow}>
+        <Button size="sm" onClick={addRow} className="w-full sm:w-auto">
           + Add Member
         </Button>
       </div>

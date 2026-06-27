@@ -97,19 +97,29 @@ export function DepartmentManager({ setSavedMsg }: DepartmentManagerProps) {
   };
 
   return (
-    <div className="border border-border rounded-md p-5 bg-card">
-      <div className="flex justify-between items-center mb-4">
+    <div className="border border-border rounded-md p-3 sm:p-5 bg-card">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4">
         <div>
-          <h2 className="font-semibold text-lg mb-1">Department Faculty Members</h2>
-          <p className="text-xs text-muted-foreground">Edit faculty list. Click Save to apply changes.</p>
+          <h2 className="font-semibold text-base sm:text-lg mb-0.5 sm:mb-1">
+            Department Faculty Members
+          </h2>
+          <p className="text-[10px] sm:text-xs text-muted-foreground">
+            Edit faculty list. Click Save to apply changes.
+          </p>
         </div>
-        <Button onClick={saveChanges} disabled={isSaving} className="bg-green-600 hover:bg-green-700">
+        <Button 
+          onClick={saveChanges} 
+          disabled={isSaving} 
+          className="bg-green-600 hover:bg-green-700 w-full sm:w-auto text-sm"
+        >
           {isSaving ? 'Saving...' : '💾 Save Changes'}
         </Button>
       </div>
 
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex-1 mr-4">
+      {/* Controls */}
+      <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mb-4">
+        <div className="flex-1">
           <Label className="text-xs">Select Department</Label>
           <select
             className="w-full mt-1 border border-border rounded-md p-2 bg-background text-sm"
@@ -124,13 +134,71 @@ export function DepartmentManager({ setSavedMsg }: DepartmentManagerProps) {
           </select>
         </div>
         {faculties.length > 0 && (
-          <Button size="sm" variant="destructive" className="mt-5" onClick={resetAll}>
+          <Button 
+            size="sm" 
+            variant="destructive" 
+            className="w-full sm:w-auto mt-1 sm:mt-5"
+            onClick={resetAll}
+          >
             Delete All Faculty
           </Button>
         )}
       </div>
 
-      <div className="overflow-x-auto border border-border rounded-md">
+      {/* Mobile Cards View */}
+      <div className="block sm:hidden space-y-3">
+        {faculties.map((f, idx) => (
+          <div key={f.id || idx} className="border border-border rounded-lg p-3 bg-white dark:bg-gray-900">
+            <div className="flex justify-between items-start mb-2">
+              <span className="text-xs text-muted-foreground">#{idx + 1}</span>
+              <Button
+                size="sm"
+                variant="destructive"
+                className="h-7 text-xs"
+                onClick={() => f.id && removeRow(f.id)}
+                disabled={!f.id}
+              >
+                Delete
+              </Button>
+            </div>
+            
+            <div className="space-y-2">
+              <div>
+                <Label className="text-[10px] text-muted-foreground">Name</Label>
+                <Input
+                  value={f.name}
+                  onChange={(e) => f.id && updateRow(f.id, { name: e.target.value })}
+                  placeholder="Full Name"
+                  className="text-sm"
+                />
+              </div>
+              
+              <div>
+                <Label className="text-[10px] text-muted-foreground">Designation</Label>
+                <Input
+                  value={f.designation}
+                  onChange={(e) => f.id && updateRow(f.id, { designation: e.target.value })}
+                  placeholder="Designation"
+                  className="text-sm"
+                />
+              </div>
+              
+              <div>
+                <Label className="text-[10px] text-muted-foreground">Qualification</Label>
+                <Input
+                  value={f.qualification}
+                  onChange={(e) => f.id && updateRow(f.id, { qualification: e.target.value })}
+                  placeholder="Qualification"
+                  className="text-sm"
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop Table View */}
+      <div className="hidden sm:block overflow-x-auto border border-border rounded-md">
         <table className="w-full text-xs">
           <thead className="bg-secondary">
             <tr>
@@ -138,7 +206,7 @@ export function DepartmentManager({ setSavedMsg }: DepartmentManagerProps) {
               <th className="p-2 text-left min-w-[120px]">Name</th>
               <th className="p-2 text-left min-w-[120px]">Designation</th>
               <th className="p-2 text-left min-w-[150px]">Qualification</th>
-              <th className="p-2"></th>
+              <th className="p-2 w-16"></th>
             </tr>
           </thead>
           <tbody>
@@ -148,7 +216,7 @@ export function DepartmentManager({ setSavedMsg }: DepartmentManagerProps) {
                 <td className="p-2">
                   <Input
                     value={f.name}
-                    onChange={(e) => updateRow(f.id!, { name: e.target.value })}
+                    onChange={(e) => f.id && updateRow(f.id, { name: e.target.value })}
                     placeholder="Full Name"
                     className="text-xs"
                   />
@@ -156,7 +224,7 @@ export function DepartmentManager({ setSavedMsg }: DepartmentManagerProps) {
                 <td className="p-2">
                   <Input
                     value={f.designation}
-                    onChange={(e) => updateRow(f.id!, { designation: e.target.value })}
+                    onChange={(e) => f.id && updateRow(f.id, { designation: e.target.value })}
                     placeholder="Designation"
                     className="text-xs"
                   />
@@ -164,7 +232,7 @@ export function DepartmentManager({ setSavedMsg }: DepartmentManagerProps) {
                 <td className="p-2">
                   <Input
                     value={f.qualification}
-                    onChange={(e) => updateRow(f.id!, { qualification: e.target.value })}
+                    onChange={(e) => f.id && updateRow(f.id, { qualification: e.target.value })}
                     placeholder="Qualification"
                     className="text-xs"
                   />
@@ -173,7 +241,7 @@ export function DepartmentManager({ setSavedMsg }: DepartmentManagerProps) {
                   <Button
                     size="sm"
                     variant="destructive"
-                    className="h-7 text-xs"
+                    className="h-7 text-xs w-full"
                     onClick={() => f.id && removeRow(f.id)}
                     disabled={!f.id}
                   >
@@ -186,8 +254,11 @@ export function DepartmentManager({ setSavedMsg }: DepartmentManagerProps) {
         </table>
       </div>
 
+      {/* Add Member Button */}
       <div className="flex gap-2 mt-3">
-        <Button size="sm" onClick={addRow}>+ Add Faculty Member</Button>
+        <Button size="sm" onClick={addRow} className="w-full sm:w-auto">
+          + Add Faculty Member
+        </Button>
       </div>
     </div>
   );

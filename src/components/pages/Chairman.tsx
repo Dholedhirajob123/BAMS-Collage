@@ -5,24 +5,7 @@ export function Chairman() {
   return (
     <div className="space-y-12">
       {/* Hero Section */}
-      <div className="relative h-[300px] rounded-3xl overflow-hidden shadow-2xl">
-        <img
-          src={secretaryImage}
-          alt="Secretary"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-          <div className="max-w-2xl">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-10 h-0.5 bg-amber-400 rounded-full"></div>
-              <span className="text-sm text-amber-400 font-semibold tracking-wider">LEADERSHIP</span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-3">Secretary</h1>
-            <p className="text-lg text-white/90">Mr. Rushikesh P. Jadhao</p>
-          </div>
-        </div>
-      </div>
+      
       
       {/* Secretary - Image Left, Text Right */}
       <div className="flex flex-col md:flex-row gap-8 items-start">

@@ -22,16 +22,13 @@ interface GalleryManagerProps {
 // Helper to convert raw Base64 to a data URL
 const getImageSrc = (src: string): string => {
   if (!src) return '';
-  // Already a data URL or absolute URL – return as is
   if (src.startsWith('data:') || src.startsWith('http://') || src.startsWith('https://')) {
     return src;
   }
-  // Detect common Base64 image signatures
   if (src.startsWith('/9j/')) return `data:image/jpeg;base64,${src}`;
   if (src.startsWith('iVBORw0KGgo')) return `data:image/png;base64,${src}`;
   if (src.startsWith('R0lGODdh')) return `data:image/gif;base64,${src}`;
   if (src.startsWith('UklGR')) return `data:image/webp;base64,${src}`;
-  // Fallback – assume JPEG (adjust if your backend uses a different default)
   return `data:image/jpeg;base64,${src}`;
 };
 
@@ -45,6 +42,7 @@ export function GalleryManager({ setSavedMsg }: GalleryManagerProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showUploadForm, setShowUploadForm] = useState(false);
 
   // Set today's date
   useEffect(() => {
@@ -106,7 +104,7 @@ export function GalleryManager({ setSavedMsg }: GalleryManagerProps) {
     if (!confirm(`Delete "${captionText || 'this photo'}"?`)) return;
     try {
       await deletePhoto(id);
-      await loadAllPhotos(); // refresh
+      await loadAllPhotos();
       setSavedMsg('✓ Photo deleted.');
       setTimeout(() => setSavedMsg(''), 2000);
     } catch (err) {
@@ -134,9 +132,10 @@ export function GalleryManager({ setSavedMsg }: GalleryManagerProps) {
       if (categoryId) formData.append('categoryId', categoryId);
 
       await uploadPhoto(formData);
-      await loadAllPhotos(); // refresh
+      await loadAllPhotos();
       setCaption('');
       setSelectedFile(null);
+      setShowUploadForm(false);
       setSavedMsg('✓ Photo uploaded successfully.');
       setTimeout(() => setSavedMsg(''), 2000);
     } catch (err) {
@@ -150,7 +149,6 @@ export function GalleryManager({ setSavedMsg }: GalleryManagerProps) {
   const handleUpdate = async (id: number, patch: Partial<Photo>) => {
     try {
       await updatePhoto(id, patch);
-      // Update local state
       setPhotos(photos.map((p) => (p.id === id ? { ...p, ...patch } : p)));
       setSavedMsg('✓ Photo updated.');
       setTimeout(() => setSavedMsg(''), 1500);
@@ -183,15 +181,16 @@ export function GalleryManager({ setSavedMsg }: GalleryManagerProps) {
   const isDefault = (p: Photo) => p.isDefault || false;
 
   return (
-    <div className="border border-border rounded-md p-5 bg-card">
-      <div className="flex justify-between items-center mb-4">
+    <div className="border border-border rounded-md p-3 sm:p-5 bg-card">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4">
         <div>
-          <h2 className="font-semibold text-lg mb-1">Photo Gallery</h2>
-          <p className="text-xs text-muted-foreground">Upload and manage photos. Edits are saved automatically.</p>
+          <h2 className="font-semibold text-base sm:text-lg mb-0.5 sm:mb-1">Photo Gallery</h2>
+          <p className="text-[10px] sm:text-xs text-muted-foreground">Upload and manage photos. Edits are saved automatically.</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           {photos.filter((p) => !isDefault(p)).length > 0 && (
-            <Button size="sm" variant="destructive" onClick={deleteAllPhotos}>
+            <Button size="sm" variant="destructive" onClick={deleteAllPhotos} className="flex-1 sm:flex-none text-xs">
               Delete All Uploaded
             </Button>
           )}
@@ -200,80 +199,91 @@ export function GalleryManager({ setSavedMsg }: GalleryManagerProps) {
             variant="outline"
             onClick={loadAllPhotos}
             disabled={loading}
+            className="flex-1 sm:flex-none text-xs"
           >
             {loading ? 'Loading...' : '↻ Refresh'}
           </Button>
-        </div>
-      </div>
-
-      {/* Upload Form */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-6 p-4 bg-secondary/30 rounded-lg">
-        <div>
-          <Label className="text-xs">Caption *</Label>
-          <Input
-            placeholder="Photo caption..."
-            value={caption}
-            onChange={(e) => setCaption(e.target.value)}
-            className="mt-1"
-          />
-        </div>
-        <div>
-          <Label className="text-xs">Date</Label>
-          <Input
-            type="date"
-            value={date}
-            disabled
-            className="mt-1 bg-muted"
-          />
-          <p className="text-[10px] text-muted-foreground mt-0.5">Today's date (auto)</p>
-        </div>
-        <div>
-          <Label className="text-xs">Category</Label>
-          <select
-            className="w-full mt-1 border border-border rounded-md p-2 bg-background text-sm"
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
-          >
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.categoryId}>
-                {cat.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <Label className="text-xs">Choose Image</Label>
-          <Input
-            type="file"
-            accept="image/*"
-            className="mt-1 cursor-pointer"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) setSelectedFile(file);
-              e.target.value = '';
-            }}
-          />
-          {selectedFile && (
-            <p className="text-xs text-green-600 mt-1">Selected: {selectedFile.name}</p>
-          )}
-        </div>
-        <div className="flex items-end">
           <Button
-            onClick={handleUpload}
-            disabled={isUploading || !selectedFile}
-            className="w-full"
+            size="sm"
+            variant="default"
+            onClick={() => setShowUploadForm(!showUploadForm)}
+            className="flex-1 sm:flex-none text-xs bg-brand hover:bg-brand-dark"
           >
-            {isUploading ? 'Uploading...' : '➕ Add Photo'}
+            {showUploadForm ? '✕ Close' : '➕ Add Photo'}
           </Button>
         </div>
       </div>
 
+      {/* Upload Form - Collapsible */}
+      {showUploadForm && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-6 p-3 sm:p-4 bg-secondary/30 rounded-lg">
+          <div>
+            <Label className="text-xs">Caption *</Label>
+            <Input
+              placeholder="Photo caption..."
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+              className="mt-1 text-sm"
+            />
+          </div>
+          <div>
+            <Label className="text-xs">Date</Label>
+            <Input
+              type="date"
+              value={date}
+              disabled
+              className="mt-1 bg-muted text-sm"
+            />
+            <p className="text-[10px] text-muted-foreground mt-0.5">Today's date (auto)</p>
+          </div>
+          <div>
+            <Label className="text-xs">Category</Label>
+            <select
+              className="w-full mt-1 border border-border rounded-md p-2 bg-background text-sm"
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+            >
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.categoryId}>
+                  {cat.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <Label className="text-xs">Choose Image</Label>
+            <Input
+              type="file"
+              accept="image/*"
+              className="mt-1 cursor-pointer text-sm"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) setSelectedFile(file);
+                e.target.value = '';
+              }}
+            />
+            {selectedFile && (
+              <p className="text-xs text-green-600 mt-1 truncate">✓ {selectedFile.name}</p>
+            )}
+          </div>
+          <div className="flex items-end">
+            <Button
+              onClick={handleUpload}
+              disabled={isUploading || !selectedFile}
+              className="w-full"
+            >
+              {isUploading ? 'Uploading...' : '📤 Upload Photo'}
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Category Legend (clickable badges) */}
-      <div className="flex flex-wrap items-center gap-3 mb-4">
-        <span className="text-xs font-medium text-muted-foreground">Categories:</span>
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4">
+        <span className="text-[10px] sm:text-xs font-medium text-muted-foreground">Categories:</span>
         <span
           onClick={() => setSelectedCategoryId(null)}
-          className={`text-xs px-2 py-1 rounded-full cursor-pointer transition ${
+          className={`text-[10px] sm:text-xs px-2 py-1 rounded-full cursor-pointer transition ${
             selectedCategoryId === null
               ? 'bg-primary text-primary-foreground'
               : 'bg-secondary hover:bg-secondary/80'
@@ -282,17 +292,17 @@ export function GalleryManager({ setSavedMsg }: GalleryManagerProps) {
           All ({photos.length})
         </span>
         {categories.map((cat) => {
-          // Count photos in this category
           const count = photos.filter((p) => p.categoryId === cat.categoryId).length;
           const isActive = selectedCategoryId === cat.categoryId;
+          const color = cat.color || 'gray';
           return (
             <span
               key={cat.id}
               onClick={() => setSelectedCategoryId(isActive ? null : cat.categoryId)}
-              className={`text-xs px-2 py-1 rounded-full cursor-pointer transition ${
+              className={`text-[10px] sm:text-xs px-2 py-1 rounded-full cursor-pointer transition ${
                 isActive
-                  ? `bg-${cat.color || 'gray'}-600 text-white`
-                  : `bg-${cat.color || 'gray'}-100 text-${cat.color || 'gray'}-700 dark:bg-${cat.color || 'gray'}-900/30 dark:text-${cat.color || 'gray'}-400`
+                  ? `bg-${color}-600 text-white`
+                  : `bg-${color}-100 text-${color}-700 dark:bg-${color}-900/30 dark:text-${color}-400`
               }`}
             >
               {cat.label} ({count})
@@ -302,13 +312,16 @@ export function GalleryManager({ setSavedMsg }: GalleryManagerProps) {
       </div>
 
       {/* Gallery Grid */}
-      {loading && <div className="text-center py-12">Loading photos...</div>}
+      {loading && (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">Loading photos...</p>
+        </div>
+      )}
 
       {!loading && (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
           {filteredPhotos.map((photo) => {
             const defaultPhoto = isDefault(photo);
-            // Use the helper to get a displayable image source
             const imageUrl = getImageSrc(photo.src || '');
 
             return (
@@ -324,17 +337,17 @@ export function GalleryManager({ setSavedMsg }: GalleryManagerProps) {
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                     />
                   ) : (
-                    <span className="text-muted-foreground text-xs">No image</span>
+                    <span className="text-muted-foreground text-[10px] sm:text-xs">No image</span>
                   )}
                 </div>
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <div className="absolute bottom-0 left-0 right-0 p-2 text-white">
-                    <p className="text-xs font-medium truncate">{photo.caption || 'Untitled'}</p>
-                    {photo.date && <p className="text-[10px] opacity-75">{photo.date}</p>}
+                    <p className="text-[10px] sm:text-xs font-medium truncate">{photo.caption || 'Untitled'}</p>
+                    {photo.date && <p className="text-[8px] sm:text-[10px] opacity-75">{photo.date}</p>}
                     <div className="flex gap-1 mt-1 flex-wrap">
                       {defaultPhoto && (
-                        <span className="text-[9px] px-1.5 py-0.5 bg-amber-500/80 text-white rounded">Default</span>
+                        <span className="text-[8px] sm:text-[9px] px-1.5 py-0.5 bg-amber-500/80 text-white rounded">Default</span>
                       )}
                     </div>
                   </div>
@@ -345,7 +358,7 @@ export function GalleryManager({ setSavedMsg }: GalleryManagerProps) {
                   <Button
                     size="sm"
                     variant="destructive"
-                    className="h-8 w-8 p-0 text-xs rounded-full"
+                    className="h-7 w-7 sm:h-8 sm:w-8 p-0 text-xs rounded-full"
                     onClick={() => photo.id && handleDeletePhoto(photo.id, photo.caption)}
                     title="Delete photo"
                   >
@@ -354,19 +367,19 @@ export function GalleryManager({ setSavedMsg }: GalleryManagerProps) {
                 </div>
 
                 {/* Edit fields */}
-                <div className="p-2 border-t border-border bg-white dark:bg-gray-800">
+                <div className="p-1.5 sm:p-2 border-t border-border bg-white dark:bg-gray-800">
                   <Input
                     value={photo.caption || ''}
                     onChange={(e) => photo.id && handleUpdate(photo.id, { caption: e.target.value })}
                     placeholder="Caption"
-                    className="text-xs h-7 mb-1"
+                    className="text-[10px] sm:text-xs h-6 sm:h-7 mb-1"
                   />
                   <Input
                     value={photo.date || ''}
                     onChange={(e) => photo.id && handleUpdate(photo.id, { date: e.target.value || undefined })}
                     placeholder="Date"
                     type="date"
-                    className="text-xs h-7"
+                    className="text-[10px] sm:text-xs h-6 sm:h-7"
                   />
                 </div>
               </div>
@@ -377,10 +390,10 @@ export function GalleryManager({ setSavedMsg }: GalleryManagerProps) {
 
       {!loading && filteredPhotos.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
-          <p className="text-lg">
+          <p className="text-base sm:text-lg">
             {photos.length === 0 ? '📷 No photos in gallery' : '🔍 No photos match the selected category'}
           </p>
-          <p className="text-sm">
+          <p className="text-xs sm:text-sm">
             {photos.length === 0
               ? 'Upload a photo using the form above.'
               : 'Try selecting a different category or view "All".'}
@@ -389,7 +402,7 @@ export function GalleryManager({ setSavedMsg }: GalleryManagerProps) {
       )}
 
       {/* Stats */}
-      <div className="mt-4 pt-3 border-t border-border text-xs text-muted-foreground flex flex-wrap justify-between gap-2">
+      <div className="mt-4 pt-3 border-t border-border text-[10px] sm:text-xs text-muted-foreground flex flex-wrap justify-between gap-2">
         <span>Total Photos: {photos.length}</span>
         <span>
           Default: {photos.filter((p) => isDefault(p)).length} | Uploaded:{' '}

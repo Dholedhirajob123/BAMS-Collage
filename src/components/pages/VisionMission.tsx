@@ -3,16 +3,7 @@
 export function VisionMission() {
   return (
     <div className="space-y-12">
-      {/* Hero Section */}
-      <div className="relative h-[300px] rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-r from-amber-600 to-orange-600">
-        <div className="absolute inset-0 bg-black/30" />
-        <div className="absolute inset-0 flex items-center justify-center text-center text-white">
-          <div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-3">Vision & Mission</h1>
-            <p className="text-lg text-white/90">Guiding principles of Rajashri Ayurvedic Medical College</p>
-          </div>
-        </div>
-      </div>
+      
 
       {/* Vision & Mission Cards - Side by Side */}
       <div className="grid md:grid-cols-2 gap-8">
