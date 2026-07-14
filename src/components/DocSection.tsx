@@ -26,7 +26,7 @@ export function DocSection({ slug, showUpload = false }: DocSectionProps) {
               .container { width:100%; height:100vh; display:flex; flex-direction:column; }
               .header { padding:10px 20px; background:#fff; border-bottom:1px solid #ddd; display:flex; justify-content:space-between; align-items:center; }
               .header h3 { margin:0; font-size:14px; color:#333; }
-              .header a { background:#8B4513; color:white; padding:6px 12px; text-decoration:none; border-radius:4px; font-size:12px; }
+              .header a { background:#DC2626; color:white; padding:6px 12px; text-decoration:none; border-radius:4px; font-size:12px; }
               .header a:hover { opacity:0.8; }
               .pdf-container { flex:1; width:100%; }
               .pdf-container embed { width:100%; height:100%; }
@@ -38,7 +38,7 @@ export function DocSection({ slug, showUpload = false }: DocSectionProps) {
                 <h3>📄 ${name}</h3>
                 <div>
                   <a href="${dataUrl}" download="${name}">⬇️ Download</a>
-                  <button onclick="window.close()" style="margin-left:10px;padding:6px 12px;border:none;background:#dc3545;color:white;border-radius:4px;cursor:pointer;font-size:12px;">✕ Close</button>
+                  <button onclick="window.close()" style="margin-left:10px;padding:6px 12px;border:none;background:#DC2626;color:white;border-radius:4px;cursor:pointer;font-size:12px;">✕ Close</button>
                 </div>
               </div>
               <div class="pdf-container">
@@ -58,10 +58,9 @@ export function DocSection({ slug, showUpload = false }: DocSectionProps) {
     setUploading(true);
     setUploadError(null);
     try {
-      // Optional: ask for batch
       const batch = prompt("Enter batch (e.g., 2022) or leave empty:", "");
       await addDocument(file, batch || undefined);
-      e.target.value = ""; // reset input
+      e.target.value = "";
     } catch (err: any) {
       setUploadError(err.message);
     } finally {
@@ -79,24 +78,24 @@ export function DocSection({ slug, showUpload = false }: DocSectionProps) {
   };
 
   if (isLoading) {
-    return <div className="p-4 text-sm text-muted-foreground">Loading documents...</div>;
+    return <div className="p-4 text-sm text-black font-bold">Loading documents...</div>;
   }
 
   if (error) {
-    return <div className="p-4 text-sm text-red-500">Error: {error}</div>;
+    return <div className="p-4 text-sm text-red-600 font-bold">Error: {error}</div>;
   }
 
   return (
     <div className="space-y-5">
       {info && (
-        <div className="border-l-4 border-brand bg-secondary/40 p-4 rounded-r-md">
-          <p className="text-foreground leading-relaxed whitespace-pre-line">{info}</p>
+        <div className="border-l-4 border-red-600 bg-red-50 p-4 rounded-r-md">
+          <p className="text-black font-bold leading-relaxed whitespace-pre-line">{info}</p>
         </div>
       )}
 
       {showUpload && (
         <div className="flex items-center gap-4">
-          <label className="cursor-pointer bg-brand text-white px-4 py-2 rounded-md text-sm hover:bg-brand/80 transition-colors">
+          <label className="cursor-pointer bg-red-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-red-700 transition-colors">
             {uploading ? "Uploading..." : "Upload Document"}
             <input
               type="file"
@@ -106,54 +105,54 @@ export function DocSection({ slug, showUpload = false }: DocSectionProps) {
               disabled={uploading}
             />
           </label>
-          {uploadError && <span className="text-sm text-red-500">{uploadError}</span>}
+          {uploadError && <span className="text-sm text-red-600 font-bold">{uploadError}</span>}
         </div>
       )}
 
       <div>
-        <h3 className="text-sm font-semibold text-brand mb-2">Available Documents</h3>
+        <h3 className="text-sm font-bold text-black mb-2">Available Documents</h3>
         {files.length === 0 ? (
-          <p className="text-sm text-muted-foreground italic">
+          <p className="text-sm text-black font-bold italic">
             No documents uploaded yet. Please check back soon.
           </p>
         ) : (
-          <ul className="divide-y divide-border border border-border rounded-md bg-card">
+          <ul className="divide-y divide-red-200 border-2 border-red-300 rounded-xl bg-white">
             {files.map((f) => (
               <li
                 key={f.id}
-                className="flex flex-col gap-3 p-3 hover:bg-secondary/40 sm:flex-row sm:items-center sm:justify-between"
+                className="flex flex-col gap-3 p-3 hover:bg-red-50 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div className="flex items-start gap-3 min-w-0">
                   <span className="text-red-600 text-lg shrink-0">📄</span>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">{f.name}</p>
-                    <p className="text-[11px] text-muted-foreground">
+                    <p className="text-sm font-bold text-black truncate">{f.name}</p>
+                    <p className="text-[11px] text-black font-bold">
                       {(f.size / 1024).toFixed(0)} KB · Added{" "}
                       {new Date(f.addedAt).toLocaleDateString()}
                     </p>
                     {f.batch && (
-                      <p className="text-[11px] text-muted-foreground mt-1">Batch: {f.batch}</p>
+                      <p className="text-[11px] text-black font-bold mt-1">Batch: {f.batch}</p>
                     )}
                   </div>
                 </div>
                 <div className="flex gap-2 shrink-0">
                   <button
                     onClick={() => handleView(f.dataUrl, f.name)}
-                    className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 transition-colors flex items-center gap-1"
+                    className="text-xs bg-red-600 text-white px-3 py-1.5 rounded-full hover:bg-red-700 transition-colors flex items-center gap-1 font-bold"
                   >
                     <span>👁️</span> View
                   </button>
                   <a
                     href={f.dataUrl}
                     download={f.name}
-                    className="text-xs bg-brand text-white px-3 py-1.5 rounded hover:opacity-90 transition-colors flex items-center gap-1"
+                    className="text-xs bg-red-600 text-white px-3 py-1.5 rounded-full hover:bg-red-700 transition-colors flex items-center gap-1 font-bold"
                   >
                     <span>⬇️</span> Download
                   </a>
                   {showUpload && (
                     <button
                       onClick={() => handleDelete(Number(f.id))}
-                      className="text-xs bg-red-600 text-white px-3 py-1.5 rounded hover:bg-red-700 transition-colors"
+                      className="text-xs bg-red-700 text-white px-3 py-1.5 rounded-full hover:bg-red-800 transition-colors font-bold"
                     >
                       🗑️ Delete
                     </button>

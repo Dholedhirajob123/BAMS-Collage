@@ -1,5 +1,5 @@
 // components/Header.tsx
-import { Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { TOP_NAV, type NavItem } from "@/lib/pages";
 import logoAsset from "@/assets/mainlogo.png";
@@ -49,12 +49,12 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50">
-      {/* Top info bar */}
-      <div className="bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 text-white">
+      {/* Top info bar - Changed to red gradient */}
+      <div className="bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white">
         <div className="mx-auto max-w-7xl px-2 sm:px-4 py-1.5">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-1 sm:gap-0">
             <div className="hidden md:flex items-center gap-3">
-              <span className="text-xs font-semibold text-white tracking-wide">
+              <span className="text-xs font-bold text-white tracking-wide">
                 AFFILIATED TO MUHS (NASHIK)
               </span>
             </div>
@@ -67,7 +67,7 @@ export function Header() {
                 <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                <span className="text-[9px] sm:text-xs font-medium text-white truncate max-w-[120px] sm:max-w-none">
+                <span className="text-[9px] sm:text-xs font-bold text-white truncate max-w-[120px] sm:max-w-none">
                   rajshreeayurvedic@gmail.com
                 </span>
               </a>
@@ -78,11 +78,11 @@ export function Header() {
                 <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                <a href="tel:+918087203870" className="text-[9px] sm:text-xs font-medium text-white hover:underline">
+                <a href="tel:+918087203870" className="text-[9px] sm:text-xs font-bold text-white hover:underline">
                   +91-8087203870
                 </a>
                 <span className="text-white/40 text-[9px] hidden sm:inline">|</span>
-                <a href="tel:+918087303870" className="text-[9px] sm:text-xs font-medium text-white hover:underline hidden sm:inline">
+                <a href="tel:+918087303870" className="text-[9px] sm:text-xs font-bold text-white hover:underline hidden sm:inline">
                   +91-8087303870
                 </a>
               </div>
@@ -92,7 +92,7 @@ export function Header() {
       </div>
 
       {/* Main Header - All content visible on all devices */}
-      <div className="bg-white shadow-md">
+      <div className="bg-white shadow-md border-b-2 border-red-300">
         <div className="mx-auto max-w-7xl px-2 sm:px-4 py-2 sm:py-3">
           <div className="flex items-center justify-between gap-1 sm:gap-2 md:gap-4 lg:gap-6">
             {/* Left Logo */}
@@ -108,21 +108,21 @@ export function Header() {
 
             {/* Center - Full College Name - Everything visible */}
             <div className="flex-1 text-center px-1 sm:px-2">
-              <p className="text-brand font-semibold text-[7px] sm:text-[11px] md:text-xs lg:text-sm mb-0.5 tracking-wide leading-tight">
+              <p className="text-black font-bold text-[7px] sm:text-[11px] md:text-xs lg:text-sm mb-0.5 tracking-wide leading-tight">
                 Dharmveer Diliprao Rahate Shikshan & Bahu-Uddeshiya Sanstha's
               </p>
-              <h1 className="text-brand font-extrabold text-[11px] sm:text-lg md:text-2xl lg:text-3xl xl:text-4xl leading-tight tracking-tight">
+              <h1 className="text-black font-extrabold text-[11px] sm:text-lg md:text-2xl lg:text-3xl xl:text-4xl leading-tight tracking-tight">
                 RAJASHRI AYURVEDIC
                 <br className="hidden sm:block md:hidden" />
                 <span> </span>
                 MEDICAL COLLEGE & HOSPITAL
               </h1>
               <div className="flex items-center justify-center gap-1 mt-0.5">
-                <div className="w-1.5 sm:w-3 h-px bg-gradient-to-r from-amber-400 to-transparent"></div>
-                <p className="text-[6px] sm:text-[10px] md:text-xs text-muted-foreground text-center leading-tight">
+                <div className="w-1.5 sm:w-3 h-px bg-gradient-to-r from-red-500 to-transparent"></div>
+                <p className="text-[6px] sm:text-[10px] md:text-xs text-black font-bold text-center leading-tight">
                   COTTON MARKET ROAD, MEHKAR, TQ. MEHKAR, DIST. BULDHANA, MAHARASHTRA
                 </p>
-                <div className="w-1.5 sm:w-3 h-px bg-gradient-to-l from-amber-400 to-transparent"></div>
+                <div className="w-1.5 sm:w-3 h-px bg-gradient-to-l from-red-500 to-transparent"></div>
               </div>
             </div>
 
@@ -141,12 +141,12 @@ export function Header() {
       </div>
 
       {/* Navigation Bar */}
-      <nav className="bg-brand text-white relative">
+      <nav className="bg-red-600 text-white relative border-b-2 border-red-700">
         <div className="mx-auto max-w-7xl px-2 sm:px-4">
           <div className="flex items-center justify-between">
             {/* Menu Button - Shows on mobile AND tablet */}
             <button
-              className="lg:hidden py-2 text-sm font-medium flex items-center gap-1.5"
+              className="lg:hidden py-2 text-sm font-bold flex items-center gap-1.5 text-white"
               onClick={() => setOpenMobile(!openMobile)}
             >
               <span className="text-lg">{openMobile ? "✕" : "☰"}</span>
@@ -159,16 +159,15 @@ export function Header() {
                 <li key={item.label} className="relative group">
                   {item.children ? (
                     <>
-                      <button className="px-3 py-2 text-sm font-medium hover:bg-brand-dark inline-flex items-center gap-1 whitespace-nowrap">
+                      <button className="px-3 py-2 text-sm font-bold hover:bg-red-700 inline-flex items-center gap-1 whitespace-nowrap text-white">
                         {item.label} <span className="text-xs">▾</span>
                       </button>
-                      <ul className="absolute left-0 top-full min-w-[200px] bg-white text-foreground shadow-lg border border-border z-50 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 rounded-md overflow-hidden">
+                      <ul className="absolute left-0 top-full min-w-[200px] bg-white text-black shadow-lg border-2 border-red-300 z-50 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 rounded-xl overflow-hidden">
                         {item.children.map((child) => (
                           <li key={child.label}>
                             <Link
-                              to="/$slug"
-                              params={{ slug: child.slug! }}
-                              className="block px-4 py-2 text-sm hover:bg-secondary border-b border-border last:border-b-0 whitespace-nowrap"
+                              to={`/${child.slug}`}
+                              className="block px-4 py-2 text-sm font-bold hover:bg-red-50 border-b border-red-200 last:border-b-0 whitespace-nowrap text-black"
                             >
                               {child.label}
                             </Link>
@@ -179,15 +178,14 @@ export function Header() {
                   ) : item.to ? (
                     <Link
                       to={item.to}
-                      className="block px-3 py-2 text-sm font-medium hover:bg-brand-dark whitespace-nowrap"
+                      className="block px-3 py-2 text-sm font-bold hover:bg-red-700 whitespace-nowrap text-white"
                     >
                       {item.label}
                     </Link>
                   ) : (
                     <Link
-                      to="/$slug"
-                      params={{ slug: item.slug! }}
-                      className="block px-3 py-2 text-sm font-medium hover:bg-brand-dark whitespace-nowrap"
+                      to={`/${item.slug}`}
+                      className="block px-3 py-2 text-sm font-bold hover:bg-red-700 whitespace-nowrap text-white"
                     >
                       {item.label}
                     </Link>
@@ -199,34 +197,33 @@ export function Header() {
             {/* Mobile & Tablet Navigation Overlay */}
             <div
               ref={mobileMenuRef}
-              className={`fixed inset-0 top-[100px] sm:top-[108px] bg-brand z-50 transform transition-transform duration-300 ease-in-out ${
+              className={`fixed inset-0 top-[100px] sm:top-[108px] bg-red-600 z-50 transform transition-transform duration-300 ease-in-out ${
                 openMobile ? "translate-x-0" : "translate-x-full"
-              } lg:hidden overflow-y-auto`}
-              style={{ height: "calc(100vh - 100px)" }}
+              } lg:hidden overflow-y-auto border-l-4 border-r-4 border-red-700`}
+              style={{ height: "calc(100vh - 50px)" }}
             >
               <div className="flex flex-col py-2">
                 {TOP_NAV.map((item) => (
-                  <div key={item.label} className="border-b border-white/20">
+                  <div key={item.label} className="border-b border-red-400">
                     {item.children ? (
                       <>
                         <button
                           onClick={() => toggleDropdown(item.label)}
-                          className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-white/10 transition-colors"
+                          className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-red-700 transition-colors text-white font-bold"
                         >
-                          <span className="text-sm font-medium">{item.label}</span>
+                          <span className="text-sm">{item.label}</span>
                           <span className={`transform transition-transform duration-200 ${openDropdown === item.label ? "rotate-180" : ""}`}>
                             ▾
                           </span>
                         </button>
                         {openDropdown === item.label && (
-                          <div className="bg-white/5 pl-4">
+                          <div className="bg-red-700/50 pl-4">
                             {item.children.map((child) => (
                               <Link
                                 key={child.label}
-                                to="/$slug"
-                                params={{ slug: child.slug! }}
+                                to={`/${child.slug}`}
                                 onClick={closeMenu}
-                                className="block px-4 py-2.5 text-sm hover:bg-white/10 transition-colors border-t border-white/10"
+                                className="block px-4 py-2.5 text-sm hover:bg-red-700 transition-colors border-t border-red-400 text-white font-bold"
                               >
                                 {child.label}
                               </Link>
@@ -238,16 +235,15 @@ export function Header() {
                       <Link
                         to={item.to}
                         onClick={closeMenu}
-                        className="block px-4 py-3 text-sm font-medium hover:bg-white/10 transition-colors"
+                        className="block px-4 py-3 text-sm font-bold hover:bg-red-700 transition-colors text-white"
                       >
                         {item.label}
                       </Link>
                     ) : (
                       <Link
-                        to="/$slug"
-                        params={{ slug: item.slug! }}
+                        to={`/${item.slug}`}
                         onClick={closeMenu}
-                        className="block px-4 py-3 text-sm font-medium hover:bg-white/10 transition-colors"
+                        className="block px-4 py-3 text-sm font-bold hover:bg-red-700 transition-colors text-white"
                       >
                         {item.label}
                       </Link>

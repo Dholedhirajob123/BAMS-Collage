@@ -16,21 +16,21 @@ export function InfoPage({
       <div className="relative overflow-hidden rounded-md">
         <img src={hero} alt={title} loading="lazy" className="w-full h-56 object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-brand/85 via-brand/30 to-transparent flex items-end p-5">
-          <div className="text-white">
-            <h2 className="text-2xl font-bold">{title}</h2>
+          <div className="text-black">
+            <h2 className="text-4xl font-bold">{title}</h2>
             {subtitle && <p className="text-sm opacity-90">{subtitle}</p>}
           </div>
         </div>
       </div>
       {paragraphs.map((p, i) => (
-        <p key={i} className="text-foreground leading-relaxed">{p}</p>
+        <p key={i} className="text-black font-bold leading-relaxed">{p}</p>
       ))}
       {highlights && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {highlights.map((h, i) => (
             <div key={i} className="border border-border rounded-md p-4 text-center bg-secondary/30">
-              <div className="text-xl font-bold text-brand">{h.value}</div>
-              <div className="text-xs text-muted-foreground mt-1">{h.label}</div>
+              <div className="text-xl font-bold text-black">{h.value}</div>
+              <div className="text-xs text-black font-bold mt-1">{h.label}</div>
             </div>
           ))}
         </div>

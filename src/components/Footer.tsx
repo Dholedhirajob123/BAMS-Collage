@@ -67,40 +67,40 @@ export function Footer() {
               Institution Codes
             </h3>
             <div className="space-y-2">
-              <div className="bg-white/10 rounded-lg p-3">
+              <div className="bg-white/10 rounded-lg p-3 hover:bg-white/20 transition-colors">
                 <p className="text-white/60 text-xs uppercase tracking-wider">NCISM Code</p>
-                <p className="font-semibold text-yellow-200 text-base">AYU-0870</p>
+                <p className="font-bold text-yellow-200 text-base">AYU-0870</p>
               </div>
-              <div className="bg-white/10 rounded-lg p-3">
+              <div className="bg-white/10 rounded-lg p-3 hover:bg-white/20 transition-colors">
                 <p className="text-white/60 text-xs uppercase tracking-wider">MUHS Code</p>
-                <p className="font-semibold text-yellow-200 text-base">125131</p>
+                <p className="font-bold text-yellow-200 text-base">125131</p>
               </div>
-              <div className="bg-white/10 rounded-lg p-3">
+              <div className="bg-white/10 rounded-lg p-3 hover:bg-white/20 transition-colors">
                 <p className="text-white/60 text-xs uppercase tracking-wider">MH CET Code</p>
-                <p className="font-semibold text-yellow-200 text-base">03292</p>
+                <p className="font-bold text-yellow-200 text-base">03292</p>
               </div>
             </div>
           </div>
           
-          {/* Developed By - Separate Column on Right */}
+          {/* Developed By */}
           <div>
             <h3 className="font-semibold text-xl mb-4 flex items-center gap-2">
               <span className="w-6 h-0.5 bg-yellow-300"></span>
               Developed By
             </h3>
             <div className="space-y-3">
-              <div className="bg-white/10 rounded-lg p-3">
+              <div className="bg-white/10 rounded-lg p-3 hover:bg-white/20 transition-colors">
                 <p className="text-white font-bold text-xl">DGD Created</p>
                 <div className="mt-3 pt-3 border-t border-white/20">
                   <p className="text-white/60 text-xs uppercase tracking-wider mb-1">Contact Developer</p>
-                 <a
-  href="https://mail.google.com/mail/?view=cm&fs=1&to=developerdgd@gmail.com"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="text-white text-sm hover:text-yellow-200 transition-colors block"
->
-  developerdgd@gmail.com
-</a>
+                  <a
+                    href="https://mail.google.com/mail/?view=cm&fs=1&to=developerdgd@gmail.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white text-sm hover:text-yellow-200 transition-colors block"
+                  >
+                    developerdgd@gmail.com
+                  </a>
                 </div>
               </div>
               
@@ -128,3 +128,5 @@ export function Footer() {
     </footer>
   );
 }
+
+export default Footer;

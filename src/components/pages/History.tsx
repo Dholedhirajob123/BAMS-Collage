@@ -1,12 +1,11 @@
 // components/pages/History.tsx
-import campus1 from "@/assets/campus-1.jpg";
-import campus4 from "@/assets/campus-4.jpg";
+import campus1 from "@/assets/mainbuilding.png";
+import campus4 from "@/assets/mainbuilding.png";
 
 // Add named export
 export function History() {
   return (
     <div className="space-y-12">
-
 
       {/* Journey Timeline with Zigzag Layout */}
       <div className="relative py-8">
@@ -14,7 +13,7 @@ export function History() {
           {/* Milestone 1 - Left */}
           <div className="relative flex flex-col md:flex-row gap-6 items-center">
             <div className="md:w-1/2">
-              <div className="relative rounded-2xl overflow-hidden shadow-xl group">
+              <div className="relative rounded-2xl overflow-hidden shadow-xl border-2 border-red-300 group hover:border-red-500 transition-all">
                 <img
                   src={campus1}
                   alt="Foundation"
@@ -24,14 +23,14 @@ export function History() {
               </div>
             </div>
             <div className="md:w-1/2">
-              <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-2xl p-6 border border-amber-100 dark:border-amber-800 hover:shadow-lg transition-all">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 dark:bg-amber-900/50 rounded-full mb-3">
-                  <span className="text-amber-600 text-xs font-bold">FOUNDATION</span>
+              <div className="bg-white rounded-2xl p-6 border-2 border-red-300 hover:shadow-lg hover:border-red-500 transition-all">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-100 rounded-full mb-3">
+                  <span className="text-red-600 text-xs font-bold">FOUNDATION</span>
                 </div>
-                <h3 className="text-xl font-bold mb-2">The Beginning</h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <h3 className="text-xl font-bold text-black mb-2">The Beginning</h3>
+                <p className="text-black font-bold leading-relaxed">
                   Rajashri Ayurvedic Medical College & Hospital, Mehkar was founded by the visionary leaders of{" "}
-                  <span className="text-amber-600 dark:text-amber-400 font-semibold">
+                  <span className="text-red-600 font-bold">
                     Dharmveer Diliprao Rahate Shikshan & Bahu-Uddeshiya Sanstha
                   </span>{" "}
                   with the mission of bringing quality Ayurvedic medical education to the rural belt of Buldhana district.
@@ -43,7 +42,7 @@ export function History() {
           {/* Milestone 2 - Right (Zigzag) */}
           <div className="relative flex flex-col md:flex-row gap-6 items-center">
             <div className="md:w-1/2 md:order-2">
-              <div className="relative rounded-2xl overflow-hidden shadow-xl group">
+              <div className="relative rounded-2xl overflow-hidden shadow-xl border-2 border-red-300 group hover:border-red-500 transition-all">
                 <img
                   src={campus4}
                   alt="Growth"
@@ -53,12 +52,12 @@ export function History() {
               </div>
             </div>
             <div className="md:w-1/2 md:order-1">
-              <div className="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 rounded-2xl p-6 border border-orange-100 dark:border-orange-800 hover:shadow-lg transition-all">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-100 dark:bg-orange-900/50 rounded-full mb-3">
-                  <span className="text-orange-600 text-xs font-bold">GROWTH</span>
+              <div className="bg-white rounded-2xl p-6 border-2 border-red-300 hover:shadow-lg hover:border-red-500 transition-all">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-100 rounded-full mb-3">
+                  <span className="text-red-600 text-xs font-bold">GROWTH</span>
                 </div>
-                <h3 className="text-xl font-bold mb-2">Expansion & Excellence</h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <h3 className="text-xl font-bold text-black mb-2">Expansion & Excellence</h3>
+                <p className="text-black font-bold leading-relaxed">
                   Starting with a modest first batch of BAMS students, the college has steadily grown into a full-fledged 
                   Ayurvedic teaching institution with its own attached hospital, separate hostels, library, pharmacy and herbal garden.
                 </p>
@@ -69,7 +68,7 @@ export function History() {
           {/* Milestone 3 - Left */}
           <div className="relative flex flex-col md:flex-row gap-6 items-center">
             <div className="md:w-1/2">
-              <div className="relative rounded-2xl overflow-hidden shadow-xl group">
+              <div className="relative rounded-2xl overflow-hidden shadow-xl border-2 border-red-300 group hover:border-red-500 transition-all">
                 <img
                   src={campus1}
                   alt="Community Healthcare"
@@ -79,12 +78,12 @@ export function History() {
               </div>
             </div>
             <div className="md:w-1/2">
-              <div className="bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-950/20 dark:to-teal-950/20 rounded-2xl p-6 border border-green-100 dark:border-green-800 hover:shadow-lg transition-all">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900/50 rounded-full mb-3">
-                  <span className="text-green-600 text-xs font-bold">IMPACT</span>
+              <div className="bg-white rounded-2xl p-6 border-2 border-red-300 hover:shadow-lg hover:border-red-500 transition-all">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-100 rounded-full mb-3">
+                  <span className="text-red-600 text-xs font-bold">IMPACT</span>
                 </div>
-                <h3 className="text-xl font-bold mb-2">Community Healthcare</h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <h3 className="text-xl font-bold text-black mb-2">Community Healthcare</h3>
+                <p className="text-black font-bold leading-relaxed">
                   Over the years thousands of patients from Mehkar and surrounding talukas have benefited from the OPD and IPD services 
                   of the attached hospital — making the institute a trusted healthcare destination of the region.
                 </p>
@@ -95,13 +94,13 @@ export function History() {
       </div>
 
       {/* Legacy Card */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-600 to-orange-600 p-8 text-center">
+      <div className="relative overflow-hidden rounded-2xl bg-red-600 p-8 text-center border-2 border-red-700">
         <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
         <div className="relative z-10">
           <div className="text-5xl mb-4">📜</div>
           <h3 className="text-2xl font-bold text-white mb-2">Continuing the Legacy</h3>
-          <p className="text-white/90 text-sm max-w-2xl mx-auto">
+          <p className="text-white/90 text-sm font-bold max-w-2xl mx-auto">
             Today, Rajashri Ayurvedic Medical College stands as a beacon of quality Ayurvedic education and affordable healthcare, 
             serving thousands of students and patients across the Buldhana region of Vidarbha, Maharashtra.
           </p>

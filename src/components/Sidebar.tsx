@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getSideNav } from "@/lib/navOverrides";
 import type { NavItem } from "@/lib/pages";
@@ -34,7 +34,7 @@ export function Sidebar() {
       );
     }
     return (
-      <Link to="/$slug" params={{ slug: slug! }} className={cls}>
+      <Link to={`/${slug}`} className={cls}>
         {label}
       </Link>
     );
@@ -42,30 +42,30 @@ export function Sidebar() {
 
   return (
     <aside className="w-full">
-      <ul className="border border-border rounded-md overflow-hidden bg-card">
+      <ul className="border-2 border-red-300 rounded-xl overflow-hidden bg-white shadow-lg">
         {nav.map((item, i) => {
           const hasChildren = !!item.children?.length;
           const isOpen = openIndex === i;
           return (
-            <li key={item.label} className="border-b border-border last:border-b-0">
+            <li key={item.label} className="border-b-2 border-red-200 last:border-b-0">
               {hasChildren ? (
                 <>
                   <button
                     onClick={() => setOpenIndex(isOpen ? null : i)}
-                    className="w-full text-left px-4 py-3 text-sm text-muted-foreground hover:bg-secondary flex items-center justify-between"
+                    className="w-full text-left px-4 py-3 text-sm text-black hover:bg-red-50 flex items-center justify-between font-bold transition-colors"
                   >
                     <span>{item.label}</span>
-                    <span className="text-xs">{isOpen ? "▴" : "▾"}</span>
+                    <span className="text-xs text-red-600 font-bold">{isOpen ? "▴" : "▾"}</span>
                   </button>
                   {isOpen && (
-                    <ul className="bg-secondary/50">
+                    <ul className="bg-red-50 border-t-2 border-red-200">
                       {item.children!.map((c) => (
                         <li key={c.label}>
                           {renderLink(
                             c.label,
                             c.slug,
                             c.to,
-                            "block pl-6 pr-4 py-2 text-sm text-brand hover:underline",
+                            "block pl-6 pr-4 py-2 text-sm text-black hover:bg-red-100 font-bold transition-colors border-b border-red-200 last:border-b-0",
                           )}
                         </li>
                       ))}
@@ -77,7 +77,7 @@ export function Sidebar() {
                   item.label,
                   item.slug,
                   item.to,
-                  "block px-4 py-3 text-sm text-muted-foreground hover:bg-secondary",
+                  "block px-4 py-3 text-sm text-black hover:bg-red-50 font-bold transition-colors",
                 )
               )}
             </li>

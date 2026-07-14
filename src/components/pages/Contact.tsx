@@ -20,69 +20,65 @@ export function Contact() {
     });
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  setIsSubmitting(true);
-  setSubmitStatus(null);
+    setIsSubmitting(true);
+    setSubmitStatus(null);
 
-  try {
-    await emailjs.send(
-      "service_9u4f0ko",
-      "template_wqqhiax",
-      {
-        from_name: formData.name,
-        from_email: formData.email,
-        phone: formData.phone,
-        subject: formData.subject,
-        message: formData.message,
-      },
-      "XvIwjTzdEnLR1kmbW"
-    );
+    try {
+      await emailjs.send(
+        "service_9u4f0ko",
+        "template_wqqhiax",
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          phone: formData.phone,
+          subject: formData.subject,
+          message: formData.message,
+        },
+        "XvIwjTzdEnLR1kmbW"
+      );
 
-    setSubmitStatus({
-      type: "success",
-      message:
-        "Thank you for contacting Rajashri Ayurvedic Medical College & Hospital. We have received your message and will contact you shortly.",
-    });
+      setSubmitStatus({
+        type: "success",
+        message: "Thank you for contacting Rajashri Ayurvedic Medical College & Hospital. We have received your message and will contact you shortly.",
+      });
 
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: "",
-    });
-  } catch (error) {
-    console.error("EmailJS Error:", error);
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("EmailJS Error:", error);
 
-    setSubmitStatus({
-      type: "error",
-      message:
-        "Unable to send your message. Please try again later.",
-    });
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+      setSubmitStatus({
+        type: "error",
+        message: "Unable to send your message. Please try again later.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="space-y-8">
-      {/* Hero Section */}
-  
-
       {/* Contact Info and Form Grid */}
       <div className="grid md:grid-cols-2 gap-8">
         {/* Left Side - Contact Information */}
         <div className="space-y-6">
-          <div className="border border-border rounded-xl p-6 bg-card shadow-sm hover:shadow-md transition-shadow">
+          {/* College Address */}
+          <div className="border-2 border-red-300 rounded-2xl p-6 bg-white shadow-sm hover:shadow-lg transition-all">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
                 <span className="text-xl">📍</span>
               </div>
-              <h3 className="font-semibold text-brand">College Address</h3>
+              <h3 className="font-bold text-black">College Address</h3>
             </div>
-            <p className="text-sm leading-relaxed">
+            <p className="text-sm text-black font-bold leading-relaxed">
               Dharmveer Diliprao Rahate Shikshan & Bahu-Uddeshiya Sanstha's<br />
               Rajashri Ayurvedic Medical College & Hospital<br />
               Cotton Market Road, Mehkar, Tq. Mehkar, Dist. Buldhana – 443301<br />
@@ -90,70 +86,69 @@ const handleSubmit = async (e: React.FormEvent) => {
             </p>
           </div>
           
-          <div className="border border-border rounded-xl p-6 bg-card shadow-sm hover:shadow-md transition-shadow">
+          {/* Reach Us */}
+          <div className="border-2 border-red-300 rounded-2xl p-6 bg-white shadow-sm hover:shadow-lg transition-all">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
                 <span className="text-xl">📞</span>
               </div>
-              <h3 className="font-semibold text-brand">Reach Us</h3>
+              <h3 className="font-bold text-black">Reach Us</h3>
             </div>
             <ul className="text-sm space-y-3">
               <li className="flex items-center gap-3">
-                <span className="text-brand">📞</span>
-                <div>
+                <span className="text-red-600">📞</span>
+                <div className="text-black font-bold">
                   <strong>Office:</strong> +91 - 8087203870 | 8087303870
                 </div>
               </li>
-          <li className="flex items-start gap-3">
-  <span className="text-brand">✉️</span>
-  <div className="break-all">
-    <strong>Email:</strong>
-
-    <a
-      href="mailto:rajshreeayurvedic@gmail.com"
-      className="block text-brand hover:underline"
-    >
-      rajshreeayurvedic@gmail.com
-    </a>
-
-    <a
-      href="mailto:2024rajashriayu0870@gmail.com"
-      className="block text-brand hover:underline"
-    >
-      2024rajashriayu0870@gmail.com
-    </a>
-  </div>
-</li>
+              <li className="flex items-start gap-3">
+                <span className="text-red-600">✉️</span>
+                <div className="break-all">
+                  <strong className="text-black font-bold">Email:</strong>
+                  <a
+                    href="mailto:rajshreeayurvedic@gmail.com"
+                    className="block text-red-600 hover:underline font-bold"
+                  >
+                    rajshreeayurvedic@gmail.com
+                  </a>
+                  <a
+                    href="mailto:2024rajashriayu0870@gmail.com"
+                    className="block text-red-600 hover:underline font-bold"
+                  >
+                    2024rajashriayu0870@gmail.com
+                  </a>
+                </div>
+              </li>
             </ul>
           </div>
 
           {/* Quick Info Cards */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="border border-border rounded-xl p-4 bg-secondary/30 text-center">
+            <div className="border-2 border-red-300 rounded-2xl p-4 bg-white text-center hover:shadow-lg transition-all">
               <div className="text-2xl mb-1">🕐</div>
-              <div className="text-sm font-semibold text-brand">Office Hours</div>
-              <div className="text-xs text-muted-foreground">Mon–Sat · 9:00 AM – 5:00 PM</div>
+              <div className="text-sm font-bold text-black">Office Hours</div>
+              <div className="text-xs text-black font-bold">Mon–Sat · 9:00 AM – 5:00 PM</div>
             </div>
-            <div className="border border-border rounded-xl p-4 bg-secondary/30 text-center">
+            <div className="border-2 border-red-300 rounded-2xl p-4 bg-white text-center hover:shadow-lg transition-all">
               <div className="text-2xl mb-1">🚨</div>
-              <div className="text-sm font-semibold text-brand">Emergency</div>
-              <div className="text-xs text-muted-foreground">24 × 7 Hospital Services</div>
+              <div className="text-sm font-bold text-black">Emergency</div>
+              <div className="text-xs text-black font-bold">24 × 7 Hospital Services</div>
             </div>
           </div>
         </div>
 
         {/* Right Side - Contact Form */}
-        <div className="border border-border rounded-xl bg-card p-6 shadow-sm">
+        <div className="border-2 border-red-300 rounded-2xl bg-white p-6 shadow-sm hover:shadow-lg transition-all">
           <div className="text-center mb-6">
-            <h3 className="text-xl font-semibold text-brand">Send us a Message</h3>
-            <p className="text-sm text-muted-foreground mt-1">We'd love to hear from you. Fill out the form and we'll respond promptly.</p>
+            <h3 className="text-xl font-bold text-black">Send us a Message</h3>
+            <p className="text-sm text-black font-bold mt-1">We'd love to hear from you. Fill out the form and we'll respond promptly.</p>
           </div>
 
           {submitStatus && (
-            <div className={`mb-4 p-3 rounded-md text-sm ${
+            <div className={`mb-4 p-3 rounded-xl text-sm font-bold ${
               submitStatus.type === 'success' 
-                ? 'bg-green-100 text-green-800 border border-green-200' 
-                : 'bg-red-100 text-red-800 border border-red-200'
+                ? 'bg-green-50 text-green-800 border-2 border-green-300' 
+                : 'bg-red-50 text-red-800 border-2 border-red-300'
             }`}>
               {submitStatus.message}
             </div>
@@ -162,26 +157,26 @@ const handleSubmit = async (e: React.FormEvent) => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Full Name *</label>
+                <label className="block text-sm font-bold text-black mb-1">Full Name *</label>
                 <input
                   type="text"
                   name="name"
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-brand/50"
+                  className="w-full px-3 py-2 border-2 border-red-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                   placeholder="Enter your full name"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Email Address *</label>
+                <label className="block text-sm font-bold text-black mb-1">Email Address *</label>
                 <input
                   type="email"
                   name="email"
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-brand/50"
+                  className="w-full px-3 py-2 border-2 border-red-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                   placeholder="your@email.com"
                 />
               </div>
@@ -189,7 +184,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Phone Number</label>
+                <label className="block text-sm font-bold text-black mb-1">Phone Number</label>
                 <input
                   type="tel"
                   name="phone"
@@ -199,18 +194,18 @@ const handleSubmit = async (e: React.FormEvent) => {
                     const numericValue = e.target.value.replace(/\D/g, '');
                     setFormData({ ...formData, phone: numericValue });
                   }}
-                  className="w-full px-3 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-brand/50"
+                  className="w-full px-3 py-2 border-2 border-red-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                   placeholder="Enter 10 digit mobile number"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Subject *</label>
+                <label className="block text-sm font-bold text-black mb-1">Subject *</label>
                 <select
                   name="subject"
                   required
                   value={formData.subject}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-brand/50"
+                  className="w-full px-3 py-2 border-2 border-red-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                 >
                   <option value="">Select subject</option>
                   <option value="Admission Inquiry">Admission Inquiry</option>
@@ -224,14 +219,14 @@ const handleSubmit = async (e: React.FormEvent) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Message *</label>
+              <label className="block text-sm font-bold text-black mb-1">Message *</label>
               <textarea
                 name="message"
                 required
                 rows={5}
                 value={formData.message}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-brand/50 resize-none"
+                className="w-full px-3 py-2 border-2 border-red-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold resize-none"
                 placeholder="Write your message here..."
               />
             </div>
@@ -239,29 +234,28 @@ const handleSubmit = async (e: React.FormEvent) => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-brand text-white py-3 px-4 rounded-md hover:bg-brand/80 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-red-600 text-white py-3 px-4 rounded-xl hover:bg-red-700 transition-colors font-bold disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Sending...' : 'Send Message'}
+              {isSubmitting ? 'Sending...' : 'Send Message →'}
             </button>
           </form>
 
-          <div className="mt-4 text-center text-xs text-muted-foreground">
+          <div className="mt-4 text-center text-xs text-black font-bold">
             <p>We respect your privacy. Your information will not be shared with third parties.</p>
           </div>
         </div>
       </div>
 
       {/* Map Section */}
-     {/* Map Section */}
-<div className="rounded-xl overflow-hidden border border-border shadow-sm">
-  <iframe
-    title="Rajashri Ayurvedic Medical College & Hospital"
-    src="https://www.google.com/maps?q=20.140333,76.567278&z=16&output=embed"
-    className="w-full h-[250px] sm:h-[350px] md:h-[450px]"
-    loading="lazy"
-    allowFullScreen
-  />
-</div>
+      <div className="rounded-2xl overflow-hidden border-2 border-red-300 shadow-sm hover:shadow-lg transition-all">
+        <iframe
+          title="Rajashri Ayurvedic Medical College & Hospital"
+          src="https://www.google.com/maps?q=20.140333,76.567278&z=16&output=embed"
+          className="w-full h-[250px] sm:h-[350px] md:h-[450px]"
+          loading="lazy"
+          allowFullScreen
+        />
+      </div>
     </div>
   );
 }

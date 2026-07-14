@@ -219,12 +219,12 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
   const isHospital = group === "hospital";
 
   return (
-    <div className="border border-border rounded-md p-3 sm:p-5 bg-card">
+    <div className="border-2 border-red-300 rounded-xl p-3 sm:p-5 bg-white shadow-lg">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4">
         <div>
-          <h2 className="font-semibold text-base sm:text-lg mb-0.5 sm:mb-1">Staff Management</h2>
-          <p className="text-[10px] sm:text-xs text-muted-foreground">
+          <h2 className="font-bold text-base sm:text-lg text-black mb-0.5 sm:mb-1">Staff Management</h2>
+          <p className="text-[10px] sm:text-xs text-black font-bold">
             {isLoading ? "Loading..." : `${members.length} staff members in this group`}
           </p>
         </div>
@@ -232,7 +232,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
           variant="outline"
           onClick={() => fetchMembers(group)}
           disabled={isLoading}
-          className="text-xs w-full sm:w-auto"
+          className="text-xs w-full sm:w-auto border-2 border-red-300 text-black font-bold hover:bg-red-50 rounded-full"
         >
           🔄 Refresh
         </Button>
@@ -241,9 +241,9 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
       {/* Controls */}
       <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mb-4">
         <div className="flex-1 min-w-[200px]">
-          <Label className="text-xs">Select Staff Group</Label>
+          <Label className="text-xs text-black font-bold">Select Staff Group</Label>
           <select
-            className="w-full mt-1 border border-border rounded-md p-2 bg-background text-sm"
+            className="w-full mt-1 border-2 border-red-200 rounded-xl p-2 bg-white text-sm text-black font-bold focus:ring-2 focus:ring-red-500 focus:border-red-500"
             value={group}
             onChange={(e) => setGroup(e.target.value as StaffGroupKey)}
           >
@@ -256,11 +256,22 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
         </div>
         <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           {members.length > 0 && (
-            <Button size="sm" variant="destructive" onClick={resetAll} disabled={isLoading} className="flex-1 sm:flex-none text-xs">
+            <Button 
+              size="sm" 
+              variant="destructive" 
+              onClick={resetAll} 
+              disabled={isLoading} 
+              className="flex-1 sm:flex-none text-xs bg-red-600 hover:bg-red-700 text-white font-bold rounded-full"
+            >
               Delete All Staff
             </Button>
           )}
-          <Button size="sm" onClick={addRow} disabled={isLoading} className="flex-1 sm:flex-none text-xs bg-brand hover:bg-brand-dark">
+          <Button 
+            size="sm" 
+            onClick={addRow} 
+            disabled={isLoading} 
+            className="flex-1 sm:flex-none text-xs bg-red-600 hover:bg-red-700 text-white font-bold rounded-full"
+          >
             + Add Staff Member
           </Button>
         </div>
@@ -269,7 +280,8 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
       {/* Staff Cards Grid */}
       {isLoading && (
         <div className="flex justify-center py-8">
-          <div className="text-muted-foreground">⏳ Loading staff...</div>
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-red-600 border-r-transparent" />
+          <p className="ml-2 text-sm text-black font-bold">Loading staff...</p>
         </div>
       )}
 
@@ -278,34 +290,34 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
           {members.map((m) => (
             <div
               key={m.id}
-              className="border border-border rounded-lg overflow-hidden bg-card hover:shadow-lg transition-all"
+              className="border-2 border-red-200 rounded-xl overflow-hidden bg-white hover:shadow-xl hover:border-red-500 transition-all"
             >
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 p-3 sm:p-4 flex items-center gap-3 sm:gap-4">
+              <div className="bg-red-50 p-3 sm:p-4 flex items-center gap-3 sm:gap-4 border-b-2 border-red-200">
                 <div className="flex-shrink-0">
                   {m.photo ? (
                     <img
                       src={getImageSrc(m.photo)}
                       alt={m.name}
-                      className="h-14 w-14 sm:h-16 sm:w-16 rounded-lg object-cover border-2 border-brand"
+                      className="h-14 w-14 sm:h-16 sm:w-16 rounded-lg object-cover border-2 border-red-600"
                     />
                   ) : (
-                    <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-lg sm:text-xl">
+                    <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-lg bg-red-600 flex items-center justify-center text-white font-bold text-lg sm:text-xl">
                       {getInitials(m.name)}
                     </div>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-brand text-sm sm:text-base truncate">{m.name || "No name"}</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground truncate">{m.designation || "No designation"}</p>
+                  <h3 className="font-bold text-black text-sm sm:text-base truncate">{m.name || "No name"}</h3>
+                  <p className="text-xs sm:text-sm text-red-600 font-bold truncate">{m.designation || "No designation"}</p>
                   {isTeaching && m.teacherCode && (
-                    <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 rounded-full inline-block mt-0.5">
+                    <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 bg-red-100 text-red-700 font-bold rounded-full inline-block mt-0.5">
                       {m.teacherCode}
                     </span>
                   )}
                 </div>
                 <button
                   onClick={() => startEdit(m)}
-                  className="px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs bg-brand text-white rounded-md hover:bg-brand/80 transition-colors flex-shrink-0"
+                  className="px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs bg-red-600 text-white font-bold rounded-full hover:bg-red-700 transition-colors flex-shrink-0"
                 >
                   ✏️ Edit
                 </button>
@@ -316,30 +328,30 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                   <>
                     <div className="grid grid-cols-2 gap-2 text-[10px] sm:text-xs">
                       <div>
-                        <p className="text-muted-foreground">Qualification</p>
-                        <p className="font-medium truncate">{m.qualification || "—"}</p>
+                        <p className="text-black font-bold">Qualification</p>
+                        <p className="font-bold text-black truncate">{m.qualification || "—"}</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">Experience</p>
-                        <p className="font-medium truncate">{m.experience || "—"}</p>
+                        <p className="text-black font-bold">Experience</p>
+                        <p className="font-bold text-black truncate">{m.experience || "—"}</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">Date of Birth</p>
-                        <p className="font-medium truncate">{m.dob || "—"}</p>
+                        <p className="text-black font-bold">Date of Birth</p>
+                        <p className="font-bold text-black truncate">{m.dob || "—"}</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">Date of Joining</p>
-                        <p className="font-medium truncate">{m.dateOfJoining || "—"}</p>
+                        <p className="text-black font-bold">Date of Joining</p>
+                        <p className="font-bold text-black truncate">{m.dateOfJoining || "—"}</p>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between text-[10px] sm:text-xs pt-2 border-t border-border">
+                    <div className="flex items-center justify-between text-[10px] sm:text-xs pt-2 border-t-2 border-red-200">
                       <div>
-                        <p className="text-muted-foreground">Registration No.</p>
-                        <p className="font-medium">{m.registrationNumber || "—"}</p>
+                        <p className="text-black font-bold">Registration No.</p>
+                        <p className="font-bold text-black">{m.registrationNumber || "—"}</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">Mobile</p>
-                        <p className="font-medium">{m.mobile || "—"}</p>
+                        <p className="text-black font-bold">Mobile</p>
+                        <p className="font-bold text-black">{m.mobile || "—"}</p>
                       </div>
                     </div>
                   </>
@@ -347,30 +359,30 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                   <>
                     <div className="grid grid-cols-2 gap-2 text-[10px] sm:text-xs">
                       <div>
-                        <p className="text-muted-foreground">Father's Name</p>
-                        <p className="font-medium truncate">{m.fatherName || "—"}</p>
+                        <p className="text-black font-bold">Father's Name</p>
+                        <p className="font-bold text-black truncate">{m.fatherName || "—"}</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">Qualification</p>
-                        <p className="font-medium truncate">{m.qualification || m.education || "—"}</p>
+                        <p className="text-black font-bold">Qualification</p>
+                        <p className="font-bold text-black truncate">{m.qualification || m.education || "—"}</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">Date of Appointment</p>
-                        <p className="font-medium truncate">{m.dateOfAppointment || "—"}</p>
+                        <p className="text-black font-bold">Date of Appointment</p>
+                        <p className="font-bold text-black truncate">{m.dateOfAppointment || "—"}</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">Nature of Appointment</p>
-                        <p className="font-medium truncate">{m.natureOfAppointment || "—"}</p>
+                        <p className="text-black font-bold">Nature of Appointment</p>
+                        <p className="font-bold text-black truncate">{m.natureOfAppointment || "—"}</p>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between text-[10px] sm:text-xs pt-2 border-t border-border">
+                    <div className="flex items-center justify-between text-[10px] sm:text-xs pt-2 border-t-2 border-red-200">
                       <div>
-                        <p className="text-muted-foreground">Department</p>
-                        <p className="font-medium">{m.workingDepartment || "—"}</p>
+                        <p className="text-black font-bold">Department</p>
+                        <p className="font-bold text-black">{m.workingDepartment || "—"}</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">Pay Scale</p>
-                        <p className="font-medium">{m.payScale || "—"}</p>
+                        <p className="text-black font-bold">Pay Scale</p>
+                        <p className="font-bold text-black">{m.payScale || "—"}</p>
                       </div>
                     </div>
                   </>
@@ -382,9 +394,9 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
       )}
 
       {!isLoading && members.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
-          <p className="text-base sm:text-lg">👔 No staff members</p>
-          <p className="text-xs sm:text-sm">Click "Add Staff Member" to get started</p>
+        <div className="text-center py-12 bg-red-50 rounded-xl border-2 border-red-200">
+          <p className="text-base sm:text-lg text-black font-bold">👔 No staff members</p>
+          <p className="text-xs sm:text-sm text-black font-bold">Click "Add Staff Member" to get started</p>
         </div>
       )}
 
@@ -395,16 +407,16 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
           onClick={() => cancelEdit()}
         >
           <div
-            className="bg-white dark:bg-gray-900 rounded-t-2xl sm:rounded-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto shadow-2xl"
+            className="bg-white rounded-t-2xl sm:rounded-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto shadow-2xl border-2 border-red-300"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-white dark:bg-gray-900 z-10 p-3 sm:p-4 border-b border-border flex justify-between items-center rounded-t-2xl">
-              <h3 className="text-base sm:text-xl font-bold text-brand">
+            <div className="sticky top-0 bg-red-600 z-10 p-3 sm:p-4 border-b-2 border-red-700 flex justify-between items-center rounded-t-2xl">
+              <h3 className="text-base sm:text-xl font-bold text-white">
                 {editingId === "new" ? "Add Staff Member" : `Edit ${editForm.name || "Staff"}`}
               </h3>
               <button
                 onClick={() => cancelEdit()}
-                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-secondary hover:bg-secondary/70 flex items-center justify-center text-lg sm:text-xl transition-colors"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white text-lg sm:text-xl transition-colors"
               >
                 ✕
               </button>
@@ -418,21 +430,21 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                     <img
                       src={getImageSrc(editForm.photo)}
                       alt="Profile"
-                      className="h-20 w-20 sm:h-24 sm:w-24 rounded-lg object-cover border-2 border-brand"
+                      className="h-20 w-20 sm:h-24 sm:w-24 rounded-lg object-cover border-2 border-red-600"
                     />
                   ) : (
-                    <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-2xl sm:text-3xl">
+                    <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-lg bg-red-600 flex items-center justify-center text-white font-bold text-2xl sm:text-3xl">
                       {editForm.name ? getInitials(editForm.name) : "?"}
                     </div>
                   )}
                 </div>
                 <div className="text-center sm:text-left">
-                  <p className="text-sm font-medium">Profile Photo</p>
-                  <p className="text-xs text-muted-foreground mb-2">Upload a photo (max 2MB)</p>
+                  <p className="text-sm font-bold text-black">Profile Photo</p>
+                  <p className="text-xs text-black font-bold mb-2">Upload a photo (max 2MB)</p>
                   <input
                     type="file"
                     accept="image/*"
-                    className="text-xs w-full sm:w-auto"
+                    className="text-xs w-full sm:w-auto text-black font-bold"
                     onChange={(e) => {
                       const f = e.target.files?.[0];
                       if (f) onPhoto(f);
@@ -446,20 +458,20 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {/* Common Fields */}
                 <div>
-                  <Label className="text-xs">Full Name *</Label>
+                  <Label className="text-xs text-black font-bold">Full Name *</Label>
                   <Input
                     value={editForm.name || ""}
                     onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                    className="mt-1 text-sm"
+                    className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                     placeholder="Enter full name"
                   />
                 </div>
                 <div>
-                  <Label className="text-xs">Designation *</Label>
+                  <Label className="text-xs text-black font-bold">Designation *</Label>
                   <Input
                     value={editForm.designation || ""}
                     onChange={(e) => setEditForm({ ...editForm, designation: e.target.value })}
-                    className="mt-1 text-sm"
+                    className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                     placeholder="e.g. Professor (Samhita)"
                   />
                 </div>
@@ -467,43 +479,43 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                 {isTeaching && (
                   <>
                     <div>
-                      <Label className="text-xs">Date of Birth</Label>
+                      <Label className="text-xs text-black font-bold">Date of Birth</Label>
                       <Input
                         type="date"
                         value={formatDateForInput(editForm.dob)}
                         onChange={(e) => setEditForm({ ...editForm, dob: e.target.value })}
-                        className="mt-1 text-sm"
+                        className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                       />
                     </div>
                     <div>
-                      <Label className="text-xs">Date of Joining</Label>
+                      <Label className="text-xs text-black font-bold">Date of Joining</Label>
                       <Input
                         type="date"
                         value={formatDateForInput(editForm.dateOfJoining)}
                         onChange={(e) => setEditForm({ ...editForm, dateOfJoining: e.target.value })}
-                        className="mt-1 text-sm"
+                        className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                       />
                     </div>
                     <div>
-                      <Label className="text-xs">Teacher Code</Label>
+                      <Label className="text-xs text-black font-bold">Teacher Code</Label>
                       <Input
                         value={editForm.teacherCode || ""}
                         onChange={(e) => setEditForm({ ...editForm, teacherCode: e.target.value })}
-                        className="mt-1 text-sm"
+                        className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                         placeholder="e.g. TCH001"
                       />
                     </div>
                     <div>
-                      <Label className="text-xs">Registration Number</Label>
+                      <Label className="text-xs text-black font-bold">Registration Number</Label>
                       <Input
                         value={editForm.registrationNumber || ""}
                         onChange={(e) => setEditForm({ ...editForm, registrationNumber: e.target.value })}
-                        className="mt-1 text-sm"
+                        className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                         placeholder="Registration No."
                       />
                     </div>
                     <div className="sm:col-span-2">
-                      <Label className="text-xs">Qualification</Label>
+                      <Label className="text-xs text-black font-bold">Qualification</Label>
                       <Input
                         value={editForm.qualification || editForm.education || ""}
                         onChange={(e) =>
@@ -513,37 +525,37 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                             education: e.target.value,
                           })
                         }
-                        className="mt-1 text-sm"
+                        className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                         placeholder="e.g. M.D. (Samhita), PhD"
                       />
                     </div>
                     <div>
-                      <Label className="text-xs">Experience</Label>
+                      <Label className="text-xs text-black font-bold">Experience</Label>
                       <Input
                         value={editForm.experience || ""}
                         onChange={(e) => setEditForm({ ...editForm, experience: e.target.value })}
-                        className="mt-1 text-sm"
+                        className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                         placeholder="e.g. 10 years"
                       />
                     </div>
                     <div>
-                      <Label className="text-xs">Mobile Number</Label>
+                      <Label className="text-xs text-black font-bold">Mobile Number</Label>
                       <Input
                         value={editForm.mobile || ""}
                         onChange={(e) => {
                           const val = e.target.value.replace(/\D/g, "");
                           setEditForm({ ...editForm, mobile: val });
                         }}
-                        className="mt-1 text-sm"
+                        className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                         placeholder="Mobile number (digits only)"
                       />
                     </div>
                     <div className="sm:col-span-2">
-                      <Label className="text-xs">Email ID</Label>
+                      <Label className="text-xs text-black font-bold">Email ID</Label>
                       <Input
                         value={editForm.email || ""}
                         onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                        className="mt-1 text-sm"
+                        className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                         placeholder="email@example.com"
                       />
                     </div>
@@ -553,16 +565,16 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                 {(isNonTeaching || isHospital) && (
                   <>
                     <div className="sm:col-span-2">
-                      <Label className="text-xs">Father's Name</Label>
+                      <Label className="text-xs text-black font-bold">Father's Name</Label>
                       <Input
                         value={editForm.fatherName || ""}
                         onChange={(e) => setEditForm({ ...editForm, fatherName: e.target.value })}
-                        className="mt-1 text-sm"
+                        className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                         placeholder="Father's full name"
                       />
                     </div>
                     <div className="sm:col-span-2">
-                      <Label className="text-xs">Qualification</Label>
+                      <Label className="text-xs text-black font-bold">Qualification</Label>
                       <Input
                         value={editForm.qualification || editForm.education || ""}
                         onChange={(e) =>
@@ -572,43 +584,43 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                             education: e.target.value,
                           })
                         }
-                        className="mt-1 text-sm"
+                        className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                         placeholder="e.g. M.A., B.Sc."
                       />
                     </div>
                     <div>
-                      <Label className="text-xs">Date of Appointment</Label>
+                      <Label className="text-xs text-black font-bold">Date of Appointment</Label>
                       <Input
                         type="date"
                         value={formatDateForInput(editForm.dateOfAppointment)}
                         onChange={(e) => setEditForm({ ...editForm, dateOfAppointment: e.target.value })}
-                        className="mt-1 text-sm"
+                        className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                       />
                     </div>
                     <div>
-                      <Label className="text-xs">Nature of Appointment</Label>
+                      <Label className="text-xs text-black font-bold">Nature of Appointment</Label>
                       <Input
                         value={editForm.natureOfAppointment || ""}
                         onChange={(e) => setEditForm({ ...editForm, natureOfAppointment: e.target.value })}
-                        className="mt-1 text-sm"
+                        className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                         placeholder="e.g. Permanent, Contract, Ad-hoc"
                       />
                     </div>
                     <div className="sm:col-span-2">
-                      <Label className="text-xs">Working Department</Label>
+                      <Label className="text-xs text-black font-bold">Working Department</Label>
                       <Input
                         value={editForm.workingDepartment || ""}
                         onChange={(e) => setEditForm({ ...editForm, workingDepartment: e.target.value })}
-                        className="mt-1 text-sm"
+                        className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                         placeholder="e.g. Administration, Accounts"
                       />
                     </div>
                     <div className="sm:col-span-2">
-                      <Label className="text-xs">Pay Scale</Label>
+                      <Label className="text-xs text-black font-bold">Pay Scale</Label>
                       <Input
                         value={editForm.payScale || ""}
                         onChange={(e) => setEditForm({ ...editForm, payScale: e.target.value })}
-                        className="mt-1 text-sm"
+                        className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                         placeholder="e.g. Level 7 ₹44,900-1,42,400"
                       />
                     </div>
@@ -616,8 +628,12 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                 )}
               </div>
 
-              <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mt-6 pt-4 border-t border-border">
-                <Button variant="outline" onClick={() => cancelEdit()} className="w-full sm:w-auto order-2 sm:order-1">
+              <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mt-6 pt-4 border-t-2 border-red-200">
+                <Button 
+                  variant="outline" 
+                  onClick={() => cancelEdit()} 
+                  className="w-full sm:w-auto order-2 sm:order-1 border-2 border-red-300 text-black font-bold hover:bg-red-50 rounded-full"
+                >
                   Cancel
                 </Button>
                 {editingId !== "new" && (
@@ -626,12 +642,15 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                     onClick={() => {
                       if (editingId) removeRow(Number(editingId));
                     }}
-                    className="w-full sm:w-auto order-1 sm:order-2"
+                    className="w-full sm:w-auto order-1 sm:order-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full"
                   >
                     Delete
                   </Button>
                 )}
-                <Button className="bg-brand hover:bg-brand/80 w-full sm:w-auto order-3" onClick={saveEdit}>
+                <Button 
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold w-full sm:w-auto order-3 rounded-full" 
+                  onClick={saveEdit}
+                >
                   💾 {editingId === "new" ? "Create" : "Save"}
                 </Button>
               </div>

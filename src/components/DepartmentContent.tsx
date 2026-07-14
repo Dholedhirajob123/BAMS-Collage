@@ -173,24 +173,24 @@ function FacultiesCard({ faculty }: { faculty: any }) {
   };
 
   return (
-    <div className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/50 dark:to-gray-800/50 border border-border hover:shadow-lg transition-all hover:-translate-y-1">
+    <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border-2 border-red-200 hover:border-red-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
       <div className="flex-shrink-0">
         {faculty?.photo ? (
           <img
             src={faculty.photo}
             alt={faculty.name}
-            className="w-14 h-14 rounded-full object-cover border-2 border-brand"
+            className="w-14 h-14 rounded-full object-cover border-2 border-red-600"
           />
         ) : (
-          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-lg">
+          <div className="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg">
             {getInitials(faculty?.name)}
           </div>
         )}
       </div>
       <div>
-        <h4 className="font-semibold text-foreground">{faculty?.name || "Unknown"}</h4>
-        <p className="text-sm text-amber-600 dark:text-amber-400">{faculty?.designation || ""}</p>
-        <p className="text-xs text-muted-foreground">{faculty?.qualification || ""}</p>
+        <h4 className="font-bold text-black">{faculty?.name || "Unknown"}</h4>
+        <p className="text-sm text-red-600 font-bold">{faculty?.designation || ""}</p>
+        <p className="text-xs text-black font-bold">{faculty?.qualification || ""}</p>
       </div>
     </div>
   );
@@ -198,7 +198,7 @@ function FacultiesCard({ faculty }: { faculty: any }) {
 
 // ---- Department page ----
 
- export function DepartmentPage({ slug }: { slug: string }) {
+export function DepartmentPage({ slug }: { slug: string }) {
   console.log(`[DepartmentPage] Rendering for slug: "${slug}"`);
   const staticDept = DEPT_MAP[slug];
   const { department: backendDept, faculties, loading, error } = useDepartmentData(slug);
@@ -215,9 +215,9 @@ function FacultiesCard({ faculty }: { faculty: any }) {
     console.log(`[DepartmentPage] Loading state for ${slug}`);
     return (
       <div className="space-y-8 animate-fade-in">
-        <div className="text-center py-12 bg-secondary/30 rounded-lg">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent" />
-          <p className="mt-2 text-sm text-muted-foreground">Loading department information…</p>
+        <div className="text-center py-12 bg-white rounded-2xl border-2 border-red-300">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-red-600 border-r-transparent" />
+          <p className="mt-2 text-sm text-black font-bold">Loading department information…</p>
         </div>
       </div>
     );
@@ -226,14 +226,14 @@ function FacultiesCard({ faculty }: { faculty: any }) {
   if (error) {
     console.log(`[DepartmentPage] Error for ${slug}: ${error}`);
     return (
-      <div className="text-center py-12 bg-red-50 dark:bg-red-950/20 rounded-lg">
-        <p className="text-sm text-red-600 dark:text-red-400">Failed to load data: {error}</p>
+      <div className="text-center py-12 bg-red-50 rounded-2xl border-2 border-red-400">
+        <p className="text-sm text-red-600 font-bold">Failed to load data: {error}</p>
         <button
           onClick={() => {
             console.log(`[DepartmentPage] Retry clicked for ${slug}`);
             useDepartmentStore.getState().refetchDepartment(slug);
           }}
-          className="mt-3 px-4 py-2 bg-brand text-white rounded-lg text-sm hover:opacity-80"
+          className="mt-3 px-4 py-2 bg-red-600 text-white rounded-full text-sm font-bold hover:bg-red-700 transition-colors"
         >
           Try again
         </button>
@@ -247,67 +247,93 @@ function FacultiesCard({ faculty }: { faculty: any }) {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <div className="flex items-center gap-3">
-        <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-indigo-500 rounded-full" />
-        <div>
-          <h1 className="text-2xl font-bold text-brand">{deptName}</h1>
-          <p className="text-sm text-muted-foreground">{deptShort}</p>
+      {/* Image Banner - Rounded Design */}
+      <div className="relative rounded-2xl overflow-hidden shadow-xl border-2 border-red-300">
+        <div className="relative h-64 md:h-80 w-full">
+          <img 
+            src={image} 
+            alt={deptName} 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center shadow-lg">
+                <span className="text-white text-xl">🏛️</span>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-white">{deptName}</h2>
+                <p className="text-white/80 text-sm font-bold">{deptShort}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8 items-start">
-        <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-2xl p-6 border border-amber-100 dark:border-amber-800">
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* About Section - Red Theme */}
+        <div className="bg-white rounded-2xl p-6 border-2 border-red-300 shadow-lg hover:shadow-xl transition-all duration-300">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900 flex items-center justify-center">
-              <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+              <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold">About the Department</h2>
+            <h2 className="text-xl font-bold text-black">About the Department</h2>
           </div>
-          <div className="space-y-4">
-            {about.map((p, i) => <p key={i} className="text-muted-foreground leading-relaxed">{p}</p>)}
+          <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-red-300 scrollbar-track-gray-100">
+            {about.map((p, i) => (
+              <p key={i} className="text-black font-bold leading-relaxed text-sm">{p}</p>
+            ))}
           </div>
         </div>
 
         <div className="space-y-6">
-          <div className="flex justify-center lg:justify-end">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 blur-2xl opacity-20 animate-pulse" />
-              <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden shadow-2xl ring-4 ring-amber-500/30 group">
-                <img src={image} alt={deptName} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
-              </div>
-            </div>
-          </div>
-          <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800">
+          {/* Aim & Objectives - Red Theme */}
+          <div className="bg-white rounded-2xl p-6 border-2 border-red-300 shadow-lg hover:shadow-xl transition-all duration-300">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
-                <span className="text-purple-600 text-lg">🎯</span>
+              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                <span className="text-red-600 text-lg">🎯</span>
               </div>
-              <h2 className="text-xl font-bold">Aim & Objectives</h2>
+              <h2 className="text-xl font-bold text-black">Aim & Objectives</h2>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-red-300 scrollbar-track-gray-100">
               {aim.map((item, idx) => (
                 <div key={idx} className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-purple-200 dark:bg-purple-800 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-purple-600 dark:text-purple-400 text-xs">{idx + 1}</span>
+                  <div className="w-6 h-6 rounded-full bg-red-200 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-red-600 text-xs font-bold">{idx + 1}</span>
                   </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{item}</p>
+                  <p className="text-sm text-black font-bold leading-relaxed">{item}</p>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-2xl p-4 text-center border-2 border-red-200">
+              <div className="text-2xl font-bold text-red-600">📚</div>
+              <p className="text-xs text-black font-bold mt-1">Classical Texts</p>
+            </div>
+            <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-2xl p-4 text-center border-2 border-red-200">
+              <div className="text-2xl font-bold text-red-600">👨‍🏫</div>
+              <p className="text-xs text-black font-bold mt-1">Expert Faculty</p>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Faculty Section - Red Theme */}
       <div className="space-y-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-            <span className="text-blue-600 text-lg">👨‍🏫</span>
+          <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+            <span className="text-red-600 text-lg">👨‍🏫</span>
           </div>
-          <h2 className="text-xl font-bold">Faculty Members</h2>
-          <div className="flex-1 h-px bg-gradient-to-r from-blue-200 to-transparent" />
-          <span className="text-sm text-muted-foreground">{displayFaculties.length} Members</span>
+          <h2 className="text-xl font-bold text-black">Faculty Members</h2>
+          <div className="flex-1 h-px bg-gradient-to-r from-red-300 to-transparent" />
+          <span className="text-sm bg-red-100 text-red-600 font-bold px-3 py-1 rounded-full">
+            {displayFaculties.length} Members
+          </span>
         </div>
         <div className="grid md:grid-cols-2 gap-4">
           {displayFaculties.map((faculty, idx) => (
@@ -316,10 +342,14 @@ function FacultiesCard({ faculty }: { faculty: any }) {
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl p-5 text-center border border-amber-100 dark:border-amber-800">
-        <p className="text-sm text-muted-foreground">
-          For more information about the {deptName} department, please contact the administrative office.
-        </p>
+      {/* Footer Note */}
+      <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-2xl p-5 text-center border-2 border-red-300">
+        <div className="flex items-center justify-center gap-2">
+          <span className="text-xl">📞</span>
+          <p className="text-sm text-black font-bold">
+            For more information about the {deptName} department, please contact the administrative office.
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -51,26 +51,13 @@ const IMPORTANT_LINKS = [
     external: true,
     icon: "📝",
   },
-
- 
 ];
 
 export function ImportantLinks() {
   const externalLinks = IMPORTANT_LINKS.filter(link => link.external);
-  const internalLinks = IMPORTANT_LINKS.filter(link => !link.external);
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center gap-3">
-        <div className="w-1 h-8 bg-gradient-to-b from-amber-500 to-orange-500 rounded-full"></div>
-        <div>
-          <h2 className="text-xl font-bold text-brand">Important Links</h2>
-          <p className="text-xs text-muted-foreground">
-            Quick access to important government bodies, regulatory authorities, and internal resources.
-          </p>
-        </div>
-      </div>
-
+    <div className="space-y-6">
       {/* External Links */}
       <div>
         <div className="grid md:grid-cols-2 gap-3">
@@ -80,19 +67,15 @@ export function ImportantLinks() {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card hover:shadow-md hover:border-amber-300 transition-all group"
+              className="flex items-center gap-3 p-3 rounded-xl border-2 border-red-300 bg-white hover:border-red-500 hover:shadow-lg transition-all group"
             >
               <span className="text-lg">{link.icon}</span>
-              <span className="font-medium text-sm group-hover:text-brand">{link.title}</span>
-              <span className="text-xs text-muted-foreground ml-auto">↗</span>
+              <span className="font-bold text-sm text-black group-hover:text-red-600 transition-colors">{link.title}</span>
+              <span className="text-xs text-red-600 font-bold ml-auto">↗</span>
             </a>
           ))}
         </div>
       </div>
-
-     
-
-    
     </div>
   );
 }

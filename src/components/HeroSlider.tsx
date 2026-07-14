@@ -1,7 +1,7 @@
 // components/HeroSlider.tsx
 import { useEffect, useState } from "react";
-import campus1 from "@/assets/front view.jpg";
-import campus2 from "@/assets/front view2.jpg";
+import campus1 from "@/assets/mainbuilding.png";
+import campus2 from "@/assets/mainbuilding.png";
 import campus3 from "@/assets/campus-3.jpg";
 import campus4 from "@/assets/campus-4.jpg";
 
