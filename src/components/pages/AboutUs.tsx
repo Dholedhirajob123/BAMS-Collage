@@ -1,6 +1,6 @@
 // components/pages/AboutUs.tsx
 import aboutHero from "@/assets/Dr. Rathi Sonal Mohanlal.jpg";
-import campus1 from "@/assets/gallery-1.jpg";
+import campus1 from "@/assets/mainbuilding.png";
 import campus2 from "@/assets/Secretary.jpg";
 import campus3 from "@/assets/President.jpg";
 import campus4 from "@/assets/campus-4.jpg";

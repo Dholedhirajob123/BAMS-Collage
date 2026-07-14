@@ -1,6 +1,6 @@
 // components/pages/Library.tsx
 import { InfoPage } from "./InfoPage";
-import g1 from "@/assets/gallery-1.jpg";
+import g1 from "@/assets/mainbuilding.png";
 
 export function Library() {
   return (

@@ -1,6 +1,6 @@
 // components/pages/HerbalGarden.tsx
 import { InfoPage } from "./InfoPage";
-import g2 from "@/assets/gallery-2.jpg";
+import g2 from "@/assets/mainbuilding.png";
 
 export function HerbalGarden() {
   return (
