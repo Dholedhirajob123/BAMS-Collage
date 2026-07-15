@@ -4,15 +4,15 @@ import { Footer } from './components/Footer';
 import { Index } from './pages/Index';
 import { SlugPage } from './pages/SlugPage';
 import { AdminPage } from './pages/AdminPage';
-import logoAsset from "@/assets/mainlogo.png"; // Import your logo
+// import logoAsset from "@/assets/mainlogo.png"; // Import your logo
 
 function App() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      {/* Optional: Add a small logo watermark or favicon-like display */}
+      {/* Optional: Add a small logo watermark or favicon-like display
       <div className="fixed bottom-4 right-4 opacity-10 z-50 pointer-events-none">
         <img src={logoAsset} alt="Logo" className="w-16 h-16 object-contain" />
-      </div>
+      </div> */}
       
       <Header />
       <main className="flex-1 bg-white">

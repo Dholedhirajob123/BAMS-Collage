@@ -35,6 +35,76 @@ const FULL_TITLES: Partial<Record<CouncilKey, string>> = {
   "student-council": "Student Council",
 };
 
+// ---- Mobile Table Component ----
+function MobileTableView({ members }: { members: any[] }) {
+  return (
+    <div className="block md:hidden">
+      {/* Vertical scroll container with max height */}
+      <div className="max-h-[400px] overflow-y-auto">
+        <table className="w-full min-w-[320px] border-collapse">
+          <thead className="sticky top-0 z-10">
+            <tr className="bg-red-600">
+              <th className="px-3 py-3 text-left text-xs font-bold text-white uppercase tracking-wider w-16">
+                Sr.No
+              </th>
+              <th className="px-3 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">
+                Name
+              </th>
+              <th className="px-3 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">
+                Position
+              </th>
+              <th className="px-3 py-3 text-left text-xs font-bold text-white uppercase tracking-wider min-w-[120px]">
+                Email ID
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {members.map((r, i) => (
+              <tr 
+                key={r.id} 
+                className="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-150"
+              >
+                <td className="px-3 py-3 text-sm font-bold text-black">
+                  {i + 1}
+                </td>
+                <td className="px-3 py-3">
+                  <div className="text-sm font-bold text-black">
+                    {r.name}
+                  </div>
+                </td>
+                <td className="px-3 py-3">
+                  <div className="text-sm font-bold text-black">
+                    {r.position || "—"}
+                  </div>
+                </td>
+                <td className="px-3 py-3">
+                  {r.email ? (
+                    <a 
+                      href={`mailto:${r.email}`} 
+                      className="text-sm font-bold text-red-600 hover:text-red-800 break-all transition-colors"
+                    >
+                      {r.email}
+                    </a>
+                  ) : (
+                    <span className="text-sm font-bold text-black">—</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+            {members.length === 0 && (
+              <tr>
+                <td colSpan={4} className="text-center text-black font-bold py-8 px-3">
+                  No members found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 // ---- Council Table Component ----
 function CouncilTable({ groupKey, title }: { groupKey: CouncilKey; title?: string }) {
   const { members, loading, error, group } = useCouncilData(groupKey);
@@ -63,7 +133,7 @@ function CouncilTable({ groupKey, title }: { groupKey: CouncilKey; title?: strin
           <p className="text-sm text-red-600 font-bold">Failed to load: {error}</p>
           <button
             onClick={() => useCouncilStore.getState().refetchCouncil(groupKey)}
-            className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-bold hover:bg-orange-600 transition-colors"
+            className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-bold hover:bg-red-700 transition-colors"
           >
             Try again
           </button>
@@ -73,49 +143,13 @@ function CouncilTable({ groupKey, title }: { groupKey: CouncilKey; title?: strin
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Table */}
       <div className="rounded-xl border-2 border-red-300 bg-white overflow-hidden shadow-lg">
-        <div className="block md:hidden">
-          {members.length === 0 ? (
-            <div className="text-center text-black font-bold py-12">No members yet.</div>
-          ) : (
-            <div className="divide-y divide-red-200">
-              {members.map((r, i) => (
-                <div key={r.id} className="p-4 space-y-2 hover:bg-orange-50 transition-colors">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <span className="text-xs text-red-600 font-bold">#{i + 1}</span>
-                      <h3 className="font-bold text-black text-lg mt-1">{r.name}</h3>
-                    </div>
-                    {r.position && (
-                      <span className=" text-black text-xs font-bold">
-                        {r.position}
-                      </span>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div>
-                      <p className="text-xs text-black font-bold">Designation</p>
-                      <p className="font-bold text-black">{r.designation || "—"}</p>
-                    </div>
-                    <div className="col-span-2">
-                      <p className="text-xs text-black font-bold">Email</p>
-                      {r.email ? (
-                        <a href={`mailto:${r.email}`} className="text-red-600 hover:text-orange-600 font-bold break-all">
-                          {r.email}
-                        </a>
-                      ) : (
-                        <span className="text-black">—</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        {/* Mobile Table View */}
+        <MobileTableView members={members} />
 
+        {/* Desktop Table View */}
         <div className="hidden md:block overflow-x-auto">
           <Table>
             <TableHeader>
@@ -131,27 +165,21 @@ function CouncilTable({ groupKey, title }: { groupKey: CouncilKey; title?: strin
               {members.map((r, i) => (
                 <TableRow 
                   key={r.id} 
-                  className="border-t border-red-200 hover:bg-orange-50 transition-colors"
+                  className="border-t border-gray-200 hover:bg-gray-50 transition-colors"
                 >
                   <TableCell className="font-bold text-black">{i + 1}</TableCell>
-                  <TableCell className="font-bold text-red-600">{r.name}</TableCell>
+                  <TableCell className="font-bold text-black">{r.name}</TableCell>
                   <TableCell className="font-bold text-black">{r.designation}</TableCell>
-                  <TableCell>
-                    {r.position ? (
-                      <span className=" text-black text-xs font-bold  ">
-                        {r.position}
-                      </span>
-                    ) : (
-                      <span className="text-black">—</span>
-                    )}
+                  <TableCell className="font-bold text-black">
+                    {r.position || "—"}
                   </TableCell>
                   <TableCell>
                     {r.email ? (
-                      <a href={`mailto:${r.email}`} className="text-red-600 hover:text-orange-600 font-bold break-all transition-colors">
+                      <a href={`mailto:${r.email}`} className="text-red-600 hover:text-red-800 font-bold break-all transition-colors">
                         {r.email}
                       </a>
                     ) : (
-                      <span className="text-black">—</span>
+                      <span className="font-bold text-black">—</span>
                     )}
                   </TableCell>
                 </TableRow>

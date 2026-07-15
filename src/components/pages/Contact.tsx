@@ -81,7 +81,7 @@ export function Contact() {
             <p className="text-sm text-black font-bold leading-relaxed">
               Dharmveer Diliprao Rahate Shikshan & Bahu-Uddeshiya Sanstha's<br />
               Rajashri Ayurvedic Medical College & Hospital<br />
-              Cotton Market Road, Mehkar, Tq. Mehkar, Dist. Buldhana – 443301<br />
+             Address:- Cotton Market Road, Mehkar,<br /> Tq. Mehkar, Dist.Buldhana – 443301<br />
               Maharashtra, India
             </p>
           </div>

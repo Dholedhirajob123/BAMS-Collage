@@ -51,40 +51,55 @@ export function StaffSection({ title, group, slug }: StaffSectionProps) {
         </div>
       ) : (
         <>
-          {/* Mobile Cards */}
-          <div className="block md:hidden space-y-3">
-            {members.map((m, i) => (
-              <div
-                key={m.id}
-                className="bg-white border-2 border-red-300 rounded-2xl p-4 cursor-pointer hover:border-red-500 transition-colors"
-                onClick={() => setActive(i)}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="flex-shrink-0">
-                    {m.photo ? (
-                      <img
-                        src={m.photo}
-                        alt={m.name}
-                        loading="lazy"
-                        className="h-20 w-20 rounded-lg object-cover border-2 border-red-600"
-                      />
+          {/* Mobile Table - Same as Desktop but with horizontal scroll */}
+          <div className="block md:hidden overflow-x-auto border-2 border-red-300 rounded-2xl">
+            <table className="w-full text-sm min-w-[600px]">
+              <thead className="bg-red-600">
+                <tr>
+                  <th className="px-3 py-2 text-left font-bold text-white whitespace-nowrap">S. No.</th>
+                  <th className="px-3 py-2 text-left font-bold text-white whitespace-nowrap">Name of Employee</th>
+                  <th className="px-3 py-2 text-left font-bold text-white whitespace-nowrap">Designation</th>
+                  {isTeaching ? (
+                    <>
+                      <th className="px-3 py-2 text-left font-bold text-white whitespace-nowrap">Qualification</th>
+                      <th className="px-3 py-2 text-left font-bold text-white whitespace-nowrap">Experience</th>
+                    </>
+                  ) : (
+                    <>
+                      <th className="px-3 py-2 text-left font-bold text-white whitespace-nowrap">Father's Name</th>
+                      <th className="px-3 py-2 text-left font-bold text-white whitespace-nowrap">Department</th>
+                    </>
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {members.map((m, i) => (
+                  <tr
+                    key={m.id}
+                    className="border-t border-red-200 cursor-pointer hover:bg-red-50 transition-colors"
+                    onClick={() => setActive(i)}
+                  >
+                    <td className="px-3 py-2 text-black font-bold whitespace-nowrap">{i + 1}</td>
+                    <td className="px-3 py-2 font-bold text-black whitespace-nowrap">{m.name}</td>
+                    <td className="px-3 py-2 text-black font-bold whitespace-nowrap">{m.designation}</td>
+                    {isTeaching ? (
+                      <>
+                        <td className="px-3 py-2 text-black font-bold whitespace-nowrap">{m.qualification || "-"}</td>
+                        <td className="px-3 py-2 text-black font-bold whitespace-nowrap">{m.experience || "-"}</td>
+                      </>
                     ) : (
-                      <div className="h-20 w-20 rounded-lg bg-red-600 flex items-center justify-center text-white font-bold text-2xl">
-                        {m.name ? m.name.split(" ").map(n => n[0]).slice(0, 2).join("") : "?"}
-                      </div>
+                      <>
+                        <td className="px-3 py-2 text-black font-bold whitespace-nowrap">{m.fatherName || "-"}</td>
+                        <td className="px-3 py-2 text-black font-bold whitespace-nowrap">{m.workingDepartment || "-"}</td>
+                      </>
                     )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-black text-base">{m.name}</h3>
-                    <p className="text-sm text-red-600 font-bold">{m.designation}</p>
-                    <p className="text-xs text-black mt-1">#{i + 1}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
-          {/* Desktop Table */}
+          {/* Desktop Table - Same as before */}
           <div className="hidden md:block overflow-x-auto border-2 border-red-300 rounded-2xl">
             <table className="w-full text-sm">
               <thead className="bg-red-600">
@@ -113,9 +128,7 @@ export function StaffSection({ title, group, slug }: StaffSectionProps) {
                     onClick={() => setActive(i)}
                   >
                     <td className="px-4 py-3 text-black font-bold">{i + 1}</td>
-                    <td className="px-4 py-3 font-bold text-black">
-                      {m.name}
-                    </td>
+                    <td className="px-4 py-3 font-bold text-black">{m.name}</td>
                     <td className="px-4 py-3 text-black font-bold">{m.designation}</td>
                     {isTeaching ? (
                       <>
