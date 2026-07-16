@@ -81,7 +81,7 @@ function MobileTableView({ members }: { members: any[] }) {
                   {r.email ? (
                     <a 
                       href={`mailto:${r.email}`} 
-                      className="text-sm font-bold text-red-600 hover:text-red-800 break-all transition-colors"
+                      className="text-sm font-bold text-blue hover:text-red-800 break-all transition-colors"
                     >
                       {r.email}
                     </a>

@@ -1,6 +1,5 @@
-// components/staff/TeachingStaff.tsx
 import { useState } from "react";
-import { useStaff, useStaffStatus, type StaffMember } from "@/lib/staffStore";
+import { useStaff, useStaffStatus, refetchStaff, type StaffMember } from "@/lib/staffStore";
 import {
   Table,
   TableBody,

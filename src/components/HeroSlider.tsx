@@ -24,7 +24,7 @@ const SLIDES = [
   {
     img: campus4,
     title: "Shape Your Career in Ayurveda",
-    sub: "BAMS (60 Seats) • MUHS Affiliated • NCISM Approved • NAAC Accredited",
+    sub: "BAMS (60 Seats) • MUHS Affiliated • NCISM Approved ",
   },
 ];
 

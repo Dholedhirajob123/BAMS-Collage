@@ -1,7 +1,7 @@
 // lib/staffStore.ts
 import { create } from "zustand";
-import { getStaff } from "./apis"; // adjust path if needed
-import React from "react"; // for useEffect in hooks
+import { getStaff } from "./apis";
+import React from "react";
 
 export type StaffGroupKey = "teaching" | "non-teaching" | "hospital";
 
@@ -12,7 +12,6 @@ export interface StaffMember {
   name: string;
   designation: string;
   groupKey: StaffGroupKey;
-  // teaching fields
   teacherCode?: string;
   qualification?: string;
   experience?: string;
@@ -22,7 +21,6 @@ export interface StaffMember {
   email?: string;
   mobile?: string;
   photo?: string;
-  // non-teaching / hospital fields
   fatherName?: string;
   workingDepartment?: string;
   dateOfAppointment?: string;
@@ -37,10 +35,14 @@ interface StaffStore {
   data: Record<StaffGroupKey, StaffMember[]>;
   loading: Record<StaffGroupKey, boolean>;
   error: Record<StaffGroupKey, string | null>;
-  fetchStaff: (groupKey: StaffGroupKey) => Promise<void>;
+  // Track ongoing fetch promises
+  pendingFetches: Record<StaffGroupKey, Promise<void> | null>;
+  // Track if data has been fetched at least once
+  fetchedOnce: Record<StaffGroupKey, boolean>;
+  fetchStaff: (groupKey: StaffGroupKey, force?: boolean) => Promise<void>;
+  clearCache: (groupKey?: StaffGroupKey) => void;
 }
 
-// Map API response (snake_case or camelCase) to our interface
 const mapStaffFromApi = (item: any): StaffMember => ({
   id: item.id,
   name: item.name,
@@ -62,7 +64,7 @@ const mapStaffFromApi = (item: any): StaffMember => ({
   payScale: item.payScale ?? item.pay_scale ?? "",
   education: item.education ?? "",
   year: item.year ?? "",
-  ...item, // keep any extra fields
+  ...item,
 });
 
 export const useStaffStore = create<StaffStore>((set, get) => ({
@@ -81,29 +83,94 @@ export const useStaffStore = create<StaffStore>((set, get) => ({
     "non-teaching": null,
     hospital: null,
   },
+  pendingFetches: {
+    teaching: null,
+    "non-teaching": null,
+    hospital: null,
+  },
+  fetchedOnce: {
+    teaching: false,
+    "non-teaching": false,
+    hospital: false,
+  },
 
-  fetchStaff: async (groupKey: StaffGroupKey) => {
-    if (get().loading[groupKey]) return;
-    // Optionally skip if data already exists – comment out to force refetch
-    // if (get().data[groupKey].length > 0) return;
+  fetchStaff: async (groupKey: StaffGroupKey, force: boolean = false) => {
+    // If we already have data and not forcing refresh, return
+    if (!force && get().data[groupKey].length > 0 && get().fetchedOnce[groupKey]) {
+      return;
+    }
 
+    // If there's already a pending fetch for this group, return that promise
+    const existingPromise = get().pendingFetches[groupKey];
+    if (existingPromise) {
+      return existingPromise;
+    }
+
+    // Create a new fetch promise
+    const fetchPromise = (async () => {
+      // Set loading state
+      set((state) => ({
+        loading: { ...state.loading, [groupKey]: true },
+        error: { ...state.error, [groupKey]: null },
+      }));
+
+      try {
+        console.log(`🔄 Fetching ${groupKey} staff...`); // Debug log
+        const response = await getStaff(groupKey);
+        const members = Array.isArray(response) ? response.map(mapStaffFromApi) : [];
+        
+        set((state) => ({
+          data: { ...state.data, [groupKey]: members },
+          loading: { ...state.loading, [groupKey]: false },
+          fetchedOnce: { ...state.fetchedOnce, [groupKey]: true },
+          pendingFetches: { ...state.pendingFetches, [groupKey]: null },
+        }));
+        
+        console.log(`✅ ${groupKey} staff loaded: ${members.length} members`); // Debug log
+      } catch (error: any) {
+        console.error(`❌ Error fetching ${groupKey} staff:`, error);
+        set((state) => ({
+          loading: { ...state.loading, [groupKey]: false },
+          error: { ...state.error, [groupKey]: error.message || "Failed to load staff" },
+          pendingFetches: { ...state.pendingFetches, [groupKey]: null },
+        }));
+        throw error;
+      }
+    })();
+
+    // Store the promise
     set((state) => ({
-      loading: { ...state.loading, [groupKey]: true },
-      error: { ...state.error, [groupKey]: null },
+      pendingFetches: { ...state.pendingFetches, [groupKey]: fetchPromise },
     }));
 
-    try {
-      const response = await getStaff(groupKey);
-      const members = Array.isArray(response) ? response.map(mapStaffFromApi) : [];
+    return fetchPromise;
+  },
+
+  clearCache: (groupKey?: StaffGroupKey) => {
+    if (groupKey) {
       set((state) => ({
-        data: { ...state.data, [groupKey]: members },
-        loading: { ...state.loading, [groupKey]: false },
+        data: { ...state.data, [groupKey]: [] },
+        fetchedOnce: { ...state.fetchedOnce, [groupKey]: false },
+        pendingFetches: { ...state.pendingFetches, [groupKey]: null },
       }));
-    } catch (error: any) {
-      set((state) => ({
-        loading: { ...state.loading, [groupKey]: false },
-        error: { ...state.error, [groupKey]: error.message || "Failed to load staff" },
-      }));
+    } else {
+      set({
+        data: {
+          teaching: [],
+          "non-teaching": [],
+          hospital: [],
+        },
+        fetchedOnce: {
+          teaching: false,
+          "non-teaching": false,
+          hospital: false,
+        },
+        pendingFetches: {
+          teaching: null,
+          "non-teaching": null,
+          hospital: null,
+        },
+      });
     }
   },
 }));
@@ -113,12 +180,17 @@ export const useStaffStore = create<StaffStore>((set, get) => ({
 export const useStaff = (groupKey: StaffGroupKey) => {
   const data = useStaffStore((state) => state.data[groupKey]);
   const loading = useStaffStore((state) => state.loading[groupKey]);
+  const fetchedOnce = useStaffStore((state) => state.fetchedOnce[groupKey]);
+  const fetchStaff = useStaffStore((state) => state.fetchStaff);
 
   React.useEffect(() => {
-    if (data.length === 0 && !loading) {
-      useStaffStore.getState().fetchStaff(groupKey);
+    // Only fetch if data hasn't been fetched before and not currently loading
+    if (!fetchedOnce && !loading) {
+      fetchStaff(groupKey).catch(() => {
+        // Error is handled in the store
+      });
     }
-  }, [groupKey, data.length, loading]);
+  }, [groupKey, fetchedOnce, loading, fetchStaff]);
 
   return data;
 };
@@ -130,10 +202,15 @@ export const useStaffStatus = (groupKey: StaffGroupKey) => {
 };
 
 export const refetchStaff = (groupKey: StaffGroupKey) => {
-  // Clear the data for this group so it will refetch
-  useStaffStore.setState((state) => ({
-    data: { ...state.data, [groupKey]: [] },
-  }));
-  // Then fetch
-  useStaffStore.getState().fetchStaff(groupKey);
+  // Clear the fetched flag and data
+  useStaffStore.getState().clearCache(groupKey);
+  // Then fetch with force flag
+  useStaffStore.getState().fetchStaff(groupKey, true);
+};
+
+// Optional: Global prefetch
+export const prefetchAllStaff = async () => {
+  const store = useStaffStore.getState();
+  const groups: StaffGroupKey[] = ["teaching", "non-teaching", "hospital"];
+  await Promise.all(groups.map((group) => store.fetchStaff(group)));
 };

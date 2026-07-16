@@ -25,12 +25,41 @@ const getImageSrc = (src: string): string => {
   return `data:image/jpeg;base64,${src}`;
 };
 
+// Mobile number validation helper
+const validateMobile = (mobile: string): { isValid: boolean; message: string } => {
+  if (!mobile) return { isValid: true, message: "" };
+  
+  // Remove any non-digit characters
+  const cleaned = mobile.replace(/\D/g, '');
+  
+  if (cleaned.length === 0) return { isValid: true, message: "" };
+  if (cleaned.length !== 10) {
+    return { 
+      isValid: false, 
+      message: `Mobile number must be exactly 10 digits (currently ${cleaned.length} digits)` 
+    };
+  }
+  
+  return { isValid: true, message: "" };
+};
+
+// Format mobile number for display (XXX-XXX-XXXX)
+const formatMobileForDisplay = (mobile: string): string => {
+  if (!mobile) return "";
+  const cleaned = mobile.replace(/\D/g, '');
+  if (cleaned.length === 10) {
+    return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
+  }
+  return cleaned;
+};
+
 export function StaffManager({ setSavedMsg }: StaffManagerProps) {
   const [group, setGroup] = useState<StaffGroupKey>("teaching");
   const [members, setMembers] = useState<StaffMember[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<StaffMember>>({});
+  const [mobileError, setMobileError] = useState<string>("");
 
   const fetchMembers = async (groupKey: StaffGroupKey) => {
     setIsLoading(true);
@@ -100,16 +129,33 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
     };
     setEditingId("new");
     setEditForm(emptyMember);
+    setMobileError("");
   };
 
   const startEdit = (member: StaffMember) => {
     setEditingId(String(member.id));
     setEditForm({ ...member });
+    setMobileError("");
   };
 
   const cancelEdit = () => {
     setEditingId(null);
     setEditForm({});
+    setMobileError("");
+  };
+
+  const handleMobileChange = (value: string) => {
+    // Only allow digits
+    const digitsOnly = value.replace(/\D/g, '');
+    
+    // Limit to 10 digits
+    const limited = digitsOnly.slice(0, 10);
+    
+    setEditForm({ ...editForm, mobile: limited });
+    
+    // Validate in real-time
+    const validation = validateMobile(limited);
+    setMobileError(validation.isValid ? "" : validation.message);
   };
 
   const saveEdit = async () => {
@@ -119,10 +165,15 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
       return;
     }
 
-    if (editForm.mobile && !/^\d+$/.test(editForm.mobile)) {
-      setSavedMsg("⚠️ Mobile number must contain only digits.");
-      setTimeout(() => setSavedMsg(""), 2000);
-      return;
+    // Validate mobile number
+    if (editForm.mobile) {
+      const validation = validateMobile(editForm.mobile);
+      if (!validation.isValid) {
+        setMobileError(validation.message);
+        setSavedMsg(`⚠️ ${validation.message}`);
+        setTimeout(() => setSavedMsg(""), 3000);
+        return;
+      }
     }
 
     try {
@@ -351,7 +402,11 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                       </div>
                       <div>
                         <p className="text-black font-bold">Mobile</p>
-                        <p className="font-bold text-black">{m.mobile || "—"}</p>
+                        <p className="font-bold text-black">
+                          {m.mobile && m.mobile.length === 10 
+                            ? formatMobileForDisplay(m.mobile) 
+                            : m.mobile || "—"}
+                        </p>
                       </div>
                     </div>
                   </>
@@ -541,18 +596,26 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                     <div>
                       <Label className="text-xs text-black font-bold">Mobile Number</Label>
                       <Input
+                        type="tel"
                         value={editForm.mobile || ""}
-                        onChange={(e) => {
-                          const val = e.target.value.replace(/\D/g, "");
-                          setEditForm({ ...editForm, mobile: val });
-                        }}
-                        className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
-                        placeholder="Mobile number (digits only)"
+                        onChange={(e) => handleMobileChange(e.target.value)}
+                        className={`mt-1 text-sm border-2 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold ${
+                          mobileError ? 'border-red-500 bg-red-50' : 'border-red-200'
+                        }`}
+                        placeholder="Enter 10-digit mobile number"
+                        maxLength={10}
                       />
+                      {mobileError && (
+                        <p className="text-xs text-red-600 font-bold mt-1">{mobileError}</p>
+                      )}
+                      {editForm.mobile && editForm.mobile.length === 10 && !mobileError && (
+                        <p className="text-xs text-green-600 font-bold mt-1">✓ Valid mobile number</p>
+                      )}
                     </div>
                     <div className="sm:col-span-2">
                       <Label className="text-xs text-black font-bold">Email ID</Label>
                       <Input
+                        type="email"
                         value={editForm.email || ""}
                         onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                         className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
