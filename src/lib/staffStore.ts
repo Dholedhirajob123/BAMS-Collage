@@ -23,6 +23,7 @@ export interface StaffMember {
   photo?: string;
   fatherName?: string;
   workingDepartment?: string;
+  department?: string; // Added department field
   dateOfAppointment?: string;
   natureOfAppointment?: string;
   payScale?: string;
@@ -59,6 +60,7 @@ const mapStaffFromApi = (item: any): StaffMember => ({
   photo: item.photo ?? "",
   fatherName: item.fatherName ?? item.father_name ?? "",
   workingDepartment: item.workingDepartment ?? item.working_department ?? "",
+  department: item.department ?? "", // Map department field
   dateOfAppointment: item.dateOfAppointment ?? item.date_of_appointment ?? "",
   natureOfAppointment: item.natureOfAppointment ?? item.nature_of_appointment ?? "",
   payScale: item.payScale ?? item.pay_scale ?? "",

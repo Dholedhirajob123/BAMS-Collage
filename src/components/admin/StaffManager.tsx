@@ -29,7 +29,6 @@ const getImageSrc = (src: string): string => {
 const validateMobile = (mobile: string): { isValid: boolean; message: string } => {
   if (!mobile) return { isValid: true, message: "" };
   
-  // Remove any non-digit characters
   const cleaned = mobile.replace(/\D/g, '');
   
   if (cleaned.length === 0) return { isValid: true, message: "" };
@@ -43,7 +42,7 @@ const validateMobile = (mobile: string): { isValid: boolean; message: string } =
   return { isValid: true, message: "" };
 };
 
-// Format mobile number for display (XXX-XXX-XXXX)
+// Format mobile number for display
 const formatMobileForDisplay = (mobile: string): string => {
   if (!mobile) return "";
   const cleaned = mobile.replace(/\D/g, '');
@@ -126,6 +125,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
       natureOfAppointment: "",
       workingDepartment: "",
       payScale: "",
+      department: "",
     };
     setEditingId("new");
     setEditForm(emptyMember);
@@ -145,15 +145,9 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
   };
 
   const handleMobileChange = (value: string) => {
-    // Only allow digits
     const digitsOnly = value.replace(/\D/g, '');
-    
-    // Limit to 10 digits
     const limited = digitsOnly.slice(0, 10);
-    
     setEditForm({ ...editForm, mobile: limited });
-    
-    // Validate in real-time
     const validation = validateMobile(limited);
     setMobileError(validation.isValid ? "" : validation.message);
   };
@@ -165,7 +159,6 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
       return;
     }
 
-    // Validate mobile number
     if (editForm.mobile) {
       const validation = validateMobile(editForm.mobile);
       if (!validation.isValid) {
@@ -300,7 +293,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
           >
             {STAFF_GROUPS.map((item) => (
               <option key={item} value={item}>
-                {item}
+                {item.charAt(0).toUpperCase() + item.slice(1).replace('-', ' ')}
               </option>
             ))}
           </select>
@@ -328,7 +321,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
         </div>
       </div>
 
-      {/* Staff Cards Grid */}
+      {/* Staff Cards Grid with Department */}
       {isLoading && (
         <div className="flex justify-center py-8">
           <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-red-600 border-r-transparent" />
@@ -360,7 +353,13 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                 <div className="flex-1 min-w-0">
                   <h3 className="font-bold text-black text-sm sm:text-base truncate">{m.name || "No name"}</h3>
                   <p className="text-xs sm:text-sm text-red-600 font-bold truncate">{m.designation || "No designation"}</p>
-                  {isTeaching && m.teacherCode && (
+                  {/* Department Badge */}
+                  {m.department && (
+                    <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 bg-blue-100 text-blue-700 font-bold rounded-full inline-block mt-0.5">
+                      {m.department}
+                    </span>
+                  )}
+                  {isTeaching && m.teacherCode && !m.department && (
                     <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 bg-red-100 text-red-700 font-bold rounded-full inline-block mt-0.5">
                       {m.teacherCode}
                     </span>
@@ -433,7 +432,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                     <div className="flex items-center justify-between text-[10px] sm:text-xs pt-2 border-t-2 border-red-200">
                       <div>
                         <p className="text-black font-bold">Department</p>
-                        <p className="font-bold text-black">{m.workingDepartment || "—"}</p>
+                        <p className="font-bold text-black">{m.workingDepartment || m.department || "—"}</p>
                       </div>
                       <div>
                         <p className="text-black font-bold">Pay Scale</p>
@@ -455,7 +454,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
         </div>
       )}
 
-      {/* Edit / Add Modal - Mobile Responsive */}
+      {/* Edit / Add Modal with Department Text Input */}
       {editingId && editForm && (
         <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-2 sm:p-4 animate-fade-in"
@@ -509,7 +508,7 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                 </div>
               </div>
 
-              {/* Form Fields */}
+              {/* Form Fields with Department Text Input */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {/* Common Fields */}
                 <div>
@@ -528,6 +527,24 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                     onChange={(e) => setEditForm({ ...editForm, designation: e.target.value })}
                     className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                     placeholder="e.g. Professor (Samhita)"
+                  />
+                </div>
+
+                {/* Department Field - Text Input for all staff types */}
+                <div className="sm:col-span-2">
+                  <Label className="text-xs text-black font-bold">Department</Label>
+                  <Input
+                    value={editForm.department || editForm.workingDepartment || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setEditForm({ 
+                        ...editForm, 
+                        department: value,
+                        workingDepartment: value
+                      });
+                    }}
+                    className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
+                    placeholder="Enter department name (e.g. Ayurveda, Surgery, Administration)"
                   />
                 </div>
 
@@ -667,15 +684,6 @@ export function StaffManager({ setSavedMsg }: StaffManagerProps) {
                         onChange={(e) => setEditForm({ ...editForm, natureOfAppointment: e.target.value })}
                         className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
                         placeholder="e.g. Permanent, Contract, Ad-hoc"
-                      />
-                    </div>
-                    <div className="sm:col-span-2">
-                      <Label className="text-xs text-black font-bold">Working Department</Label>
-                      <Input
-                        value={editForm.workingDepartment || ""}
-                        onChange={(e) => setEditForm({ ...editForm, workingDepartment: e.target.value })}
-                        className="mt-1 text-sm border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black font-bold"
-                        placeholder="e.g. Administration, Accounts"
                       />
                     </div>
                     <div className="sm:col-span-2">

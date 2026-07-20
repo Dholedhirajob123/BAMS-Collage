@@ -62,6 +62,7 @@ export function StaffSection({ title, group, slug }: StaffSectionProps) {
                   {isTeaching ? (
                     <>
                       <th className="px-3 py-2 text-left font-bold text-white whitespace-nowrap">Qualification</th>
+                      <th className="px-3 py-2 text-left font-bold text-white whitespace-nowrap">Department</th>
                       <th className="px-3 py-2 text-left font-bold text-white whitespace-nowrap">Experience</th>
                     </>
                   ) : (
@@ -85,12 +86,17 @@ export function StaffSection({ title, group, slug }: StaffSectionProps) {
                     {isTeaching ? (
                       <>
                         <td className="px-3 py-2 text-black font-bold whitespace-nowrap">{m.qualification || "-"}</td>
+                        <td className="px-3 py-2 text-black font-bold whitespace-nowrap">
+                          {m.department || m.workingDepartment || "-"}
+                        </td>
                         <td className="px-3 py-2 text-black font-bold whitespace-nowrap">{m.experience || "-"}</td>
                       </>
                     ) : (
                       <>
                         <td className="px-3 py-2 text-black font-bold whitespace-nowrap">{m.fatherName || "-"}</td>
-                        <td className="px-3 py-2 text-black font-bold whitespace-nowrap">{m.workingDepartment || "-"}</td>
+                        <td className="px-3 py-2 text-black font-bold whitespace-nowrap">
+                          {m.workingDepartment || m.department || "-"}
+                        </td>
                       </>
                     )}
                   </tr>
@@ -110,6 +116,7 @@ export function StaffSection({ title, group, slug }: StaffSectionProps) {
                   {isTeaching ? (
                     <>
                       <th className="px-4 py-3 text-left font-bold text-white">Qualification</th>
+                      <th className="px-4 py-3 text-left font-bold text-white">Department</th>
                       <th className="px-4 py-3 text-left font-bold text-white">Experience</th>
                     </>
                   ) : (
@@ -133,12 +140,17 @@ export function StaffSection({ title, group, slug }: StaffSectionProps) {
                     {isTeaching ? (
                       <>
                         <td className="px-4 py-3 text-black font-bold">{m.qualification || "-"}</td>
+                        <td className="px-4 py-3 text-black font-bold">
+                          {m.department || m.workingDepartment || "-"}
+                        </td>
                         <td className="px-4 py-3 text-black font-bold">{m.experience || "-"}</td>
                       </>
                     ) : (
                       <>
                         <td className="px-4 py-3 text-black font-bold">{m.fatherName || "-"}</td>
-                        <td className="px-4 py-3 text-black font-bold">{m.workingDepartment || "-"}</td>
+                        <td className="px-4 py-3 text-black font-bold">
+                          {m.workingDepartment || m.department || "-"}
+                        </td>
                       </>
                     )}
                   </tr>
@@ -151,7 +163,7 @@ export function StaffSection({ title, group, slug }: StaffSectionProps) {
 
       <DocSection slug={slug} />
 
-      {/* Big Dialog Box */}
+      {/* Big Dialog Box with Department */}
       {active !== null && members[active] && (
         <div
           className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 overflow-y-auto"
@@ -184,8 +196,14 @@ export function StaffSection({ title, group, slug }: StaffSectionProps) {
                 <div className="flex-1 text-white">
                   <h2 className="text-2xl sm:text-3xl font-bold">{members[active].name}</h2>
                   <p className="text-lg sm:text-xl text-white/90 font-bold">{members[active].designation}</p>
-                  {isTeaching && members[active].teacherCode && (
+                  {/* Department Badge */}
+                  {(members[active].department || members[active].workingDepartment) && (
                     <span className="inline-block mt-2 px-3 py-1 bg-white/20 text-white text-xs sm:text-sm rounded-full font-bold">
+                      🏛️ {members[active].department || members[active].workingDepartment}
+                    </span>
+                  )}
+                  {isTeaching && members[active].teacherCode && (
+                    <span className="inline-block mt-2 ml-2 px-3 py-1 bg-white/20 text-white text-xs sm:text-sm rounded-full font-bold">
                       Teacher Code: {members[active].teacherCode}
                     </span>
                   )}
@@ -217,6 +235,12 @@ export function StaffSection({ title, group, slug }: StaffSectionProps) {
                     <div className="bg-gray-50 rounded-xl p-3 border-2 border-red-200">
                       <p className="text-[10px] font-bold text-black uppercase tracking-wider">Designation</p>
                       <p className="text-base text-black font-bold truncate">{members[active].designation}</p>
+                    </div>
+                    <div className="bg-gray-50 rounded-xl p-3 border-2 border-red-200">
+                      <p className="text-[10px] font-bold text-black uppercase tracking-wider">Department</p>
+                      <p className="text-base text-black font-bold truncate">
+                        {members[active].department || members[active].workingDepartment || "-"}
+                      </p>
                     </div>
                     <div className="bg-gray-50 rounded-xl p-3 border-2 border-red-200">
                       <p className="text-[10px] font-bold text-black uppercase tracking-wider">Qualification</p>
@@ -262,6 +286,12 @@ export function StaffSection({ title, group, slug }: StaffSectionProps) {
                       <p className="text-base text-black font-bold truncate">{members[active].designation}</p>
                     </div>
                     <div className="bg-gray-50 rounded-xl p-3 border-2 border-red-200">
+                      <p className="text-[10px] font-bold text-black uppercase tracking-wider">Department</p>
+                      <p className="text-base text-black font-bold truncate">
+                        {members[active].workingDepartment || members[active].department || "-"}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 rounded-xl p-3 border-2 border-red-200">
                       <p className="text-[10px] font-bold text-black uppercase tracking-wider">Father's Name</p>
                       <p className="text-base text-black font-bold truncate">{members[active].fatherName || "-"}</p>
                     </div>
@@ -278,10 +308,6 @@ export function StaffSection({ title, group, slug }: StaffSectionProps) {
                       <p className="text-base text-black font-bold capitalize truncate">
                         {members[active].natureOfAppointment || "-"}
                       </p>
-                    </div>
-                    <div className="bg-gray-50 rounded-xl p-3 border-2 border-red-200 col-span-1 sm:col-span-2 lg:col-span-3">
-                      <p className="text-[10px] font-bold text-black uppercase tracking-wider">Working Department</p>
-                      <p className="text-base text-black font-bold truncate">{members[active].workingDepartment || "-"}</p>
                     </div>
                     <div className="bg-gray-50 rounded-xl p-3 border-2 border-red-200 col-span-1 sm:col-span-2 lg:col-span-3">
                       <p className="text-[10px] font-bold text-black uppercase tracking-wider">Pay Scale</p>
