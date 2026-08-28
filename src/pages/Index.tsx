@@ -117,6 +117,77 @@ export function Index() {
               </ol>
             </div>
           </section>
+
+          {/* Admission Open Section - Added after Mission */}
+          <section className="rounded-xl overflow-hidden shadow-sm bg-gradient-to-r from-red-600 to-red-800 animate-pulse">
+            <header className="bg-red-700 text-white px-5 py-3 border-b border-red-900 flex items-center justify-between">
+              <h3 className="font-bold text-xl text-white flex items-center gap-2">
+                <span className="text-2xl">🎓</span> Admission Open 2026-27
+              </h3>
+              <span className="bg-yellow-400 text-red-900 text-xs font-bold px-3 py-1 rounded-full animate-bounce">
+                Apply Now
+              </span>
+            </header>
+            <div className="bg-white/95 text-black p-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <span className="text-red-600 text-xl">📞</span>
+                    <div>
+                      <p className="text-sm font-bold text-black">Contact For Admission</p>
+                      <p className="text-sm text-red-700 font-bold">Mr. Vinod S. Pandhare</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-red-600 text-xl">📱</span>
+                    <div>
+                      <p className="text-sm font-bold text-black">Mobile No.</p>
+                      <p className="text-sm text-red-700 font-bold">8087203870 / 8087303870</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-red-600 text-xl">💬</span>
+                    <div>
+                      <p className="text-sm font-bold text-black">WhatsApp No.</p>
+                      <p className="text-sm text-red-700 font-bold">8087203870</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <span className="text-red-600 text-xl">✉️</span>
+                    <div>
+                      <p className="text-sm font-bold text-black">Email Id</p>
+                      <p className="text-sm text-red-700 font-bold break-all">rajshreeayurvedic@gmail.com</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-red-600 text-xl">📍</span>
+                    <div>
+                      <p className="text-sm font-bold text-black">Address</p>
+                      <p className="text-sm text-red-700 font-bold">Cotton Market Road, Mehkar Tq. Mehkar Dist. Buldhana</p>
+                    </div>
+                  </div>
+                  <div className="mt-2 flex gap-3">
+                    <a 
+                      href="tel:8087203870" 
+                      className="bg-red-600 text-white text-sm px-4 py-2 rounded-full hover:bg-red-700 transition-colors font-bold inline-flex items-center gap-2"
+                    >
+                      📞 Call Now
+                    </a>
+                    <a 
+                      href="https://wa.me/918087203870" 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-green-600 text-white text-sm px-4 py-2 rounded-full hover:bg-green-700 transition-colors font-bold inline-flex items-center gap-2"
+                    >
+                      💬 WhatsApp
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </div>
